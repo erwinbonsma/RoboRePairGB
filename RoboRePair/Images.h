@@ -6,4 +6,5 @@
 
 #include <Gamebuino-Meta.h>
 
+extern Image botsImage;
 extern Image tilesImage;
