@@ -17,24 +17,24 @@ class GridTile {
   uint8_t _entries;
   uint16_t _connections;
   uint8_t _probability;
-  uint8_t _idx;
+  uint8_t _index;
 
 public:
-  bool hasEntry(Entry entry) {
+  bool hasEntry(Entry entry) const {
     return _entries & (0x1 << (int)entry);
   }
 
-  bool pathExists(Entry from, Entry to) {
+  bool pathExists(Entry from, Entry to) const {
     return _connections & ((0x1 << (int)from) << (int)to * 4);
   }
 
-  int probability() { return _probability; }
+  int probability() const { return _probability; }
 
-  int index() { return _idx; }
+  int index() const { return _index; }
 
   GridTile(uint8_t entries, uint16_t connections, uint8_t probability);
 };
 
 const int numTiles = 16;
-extern GridTile tiles[numTiles];
+extern const GridTile tiles[numTiles];
 

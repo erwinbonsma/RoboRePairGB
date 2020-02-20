@@ -6,13 +6,16 @@
 
 #include "GridTile.h"
 
+static int _nxtIndex = 0;
+
 GridTile::GridTile(uint8_t entries, uint16_t connections, uint8_t probability) {
   _entries = entries;
   _connections = connections;
   _probability = probability;
+  _index = _nxtIndex++;
 }
 
-GridTile tiles[numTiles] = {
+const GridTile tiles[numTiles] = {
   GridTile( 0, 0x0000, 0),
   GridTile( 1, 0x0001, 1),
   GridTile (2, 0x0020, 1),
