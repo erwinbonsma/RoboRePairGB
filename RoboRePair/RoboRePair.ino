@@ -10,6 +10,13 @@ const int h = 8;
 bool data[w][h];
 Bot bot;
 
+void displayCpuLoad() {
+  uint8_t cpuLoad = gb.getCpuLoad();
+  gb.display.setColor(cpuLoad < 80 ? INDEX_GREEN : (cpuLoad < 100 ? INDEX_YELLOW : INDEX_RED));
+  gb.display.setCursor(1, 1);
+  gb.display.printf("%d", cpuLoad);
+}
+
 bool dataAt(int x, int y) {
   if (x < 0 || x >= w || y < 0 || y >= h) {
     return false;
@@ -61,5 +68,6 @@ void loop() {
   gb.display.clear();
   grid.draw();
   bot.draw();
+  displayCpuLoad();
 }
 
