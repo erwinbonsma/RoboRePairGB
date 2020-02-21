@@ -18,6 +18,11 @@ void ScreenTile::update() {
 void ScreenTile::draw() {
   tilesImage.setFrame(_tile->index());
   gb.display.drawImage(_pos.getX(), _pos.getY(), tilesImage);
+
+  if (_bot != nullptr) {
+    gb.display.setColor(BEIGE);
+    gb.display.drawRect(_pos.getX(), _pos.getY(), 13, 13);
+  }
 }
 
 ScreenPos TileGrid::screenPosFor(GridPos pos){

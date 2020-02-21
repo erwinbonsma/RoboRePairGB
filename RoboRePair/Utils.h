@@ -9,10 +9,14 @@
 #ifndef UTILS_H
 #define UTILS_H
 
-struct GridPos {
-  uint8_t x;
-  uint8_t y;
+#define CALL_MEMBER_FN(object, ptrToMember)  ((object).*(ptrToMember))
+
+struct Vector2D {
+  int8_t x;
+  int8_t y;
 };
+
+typedef Vector2D GridPos;
 
 enum class Direction : uint8_t {
   North = 0,
@@ -21,12 +25,13 @@ enum class Direction : uint8_t {
   West = 3
 };
 
-Direction clkwise(Direction dir);
-Direction cclkwise(Direction dir);
-Direction opposite(Direction dir);
+inline Direction clkwise(Direction dir) { return (Direction)(((int)dir + 1) % 4); }
+inline Direction cclkwise(Direction dir) { return (Direction)(((int)dir + 3) % 4); }
+inline Direction opposite(Direction dir) { return (Direction)(((int)dir + 2) % 4); }
 
-extern int8_t dx[4];
-extern int8_t dy[4];
+extern const Vector2D dirVectors[4];
+
+int orientation(Vector2D v1, Vector2D v2);
 
 class ScreenPos {
   int16_t _x;

@@ -52,7 +52,7 @@ public:
   GridIndex maxIndex() const { return _maxIndex; }
 
   GridPos indexToPos(GridIndex index) const {
-    return GridPos { .x = (uint8_t)(index % _width), .y = (uint8_t)(index / _width) };
+    return GridPos { .x = (int8_t)(index % _width), .y = (int8_t)(index / _width) };
   }
   GridIndex posToIndex(GridPos pos) const {
     return pos.x + _width * pos.y;

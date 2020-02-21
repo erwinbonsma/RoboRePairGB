@@ -6,16 +6,21 @@
 
 #include "Utils.h"
 
-Direction clkwise(Direction dir) { return (Direction)(((int)dir + 1) % 4); }
-Direction cclkwise(Direction dir) { return (Direction)(((int)dir + 3) % 4); }
-Direction opposite(Direction dir) { return (Direction)(((int)dir + 2) % 4); }
+int orientation(Vector2D v1, Vector2D v2) {
+  int val = v1.y * v2.x - v1.x * v2. y;
+  return (val == 0) ? 0 : ((val > 0) ? 1 : -1);
+}
 
-int8_t dx[4] = {0, 1, 0, -1};
-int8_t dy[4] = {-1, 0, 1, 0};
+extern const Vector2D dirVectors[4] = {
+  Vector2D { .x = 0, .y = -1 },
+  Vector2D { .x = 1, .y = 0 },
+  Vector2D { .x = 0, .y = 1 },
+  Vector2D { .x = -1, .y = 0 }
+};
 
 ScreenPos::ScreenPos(int x, int y) {
-  _x = (int16_t)(x << 4);
-  _y = (int16_t)(y << 4);
+  _x = (int16_t)(x << 4) + 8;
+  _y = (int16_t)(y << 4) + 8;
 }
 
 void ScreenPos::lerp(ScreenPos target, uint16_t amount) {
