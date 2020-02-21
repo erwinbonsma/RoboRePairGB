@@ -7,19 +7,21 @@
 #include <Gamebuino-Meta.h>
 
 #include "GridTile.h"
-#include "Utils.h"
 
 const int maxWidth = 12;
 const int maxHeight = 8;
 
+class Bot;
 class TileGrid;
 
 class ScreenTile {
   friend TileGrid;
 
-  const GridTile* _tile;
+  GridTile const* _tile;
   ScreenPos _pos;
   ScreenPos _targetPos;
+
+  Bot const* _bot;
 
 public:
   ScreenTile();
@@ -29,17 +31,6 @@ public:
 };
 
 using GridIndex = int;
-
-class GridPos {
-  uint8_t _x;
-  uint8_t _y;
-
-public:
-  int getX() { return _x; }
-  int getY() { return _y; }
-
-  GridPos(int x, int y) : _x(x), _y(y) {}
-};
 
 class TileGrid {
   uint8_t _tileSize;
@@ -58,13 +49,25 @@ class TileGrid {
 public:
   void init(uint8_t width, uint8_t height);
 
-  GridIndex maxIndex() { return _maxIndex; }
-  GridPos indexToPos(GridIndex index) { return GridPos(index % _width, index / _width); }
-  GridIndex posToIndex(GridPos pos) { return pos.getX() + _width * pos.getY();  }
+  GridIndex maxIndex() const { return _maxIndex; }
 
+  GridPos indexToPos(GridIndex index) const {
+    return GridPos { .x = (uint8_t)(index % _width), .y = (uint8_t)(index / _width) };
+  }
+  GridIndex posToIndex(GridPos pos) const {
+    return pos.x + _width * pos.y;
+  }
+
+  const GridTile& tileAt(GridPos pos);
+  const ScreenPos screenPosOf(GridPos pos);
   void placeTileAt(GridPos pos, const GridTile* tile, bool force);
+
+  const Bot* claimTile(GridPos pos, const Bot* bot);
+  void releaseTile(GridPos pos, const Bot* bot);
 
   void update();
   void draw();
 };
+
+extern TileGrid grid;
 

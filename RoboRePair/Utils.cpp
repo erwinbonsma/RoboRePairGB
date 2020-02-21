@@ -6,6 +6,13 @@
 
 #include "Utils.h"
 
+Direction clkwise(Direction dir) { return (Direction)(((int)dir + 1) % 4); }
+Direction cclkwise(Direction dir) { return (Direction)(((int)dir + 3) % 4); }
+Direction opposite(Direction dir) { return (Direction)(((int)dir + 2) % 4); }
+
+int8_t dx[4] = {0, 1, 0, -1};
+int8_t dy[4] = {-1, 0, 1, 0};
+
 ScreenPos::ScreenPos(int x, int y) {
   _x = (int16_t)(x << 4);
   _y = (int16_t)(y << 4);

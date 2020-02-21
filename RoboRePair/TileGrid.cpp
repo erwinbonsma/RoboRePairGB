@@ -7,6 +7,8 @@
 #include "TileGrid.h"
 #include "Images.h"
 
+TileGrid grid;
+
 ScreenTile::ScreenTile() : _tile(tiles), _pos(0, 0), _targetPos(0, 0) {}
 
 void ScreenTile::update() {
@@ -20,8 +22,8 @@ void ScreenTile::draw() {
 
 ScreenPos TileGrid::screenPosFor(GridPos pos){
   return ScreenPos(
-    _x0 + pos.getX() * _tileSize,
-    _y0 + pos.getY() * _tileSize
+    _x0 + pos.x * _tileSize,
+    _y0 + pos.y * _tileSize
   );
 }
 
@@ -42,10 +44,37 @@ void TileGrid::init(uint8_t width, uint8_t height) {
   }
 }
 
+const GridTile& TileGrid::tileAt(GridPos pos) {
+  return *_tiles[posToIndex(pos)]._tile;
+}
+
+const ScreenPos TileGrid::screenPosOf(GridPos pos) {
+  return _tiles[posToIndex(pos)]._pos;
+}
+
 void TileGrid::placeTileAt(GridPos pos, const GridTile* tile, bool force) {
   assertTrue(force);
 
   _tiles[posToIndex(pos)]._tile = tile;
+}
+
+Bot const* TileGrid::claimTile(GridPos pos, Bot const* bot) {
+  int index = posToIndex(pos);
+  Bot const* other = _tiles[index]._bot;
+  if (other == nullptr) {
+    _tiles[index]._bot = bot;
+    return bot;
+  } else {
+    return other;
+  }
+}
+
+void TileGrid::releaseTile(GridPos pos, Bot const* bot) {
+  int index = posToIndex(pos);
+  Bot const* claimer = _tiles[index]._bot;
+  if (claimer == bot) {
+    _tiles[index]._bot = nullptr;
+  }
 }
 
 void TileGrid::update() {

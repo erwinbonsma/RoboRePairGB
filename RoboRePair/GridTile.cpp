@@ -15,6 +15,38 @@ GridTile::GridTile(uint8_t entries, uint16_t connections, uint8_t probability) {
   _index = _nxtIndex++;
 }
 
+Direction GridTile::randomExitFrom(Direction entry) const {
+  int bits = (_connections >> ((int)entry * 4)) & 0xF;
+
+  // Determine number of exits
+  int num = 0;
+  int val = bits;
+  while (val != 0) {
+    if (val & 0x1) {
+      num++;
+    }
+    val >>= 1;
+  }
+  assertTrue(num > 0);
+
+  // Pick one
+  int select = rand() % num;
+  int dir = 0;
+  val = bits;
+  while (val != 0) {
+    if (val & 0x1) {
+      if (select-- == 0) {
+        return (Direction)dir;
+      }
+    }
+    val >>= 1;
+    dir++;
+  }
+  assertTrue(false);
+
+  return Direction::North; // Should never get here
+}
+
 const GridTile tiles[numTiles] = {
   GridTile( 0, 0x0000, 0),
   GridTile( 1, 0x0001, 1),

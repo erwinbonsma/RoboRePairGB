@@ -6,12 +6,7 @@
 
 #include <Gamebuino-Meta.h>
 
-enum class Entry : uint8_t {
-  North = 0,
-  East = 1,
-  South = 2,
-  West = 3
-};
+#include "Utils.h"
 
 class GridTile {
   uint8_t _entries;
@@ -20,13 +15,15 @@ class GridTile {
   uint8_t _index;
 
 public:
-  bool hasEntry(Entry entry) const {
+  bool hasEntry(Direction entry) const {
     return _entries & (0x1 << (int)entry);
   }
 
-  bool pathExists(Entry from, Entry to) const {
+  bool pathExists(Direction from, Direction to) const {
     return _connections & ((0x1 << (int)from) << (int)to * 4);
   }
+
+  Direction randomExitFrom(Direction entry) const;
 
   int probability() const { return _probability; }
 
