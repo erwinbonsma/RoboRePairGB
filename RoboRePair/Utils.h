@@ -4,10 +4,10 @@
  * Copyright 2020, Erwin Bonsma
  */
 
-#include <Gamebuino-Meta.h>
-
 #ifndef UTILS_H
 #define UTILS_H
+
+#include <Gamebuino-Meta.h>
 
 #define CALL_MEMBER_FN(object, ptrToMember)  ((object).*(ptrToMember))
 

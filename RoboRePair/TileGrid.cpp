@@ -6,6 +6,7 @@
 
 #include "TileGrid.h"
 #include "Images.h"
+#include "Levels.h"
 
 TileGrid grid;
 
@@ -46,6 +47,16 @@ void TileGrid::init(uint8_t width, uint8_t height) {
     _tiles[i]._targetPos = screenPosFor(pos);
     _tiles[i]._tile = &tiles[0];
     _tiles[i]._pos = ScreenPos(80, 64);
+  }
+}
+
+void TileGrid::init(const GridSpec& gridSpec) {
+  init(gridSpec.w, gridSpec.h);
+
+  const uint8_t* tileIndices = gridSpec.tiles;
+  for (int i = _maxIndex; --i >= 0; ) {
+    GridPos pos = indexToPos(i);
+    placeTileAt(pos, &tiles[tileIndices[i]], true);
   }
 }
 

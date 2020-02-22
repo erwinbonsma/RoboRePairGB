@@ -10,10 +10,18 @@
 
 class GridTile;
 class Bot;
+class BotSpec;
 
 // Function for carrying out a move step. It return true when the move is done. The argument is a
 // counter for tracking progress.
 typedef bool (Bot::*MoveStepFunction)();
+
+// Globals for tracking set of bots
+extern Bot** botsBegin;
+extern Bot** botsEnd;
+
+void destroyAllBots();
+void addBot(const BotSpec& botSpec);
 
 class Bot {
   GridPos _pos, _nextPos, _prevPos;
@@ -43,5 +51,6 @@ public:
   void draw();
 
   void init(GridPos pos, Direction dir);
+  void destroy();
 };
 

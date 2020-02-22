@@ -2,13 +2,13 @@
 
 #include "Bot.h"
 #include "Images.h"
+#include "Levels.h"
 #include "TileGrid.h"
 
 const int w = 12;
 const int h = 8;
 
 bool data[w][h];
-Bot bot;
 
 void displayCpuLoad() {
   uint8_t cpuLoad = gb.getCpuLoad();
@@ -34,7 +34,7 @@ const GridTile* tileAt(int x, int y) {
   return &tiles[idx];
 }
 
-void initGrid() {
+void initRandomGrid() {
   for (int x = 0; x < w; x++) {
     for (int y = 0; y < h; y++) {
       data[x][y] = y == 4 || (rand() % 3) != 0;
@@ -47,27 +47,42 @@ void initGrid() {
     grid.placeTileAt(pos, tileAt(pos.x, pos.y), true);
   }
 
-  bot.init(GridPos { .x = 6, .y = 4 },  Direction::East);
+  destroyAllBots();
+  addBot(BotSpec { .pos = GridPos { .x = 6, .y = 4 }, .dir = Direction::East });
+}
+
+void initGrid(int levelNum) {
+  const LevelSpec& levelSpec = levels[levelNum];
+  grid.init(levelSpec.grid);
+
+  destroyAllBots();
+  for (int i = 0; i < levelSpec.numBots; ++i) {
+    addBot(levelSpec.bots[i]);
+  }
 }
 
 void setup() {
   gb.begin();
-  initGrid();
+  initGrid(0);
 }
 
 void loop() {
   while(!gb.update());
 
   grid.update();
-  bot.update();
+  for (auto bot = botsBegin; bot < botsEnd; ++bot) {
+    (*bot)->update();
+  }
 
   if (gb.buttons.held(BUTTON_A, 0)) {
-    initGrid();
+    initRandomGrid();
   }
 
   gb.display.clear();
   grid.draw();
-  bot.draw();
+  for (auto bot = botsBegin; bot < botsEnd; ++bot) {
+    (*bot)->draw();
+  }
   displayCpuLoad();
 }
 

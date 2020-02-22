@@ -7,6 +7,7 @@
 #include "Bot.h"
 
 #include "Images.h"
+#include "Levels.h"
 #include "TileGrid.h"
 
 bool Bot::isBlocked() {
@@ -143,6 +144,13 @@ void Bot::init(GridPos pos, Direction dir) {
   moveStep();
 }
 
+void Bot::destroy() {
+  // Note: No harm in releasing tiles that are not owned, as that is a NOOP.
+  grid.releaseTile(_prevPos, this);
+  grid.releaseTile(_pos, this);
+  grid.releaseTile(_nextPos, this);
+}
+
 void Bot::updateMoveFunction() {
   if (_dir == _nextDir) {
     _moveFun = &Bot::moveStraight;
@@ -201,10 +209,27 @@ void Bot::draw() {
     screenPos.getY() + _offset.y,
     botImage
   );
+}
 
-  gb.display.setColor(WHITE);
-  gb.display.setCursorX(64);
-  gb.display.setCursorY(0);
-  gb.display.printf("(%d,%d) - %d", _pos.x, _pos.y, (int)_dir);
+//--------------------------------------------------------------------------------------------------
+// Bot globals
+
+Bot botStorage[maxBots];
+Bot* bots[maxBots];
+Bot** botsBegin = bots;
+Bot** botsEnd = bots;
+
+void destroyAllBots() {
+  for (auto bot = bots; bot < botsEnd; ++bot) {
+    (*bot)->destroy();
+  }
+  botsEnd = bots;
+}
+
+void addBot(const BotSpec& botSpec) {
+  int botNum = botsEnd - bots;
+  assertTrue(botNum < maxBots);
+  botStorage[botNum].init(botSpec.pos, botSpec.dir);
+  *botsEnd++ = &botStorage[botNum];
 }
 

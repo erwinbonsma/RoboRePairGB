@@ -13,6 +13,7 @@ const int maxHeight = 8;
 
 class Bot;
 class TileGrid;
+class GridSpec;
 
 class ScreenTile {
   friend TileGrid;
@@ -48,6 +49,7 @@ class TileGrid {
 
 public:
   void init(uint8_t width, uint8_t height);
+  void init(const GridSpec& gridSpec);
 
   GridIndex maxIndex() const { return _maxIndex; }
 
