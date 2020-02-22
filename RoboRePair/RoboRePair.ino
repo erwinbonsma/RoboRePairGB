@@ -4,7 +4,7 @@
 #include "GridCursor.h"
 #include "Images.h"
 #include "Levels.h"
-#include "TileGrid.h"
+#include "TileTray.h"
 
 const int w = 12;
 const int h = 8;
@@ -68,6 +68,7 @@ void initGrid(int levelNum) {
 void setup() {
   gb.begin();
   initGrid(0);
+  tileTray.init(3);
 }
 
 void loop() {
@@ -75,16 +76,18 @@ void loop() {
 
   grid.update();
   gridCursor.update();
+  tileTray.update();
   for (auto bot = botsBegin; bot < botsEnd; ++bot) {
     (*bot)->update();
   }
 
-  if (gb.buttons.held(BUTTON_A, 0)) {
-    initRandomGrid();
-  }
+  //if (gb.buttons.held(BUTTON_A, 0)) {
+  //  initRandomGrid();
+  //}
 
   gb.display.clear();
   grid.draw();
+  tileTray.draw();
   for (auto bot = botsBegin; bot < botsEnd; ++bot) {
     (*bot)->draw();
   }

@@ -19,11 +19,11 @@ extern const Vector2D dirVectors[4] = {
 };
 
 ScreenPos::ScreenPos(int x, int y) {
-  _x = (int16_t)(x << 4) + 8;
-  _y = (int16_t)(y << 4) + 8;
+  setX(x);
+  setY(y);
 }
 
-void ScreenPos::lerp(ScreenPos target, uint16_t amount) {
+void ScreenPos::lerp(ScreenPos target, int amount) {
   assertTrue(amount <= 256);
   _x = (_x * (256 - amount) + target._x * amount) >> 8;
   _y = (_y * (256 - amount) + target._y * amount) >> 8;

@@ -4,8 +4,6 @@
  * Copyright 2020, Erwin Bonsma
  */
 
-#include <Gamebuino-Meta.h>
-
 #include "Utils.h"
 
 class GridTile {

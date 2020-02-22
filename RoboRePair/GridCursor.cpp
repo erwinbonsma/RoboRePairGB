@@ -6,7 +6,7 @@
 
 #include "GridCursor.h"
 
-#include "TileGrid.h"
+#include "TileTray.h"
 
 void GridCursor::positionChanged() {
   _targetDrawPos = grid.targetScreenPosOf(_pos);
@@ -41,6 +41,14 @@ void GridCursor::update() {
   }
   if (posChanged) {
     positionChanged();
+  }
+
+  if (gb.buttons.held(BUTTON_B, 0)) {
+    if (tileTray.numTiles() >= 2) {
+      tileTray.switchTiles();
+    } else {
+      // TODO: No Can Do SFX
+    }
   }
 
   _drawPos.lerp(_targetDrawPos, 128);

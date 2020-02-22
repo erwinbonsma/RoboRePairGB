@@ -10,26 +10,26 @@
 
 TileGrid grid;
 
-ScreenTile::ScreenTile() : _tile(tiles) {}
+void ScreenTile::init(ScreenPos pos) {
+  _pos = pos;
+  _targetPos = pos;
+  _tile = nullptr;
+}
 
 void ScreenTile::update() {
-  _pos.lerp(_targetPos, 32);
+  _pos.lerp(_targetPos, 64);
 }
 
 void ScreenTile::draw() {
   tilesImage.setFrame(_tile->index());
   gb.display.drawImage(_pos.getX(), _pos.getY(), tilesImage);
-
-  if (_bot != nullptr) {
-    gb.display.setColor(BEIGE);
-    gb.display.drawRect(_pos.getX(), _pos.getY(), 13, 13);
-  }
 }
 
 void TileGrid::init(uint8_t width, uint8_t height) {
   _width = width;
   _height = height;
   _maxIndex = _width * _height;
+  _tilesEnd = _tiles + _maxIndex;
   _tileSize = 13;
 
   _x0 = 80 - _width * _tileSize / 2;
@@ -37,9 +37,9 @@ void TileGrid::init(uint8_t width, uint8_t height) {
 
   for (int i = _maxIndex; --i >= 0; ) {
     GridPos pos = indexToPos(i);
-    _tiles[i]._targetPos = targetScreenPosOf(pos);
-    _tiles[i]._tile = &tiles[0];
-    _tiles[i]._pos = ScreenPos(80, 64);
+    _tiles[i].init(ScreenPos(80, 64));
+    _tiles[i].setTargetPosition(targetScreenPosOf(pos));
+    _tiles[i].setTile(&tiles[0]);
   }
 }
 
@@ -61,49 +61,49 @@ const ScreenPos TileGrid::targetScreenPosOf(GridPos pos) {
 }
 
 const ScreenPos TileGrid::screenPosOf(GridPos pos) {
-  return _tiles[posToIndex(pos)]._pos;
+  return _tiles[posToIndex(pos)].getPosition();
 }
 
 const GridTile& TileGrid::tileAt(GridPos pos) {
-  return *_tiles[posToIndex(pos)]._tile;
+  return *_tiles[posToIndex(pos)].getTile();
 }
 
 void TileGrid::placeTileAt(GridPos pos, const GridTile* tile, bool force) {
   assertTrue(force);
 
-  _tiles[posToIndex(pos)]._tile = tile;
+  _tiles[posToIndex(pos)].setTile(tile);
 }
 
-Bot const* TileGrid::claimTile(GridPos pos, Bot const* bot) {
+Bot const* TileGrid::claimTile(GridPos pos, const Bot* bot) {
   int index = posToIndex(pos);
-  Bot const* other = _tiles[index]._bot;
+  const Bot* other = _tiles[index].getBot();
   if (other == nullptr) {
-    _tiles[index]._bot = bot;
+    _tiles[index].setBot(bot);
     return bot;
   } else {
     return other;
   }
 }
 
-void TileGrid::releaseTile(GridPos pos, Bot const* bot) {
+void TileGrid::releaseTile(GridPos pos, const Bot* bot) {
   int index = posToIndex(pos);
-  Bot const* claimer = _tiles[index]._bot;
+  Bot const* claimer = _tiles[index].getBot();
   if (claimer == bot) {
-    _tiles[index]._bot = nullptr;
+    _tiles[index].setBot(nullptr);
   }
 }
 
 void TileGrid::update() {
-  ScreenTile* p = _tiles + _maxIndex;
-  while (p > _tiles) {
-    (--p)->update();
+  GridScreenTile* p = _tiles;
+  while (p < _tilesEnd) {
+    (p++)->update();
   }
 }
 
 void TileGrid::draw() {
-  ScreenTile* p = _tiles + _maxIndex;
-  while (p > _tiles) {
-    (--p)->draw();
+  GridScreenTile* p = _tiles;
+  while (p < _tilesEnd) {
+    (p++)->draw();
   }
 }
 

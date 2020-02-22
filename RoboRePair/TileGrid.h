@@ -4,9 +4,10 @@
  * Copyright 2020, Erwin Bonsma
  */
 
-#include <Gamebuino-Meta.h>
-
 #include "GridTile.h"
+
+// Size of tiles (in game mode)
+const int tileSize = 13;
 
 const int maxWidth = 12;
 const int maxHeight = 8;
@@ -16,19 +17,34 @@ class TileGrid;
 class GridSpec;
 
 class ScreenTile {
-  friend TileGrid;
-
-  GridTile const* _tile;
+  const GridTile* _tile;
   ScreenPos _pos;
   ScreenPos _targetPos;
 
-  Bot const* _bot;
-
 public:
-  ScreenTile();
+
+  ScreenTile() = default;
+
+  const GridTile* getTile() const { return _tile; }
+  void setTile(const GridTile* tile) { _tile = tile; }
+
+  ScreenPos getPosition() const { return _pos; }
+  ScreenPos* getTargetPosition() { return &_targetPos; }
+
+  void setTargetPosition(ScreenPos targetPos) { _targetPos = targetPos; }
+
+  void init(ScreenPos pos);
 
   void update();
   void draw();
+};
+
+class GridScreenTile : public ScreenTile {
+  const Bot* _bot;
+
+public:
+  const Bot* getBot() { return _bot; }
+  void setBot(const Bot* bot) { _bot = bot; }
 };
 
 using GridIndex = int;
@@ -43,7 +59,8 @@ class TileGrid {
   uint8_t _x0;
   uint8_t _y0;
 
-  ScreenTile _tiles[maxWidth * maxHeight];
+  GridScreenTile _tiles[maxWidth * maxHeight];
+  GridScreenTile* _tilesEnd;
 
 public:
   void init(uint8_t width, uint8_t height);

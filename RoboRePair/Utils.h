@@ -45,8 +45,11 @@ public:
   int getX() const { return _x >> 4; }
   int getY() const { return _y >> 4; }
 
+  void setX(int x) { _x = (int16_t)(x << 4) + 8; }
+  void setY(int y) { _y = (int16_t)(y << 4) + 8; }
+
   // amount = [0..256]
-  void lerp(ScreenPos target, uint16_t amount);
+  void lerp(ScreenPos target, int amount);
 
   ScreenPos() = default;
   ScreenPos(int x, int y);
