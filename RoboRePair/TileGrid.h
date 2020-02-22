@@ -45,12 +45,12 @@ class TileGrid {
 
   ScreenTile _tiles[maxWidth * maxHeight];
 
-  ScreenPos screenPosFor(GridPos);
-
 public:
   void init(uint8_t width, uint8_t height);
   void init(const GridSpec& gridSpec);
 
+  int width() const { return _width; }
+  int height() const { return _height; }
   GridIndex maxIndex() const { return _maxIndex; }
 
   GridPos indexToPos(GridIndex index) const {
@@ -60,8 +60,13 @@ public:
     return pos.x + _width * pos.y;
   }
 
-  const GridTile& tileAt(GridPos pos);
+  // Current position, is changes while level is "exploding" into view
   const ScreenPos screenPosOf(GridPos pos);
+
+  // Final position
+  const ScreenPos targetScreenPosOf(GridPos pos);
+
+  const GridTile& tileAt(GridPos pos);
   void placeTileAt(GridPos pos, const GridTile* tile, bool force);
 
   const Bot* claimTile(GridPos pos, const Bot* bot);

@@ -18,6 +18,10 @@ struct Vector2D {
 
 typedef Vector2D GridPos;
 
+inline GridPos makeGridPos(int x, int y) {
+  return GridPos { .x = (int8_t)x, .y = (int8_t)y };
+}
+
 enum class Direction : uint8_t {
   North = 0,
   East = 1,
@@ -41,8 +45,10 @@ public:
   int getX() const { return _x >> 4; }
   int getY() const { return _y >> 4; }
 
+  // amount = [0..256]
   void lerp(ScreenPos target, uint16_t amount);
 
+  ScreenPos() = default;
   ScreenPos(int x, int y);
 };
 

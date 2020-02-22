@@ -16,8 +16,8 @@ const uint8_t tilesCantFail[] = {
    0, 0, 0, 0, 0, 0, 0, 0, 0
 };
 const BotSpec botsCantFail[] = {
-  BotSpec { .pos = GridPos { .x = 1, .y = 0}, .dir = Direction::East },
-  BotSpec { .pos = GridPos { .x = 7, .y = 0}, .dir = Direction::West }
+  BotSpec { .pos = makeGridPos(1, 0), .dir = Direction::East },
+  BotSpec { .pos = makeGridPos(7, 0), .dir = Direction::West }
 };
 
 const LevelSpec levels[numLevels] = {

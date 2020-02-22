@@ -1,6 +1,7 @@
 #include <Gamebuino-Meta.h>
 
 #include "Bot.h"
+#include "GridCursor.h"
 #include "Images.h"
 #include "Levels.h"
 #include "TileGrid.h"
@@ -9,6 +10,7 @@ const int w = 12;
 const int h = 8;
 
 bool data[w][h];
+GridCursor gridCursor;
 
 void displayCpuLoad() {
   uint8_t cpuLoad = gb.getCpuLoad();
@@ -49,6 +51,7 @@ void initRandomGrid() {
 
   destroyAllBots();
   addBot(BotSpec { .pos = GridPos { .x = 6, .y = 4 }, .dir = Direction::East });
+  gridCursor.init(makeGridPos(w / 2, h / 2));
 }
 
 void initGrid(int levelNum) {
@@ -59,6 +62,7 @@ void initGrid(int levelNum) {
   for (int i = 0; i < levelSpec.numBots; ++i) {
     addBot(levelSpec.bots[i]);
   }
+  gridCursor.init(makeGridPos(levelSpec.grid.w / 2, levelSpec.grid.h / 2));
 }
 
 void setup() {
@@ -70,6 +74,7 @@ void loop() {
   while(!gb.update());
 
   grid.update();
+  gridCursor.update();
   for (auto bot = botsBegin; bot < botsEnd; ++bot) {
     (*bot)->update();
   }
@@ -83,6 +88,8 @@ void loop() {
   for (auto bot = botsBegin; bot < botsEnd; ++bot) {
     (*bot)->draw();
   }
+  gridCursor.draw();
+
   displayCpuLoad();
 }
 

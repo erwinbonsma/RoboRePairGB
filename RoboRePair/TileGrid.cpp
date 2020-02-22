@@ -10,7 +10,7 @@
 
 TileGrid grid;
 
-ScreenTile::ScreenTile() : _tile(tiles), _pos(0, 0), _targetPos(0, 0) {}
+ScreenTile::ScreenTile() : _tile(tiles) {}
 
 void ScreenTile::update() {
   _pos.lerp(_targetPos, 32);
@@ -26,13 +26,6 @@ void ScreenTile::draw() {
   }
 }
 
-ScreenPos TileGrid::screenPosFor(GridPos pos){
-  return ScreenPos(
-    _x0 + pos.x * _tileSize,
-    _y0 + pos.y * _tileSize
-  );
-}
-
 void TileGrid::init(uint8_t width, uint8_t height) {
   _width = width;
   _height = height;
@@ -44,7 +37,7 @@ void TileGrid::init(uint8_t width, uint8_t height) {
 
   for (int i = _maxIndex; --i >= 0; ) {
     GridPos pos = indexToPos(i);
-    _tiles[i]._targetPos = screenPosFor(pos);
+    _tiles[i]._targetPos = targetScreenPosOf(pos);
     _tiles[i]._tile = &tiles[0];
     _tiles[i]._pos = ScreenPos(80, 64);
   }
@@ -60,12 +53,19 @@ void TileGrid::init(const GridSpec& gridSpec) {
   }
 }
 
-const GridTile& TileGrid::tileAt(GridPos pos) {
-  return *_tiles[posToIndex(pos)]._tile;
+const ScreenPos TileGrid::targetScreenPosOf(GridPos pos) {
+  return ScreenPos(
+    _x0 + pos.x * _tileSize,
+    _y0 + pos.y * _tileSize
+  );
 }
 
 const ScreenPos TileGrid::screenPosOf(GridPos pos) {
   return _tiles[posToIndex(pos)]._pos;
+}
+
+const GridTile& TileGrid::tileAt(GridPos pos) {
+  return *_tiles[posToIndex(pos)]._tile;
 }
 
 void TileGrid::placeTileAt(GridPos pos, const GridTile* tile, bool force) {
