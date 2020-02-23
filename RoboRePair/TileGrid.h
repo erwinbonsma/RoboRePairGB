@@ -66,6 +66,8 @@ class TileGrid {
   GridScreenTile _tiles[maxWidth * maxHeight];
   GridScreenTile* _tilesEnd;
 
+  ScreenPos _lastChangedPos;
+
 public:
   void init(uint8_t width, uint8_t height);
   void init(const GridSpec& gridSpec);

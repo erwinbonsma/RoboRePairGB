@@ -92,6 +92,7 @@ void TileGrid::placeTileAt(GridPos pos, const GridTile* tile, ScreenPos fromPos)
 
   GridScreenTile* screenTile = &_tiles[posToIndex(pos)];
   screenTile->setTile(tile);
+  _lastChangedPos = screenTile->getPosition();
   screenTile->setPosition(fromPos);
 }
 
@@ -157,6 +158,10 @@ void TileGrid::update() {
 }
 
 void TileGrid::draw() {
+  // Draw this to not show an ugly gap when placing a new tile
+  tilesImage.setFrame(0);
+  gb.display.drawImage(_lastChangedPos.getX(), _lastChangedPos.getY(), tilesImage);
+
   GridScreenTile* p = _tiles;
   while (p < _tilesEnd) {
     (p++)->draw();
