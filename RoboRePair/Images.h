@@ -8,3 +8,4 @@
 
 extern Image botImage;
 extern Image tilesImage;
+extern Image tilesPreviewImage;

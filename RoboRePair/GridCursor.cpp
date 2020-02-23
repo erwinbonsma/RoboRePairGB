@@ -6,6 +6,7 @@
 
 #include "GridCursor.h"
 
+#include "Images.h"
 #include "TileTray.h"
 
 void GridCursor::checkAllowed() {
@@ -75,8 +76,19 @@ void GridCursor::update() {
 }
 
 void GridCursor::draw() {
-  int d = _contractionClk == 0 ? 0 : (10 - abs(_contractionClk - 10)) / 2;
-  gb.display.setColor(_allowed ? GREEN : RED);
-  gb.display.drawRect(_drawPos.getX() + d, _drawPos.getY() + d, 13 - 2*d, 13 - 2*d);
+  if (_contractionClk > 0) {
+    int d = _contractionClk == 0 ? 0 : (10 - abs(_contractionClk - 10)) / 2;
+    gb.display.setColor(GRAY);
+    gb.display.drawRect(_drawPos.getX() + d, _drawPos.getY() + d, 13 - 2*d, 13 - 2*d);
+  } else {
+    const GridTile* tile = tileTray.selectedTile();
+    if (tile != nullptr && grid.tileAt(_pos) == nullptr) {
+      tilesPreviewImage.setFrame(tile->index() + numTiles * _allowed);
+      gb.display.drawImage(_drawPos.getX(), _drawPos.getY(), tilesPreviewImage);
+    }
+
+    gb.display.setColor(GRAY);
+    gb.display.drawRect(_drawPos.getX(), _drawPos.getY(), 13, 13);
+  }
 }
 
