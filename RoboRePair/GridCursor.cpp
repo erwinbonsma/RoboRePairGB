@@ -8,11 +8,15 @@
 
 #include "TileTray.h"
 
+void GridCursor::checkAllowed() {
+  const GridTile* tile = tileTray.selectedTile();
+  _allowed = (tile != nullptr && grid.canPlaceTileAt(_pos, tile));
+}
+
 void GridCursor::positionChanged() {
   _targetDrawPos = grid.targetScreenPosOf(_pos);
 
-  // TODO
-  _allowed = true;
+  checkAllowed();
 }
 
 void GridCursor::init(GridPos pos) {
@@ -43,9 +47,20 @@ void GridCursor::update() {
     positionChanged();
   }
 
+  if (gb.buttons.held(BUTTON_A, 0)) {
+    // TODO: Check there's no bot either
+    if (_allowed) {
+      tileTray.placeSelectedTileAt(_pos);
+      _allowed = false;
+    } else {
+      // TODO: No Can Do SFX
+    }
+  }
+
   if (gb.buttons.held(BUTTON_B, 0)) {
-    if (tileTray.numTiles() >= 2) {
+    if (tileTray.numAvailableTiles() >= 2) {
       tileTray.switchTiles();
+      checkAllowed();
     } else {
       // TODO: No Can Do SFX
     }
@@ -55,7 +70,7 @@ void GridCursor::update() {
 }
 
 void GridCursor::draw() {
-  gb.display.setColor(WHITE);
+  gb.display.setColor(_allowed ? GREEN : RED);
   gb.display.drawRect(_drawPos.getX(), _drawPos.getY(), 13, 13);
 }
 

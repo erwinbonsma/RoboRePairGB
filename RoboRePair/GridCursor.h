@@ -12,6 +12,7 @@ class GridCursor {
   ScreenPos _targetDrawPos;
   bool _allowed;
 
+  void checkAllowed();
   void positionChanged();
 
 public:

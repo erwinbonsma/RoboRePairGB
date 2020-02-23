@@ -43,7 +43,7 @@ class Bot {
   bool moveTurn();
   void updateMoveFunction();
 
-  void handleMove(const GridTile& tile);
+  void handleMove(const GridTile* tile);
   void moveStep();
 
 public:

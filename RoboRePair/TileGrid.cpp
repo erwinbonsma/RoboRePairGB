@@ -10,6 +10,8 @@
 
 TileGrid grid;
 
+const GridTile* emptyTile = &tiles[0];
+
 void ScreenTile::init(ScreenPos pos) {
   _pos = pos;
   _targetPos = pos;
@@ -39,7 +41,7 @@ void TileGrid::init(uint8_t width, uint8_t height) {
     GridPos pos = indexToPos(i);
     _tiles[i].init(ScreenPos(80, 64));
     _tiles[i].setTargetPosition(targetScreenPosOf(pos));
-    _tiles[i].setTile(&tiles[0]);
+    _tiles[i].setTile(emptyTile);
   }
 }
 
@@ -64,14 +66,68 @@ const ScreenPos TileGrid::screenPosOf(GridPos pos) {
   return _tiles[posToIndex(pos)].getPosition();
 }
 
-const GridTile& TileGrid::tileAt(GridPos pos) {
-  return *_tiles[posToIndex(pos)].getTile();
+const GridTile* TileGrid::tileAt(GridPos pos) {
+  if (contains(pos)) {
+    const GridTile* tile = _tiles[posToIndex(pos)].getTile();
+    if (tile != emptyTile) {
+      return tile;
+    } else {
+      // The empty tile is only used for drawing purposes. Pretend it does not exist.
+      return nullptr;
+    }
+  } else {
+    // Return the empty tile to prevent connections of the grid.
+    return emptyTile;
+  }
 }
 
 void TileGrid::placeTileAt(GridPos pos, const GridTile* tile, bool force) {
-  assertTrue(force);
+  assertTrue(force || canPlaceTileAt(pos, tile));
 
   _tiles[posToIndex(pos)].setTile(tile);
+}
+
+void TileGrid::placeTileAt(GridPos pos, const GridTile* tile, ScreenPos fromPos) {
+  assertTrue(canPlaceTileAt(pos, tile));
+
+  GridScreenTile* screenTile = &_tiles[posToIndex(pos)];
+  screenTile->setTile(tile);
+  screenTile->setPosition(fromPos);
+}
+
+
+bool TileGrid::canPlaceTileAt(GridPos pos, const GridTile* tile) {
+  assertTrue(tile != nullptr);
+
+  if (tileAt(pos) != nullptr) {
+    // There's already a tile at this position
+    return false;
+  }
+
+  bool connects = false;
+  for (int d = 4; --d >= 0; ) {
+    const Vector2D dirv = dirVectors[d];
+    const GridTile* nbTile = tileAt(makeGridPos(pos.x + dirv.x, pos.y + dirv.y));
+    bool hasPath = tile->hasEntry((Direction)d);
+    if (nbTile != nullptr) {
+      if (hasPath != nbTile->hasEntry( opposite((Direction)d) )) {
+        return false;
+      }
+      connects |= hasPath;
+    }
+  }
+
+  return connects;
+}
+
+bool TileGrid::isPlaceable(const GridTile* tile) {
+  for (int i = _maxIndex; --i >= 0; ) {
+    if (canPlaceTileAt(indexToPos(i), tile)) {
+      return true;
+    }
+  }
+
+  return false;
 }
 
 Bot const* TileGrid::claimTile(GridPos pos, const Bot* bot) {

@@ -163,8 +163,8 @@ void Bot::updateMoveFunction() {
   _moveClk = 0;
 }
 
-void Bot::handleMove(const GridTile& tile) {
-  _nextDir = tile.randomExitFrom(opposite(_dir));
+void Bot::handleMove(const GridTile* tile) {
+  _nextDir = tile->randomExitFrom(opposite(_dir));
   Vector2D dirv = dirVectors[(int)_nextDir];
   _nextPos.x += dirv.x;
   _nextPos.y += dirv.y;
@@ -183,7 +183,7 @@ void Bot::moveStep() {
   _offset.y = _maxOffset * dirv.y;
   _spriteIndex = (int)_dir * 4;
 
-  const GridTile& tile = grid.tileAt(_pos);
+  const GridTile* tile = grid.tileAt(_pos);
   handleMove(tile);
 }
 

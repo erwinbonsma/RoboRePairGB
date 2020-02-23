@@ -18,8 +18,10 @@ class GridSpec;
 
 class ScreenTile {
   const GridTile* _tile;
-  ScreenPos _pos;
   ScreenPos _targetPos;
+
+protected:
+  ScreenPos _pos;
 
 public:
 
@@ -45,6 +47,8 @@ class GridScreenTile : public ScreenTile {
 public:
   const Bot* getBot() { return _bot; }
   void setBot(const Bot* bot) { _bot = bot; }
+
+  void setPosition(ScreenPos pos) { _pos = pos; }
 };
 
 using GridIndex = int;
@@ -83,8 +87,16 @@ public:
   // Final position
   const ScreenPos targetScreenPosOf(GridPos pos);
 
-  const GridTile& tileAt(GridPos pos);
+  bool contains(GridPos pos) {
+    return pos.x >= 0 && pos.x < _width && pos.y >= 0 && pos.y < _height;
+  }
+
+  const GridTile* tileAt(GridPos pos);
   void placeTileAt(GridPos pos, const GridTile* tile, bool force);
+  void placeTileAt(GridPos pos, const GridTile* tile, ScreenPos fromPos);
+
+  bool canPlaceTileAt(GridPos pos, const GridTile* tile);
+  bool isPlaceable(const GridTile* tile);
 
   const Bot* claimTile(GridPos pos, const Bot* bot);
   void releaseTile(GridPos pos, const Bot* bot);

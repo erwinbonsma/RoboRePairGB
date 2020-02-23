@@ -20,10 +20,13 @@ class TileTray {
 
   void updateTargetPositions();
 
+  bool hasTile(const GridTile* tile);
   const GridTile* selectNewTile();
 
-  bool replenish();
   const GridTile* popSelectedTile();
+  void pushTile(const GridTile* tile);
+
+  bool replenish();
 
   bool isDone();
 
@@ -31,14 +34,14 @@ public:
   const GridTile* selectedTile() const {
     return _numTiles > 0 ? _tiles[0]->getTile() : nullptr;
   }
-  int numTiles() const { return _numTiles; }
+  int numAvailableTiles() const { return _numTiles; }
 
   TileTray();
 
   void init(int size);
 
   void switchTiles();
-  void placeTile();
+  void placeSelectedTileAt(const GridPos pos);
 
   void update();
   void draw();
