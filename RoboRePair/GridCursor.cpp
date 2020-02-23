@@ -47,10 +47,15 @@ void GridCursor::update() {
     positionChanged();
   }
 
+  if (_contractionClk > 0) {
+    _contractionClk--;
+  }
+
   if (gb.buttons.held(BUTTON_A, 0)) {
     // TODO: Check there's no bot either
     if (_allowed) {
       tileTray.placeSelectedTileAt(_pos);
+      _contractionClk = 20;
       _allowed = false;
     } else {
       // TODO: No Can Do SFX
@@ -70,7 +75,8 @@ void GridCursor::update() {
 }
 
 void GridCursor::draw() {
+  int d = _contractionClk == 0 ? 0 : (10 - abs(_contractionClk - 10)) / 2;
   gb.display.setColor(_allowed ? GREEN : RED);
-  gb.display.drawRect(_drawPos.getX(), _drawPos.getY(), 13, 13);
+  gb.display.drawRect(_drawPos.getX() + d, _drawPos.getY() + d, 13 - 2*d, 13 - 2*d);
 }
 

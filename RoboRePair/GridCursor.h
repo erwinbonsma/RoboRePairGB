@@ -12,6 +12,8 @@ class GridCursor {
   ScreenPos _targetDrawPos;
   bool _allowed;
 
+  uint8_t _contractionClk;
+
   void checkAllowed();
   void positionChanged();
 
