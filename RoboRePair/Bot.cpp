@@ -218,6 +218,14 @@ void Bot::handleCrash() {
     _spriteIndex = 7;
     _offset.x += 2;
     _offset.y = 2;
+  } else if (_dir == Direction::South) {
+    _spriteIndex = 14;
+    _offset.x = 2;
+    _offset.y += 1;
+  } else if (_dir == Direction::West) {
+    _spriteIndex = 21;
+    _offset.x += 2;
+    _offset.y = 2;
   }
   //_spriteIndex = (int)_dir * 7;
 
