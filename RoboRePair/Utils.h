@@ -33,10 +33,6 @@ typedef Vector2D GridPos;
 
 extern const GridPos GRIDPOS_NONE;
 
-inline GridPos makeGridPos(int x, int y) {
-  return GridPos { .x = (int8_t)x, .y = (int8_t)y };
-}
-
 enum class Direction : uint8_t {
   North = 0,
   East = 1,

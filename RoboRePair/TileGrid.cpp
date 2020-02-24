@@ -109,7 +109,7 @@ bool TileGrid::canPlaceTileAt(GridPos pos, const GridTile* tile) {
   bool connects = false;
   for (int d = 4; --d >= 0; ) {
     const Vector2D dirv = dirVectors[d];
-    const GridTile* nbTile = tileAt(makeGridPos(pos.x + dirv.x, pos.y + dirv.y));
+    const GridTile* nbTile = tileAt(GridPos(pos.x + dirv.x, pos.y + dirv.y));
     bool hasPath = tile->hasEntry((Direction)d);
     if (nbTile != nullptr) {
       if (hasPath != nbTile->hasEntry( opposite((Direction)d) )) {

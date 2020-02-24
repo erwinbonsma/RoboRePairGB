@@ -51,7 +51,7 @@ void initRandomGrid() {
 
   destroyAllBots();
   addBot(BotSpec { .pos = GridPos { .x = 6, .y = 4 }, .dir = Direction::East });
-  gridCursor.init(makeGridPos(w / 2, h / 2));
+  gridCursor.init(GridPos(w / 2, h / 2));
 }
 
 void initGrid(int levelNum) {
@@ -62,7 +62,7 @@ void initGrid(int levelNum) {
   for (int i = 0; i < levelSpec.numBots; ++i) {
     addBot(levelSpec.bots[i]);
   }
-  gridCursor.init(makeGridPos(levelSpec.grid.w / 2, levelSpec.grid.h / 2));
+  gridCursor.init(GridPos(levelSpec.grid.w / 2, levelSpec.grid.h / 2));
 }
 
 void setup() {
