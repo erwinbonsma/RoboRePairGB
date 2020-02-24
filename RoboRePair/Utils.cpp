@@ -21,11 +21,6 @@ extern const Vector2D dirVectors[4] = {
 const GridPos GRIDPOS_NONE = GridPos(-1, -1);
 
 
-ScreenPos::ScreenPos(int x, int y) {
-  setX(x);
-  setY(y);
-}
-
 void ScreenPos::lerp(ScreenPos target, int amount) {
   assertTrue(amount <= 256);
   _x = (_x * (256 - amount) + target._x * amount) >> 8;

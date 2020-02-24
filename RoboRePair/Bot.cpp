@@ -60,7 +60,7 @@ bool Bot::isBlocked() {
   if (willMeetWith(claimedBy)) {
     // Detected a new meeting
     _meetingBot = claimedBy;
-    claimedBy->_meetingBot = this;
+    claimedBy->mutableBot()->_meetingBot = this;
 
     return false;
   }
@@ -290,6 +290,29 @@ void Bot::handleCrash() {
   _animClk = 0;
 }
 
+void Bot::paired() {
+  // TODO: Pairing animation
+  _meetingBot = nullptr;
+  stop();
+}
+
+void Bot::handleMeeting() {
+  ScreenPos p1 = grid.screenPosOf(_pos);
+  p1.add(_offset);
+
+  ScreenPos p2 = grid.screenPosOf(_meetingBot->_pos);
+  p2.add(_meetingBot->_offset);
+
+  int dx = p1.getX() - p2.getX();
+  int dy = p2.getY() - p2.getY();
+  int dist = dx * dx + dy * dy;
+
+  if (dist <= 125) {
+    _meetingBot->mutableBot()->paired();
+    paired();
+  }
+}
+
 void Bot::init(GridPos pos, Direction dir) {
   _nextPos = pos;
   _nextDir = dir;
@@ -310,6 +333,10 @@ void Bot::destroy() {
   grid.releaseTile(_nextPos, this);
 }
 
+void Bot::stop() {
+  _moveAnimFun = nullptr;
+}
+
 void Bot::update() {
   _clk = (_clk + 1) % _period;
   if (_clk > 0) {
@@ -322,6 +349,11 @@ void Bot::update() {
   if (_otherAnimFun != nullptr && CALL_MEMBER_FN(*this, _otherAnimFun)()) {
     _otherAnimFun = nullptr;
   }
+
+  if (_meetingBot != nullptr) {
+    handleMeeting();
+  }
+
   //SerialUSB.printf("moveClk=%d, offset=%d,%d, spriteIndex=%d\n", _animClk, _offset.x, _offset.y, _spriteIndex);
 }
 
@@ -335,6 +367,15 @@ void Bot::draw() {
     screenPos.getY() + _offset.y,
     *_activeImage
   );
+
+//  if (_meetingBot != nullptr) {
+//    gb.display.setCursor(100, 1);
+//    gb.display.setColor(WHITE);
+//    gb.display.printf("M");
+//    if (this < _meetingBot) {
+//      gb.display.printf(" d=%d", _dist);
+//    }
+//  }
 }
 
 //--------------------------------------------------------------------------------------------------

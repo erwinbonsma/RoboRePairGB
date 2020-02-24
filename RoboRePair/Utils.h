@@ -67,7 +67,10 @@ public:
   void lerp(ScreenPos target, int amount);
 
   ScreenPos() = default;
-  ScreenPos(int x, int y);
+  ScreenPos(int x, int y) { setX(x); setY(y); }
+  ScreenPos(const ScreenPos& pos) { _x = pos._x; _y = pos._y; }
+
+  void add(Vector2D v) { _x += (v.x << 4); _y += (v.y << 4); }
 };
 
 void assertFailed(const char *function, const char *file, int lineNo, const char *expression);
