@@ -7,5 +7,6 @@
 #include <Gamebuino-Meta.h>
 
 extern Image botImage;
+extern Image crashedBotsImage;
 extern Image tilesImage;
 extern Image tilesPreviewImage;
