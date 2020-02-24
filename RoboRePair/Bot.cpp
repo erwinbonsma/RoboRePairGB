@@ -10,10 +10,63 @@
 #include "Levels.h"
 #include "TileGrid.h"
 
-bool Bot::isBlocked() {
-  Bot const* claimedBy = grid.claimTile(_nextPos, this);
+GridPos Bot::forcedNextNextPos() const {
+  const GridTile* tile = grid.tileAt(_nextPos);
+  if (tile == nullptr) {
+    return GRIDPOS_NONE;
+  }
 
-  return claimedBy != this;
+  Direction exitFrom = tile->exitFrom(opposite(_nextDir));
+  if (exitFrom == Direction::Multiple) {
+    return GRIDPOS_NONE;
+  }
+
+  GridPos pos = GridPos(_nextPos);
+  pos.add(dirVectors[(int)exitFrom]);
+  return pos;
+}
+
+bool Bot::willMeetWith(const Bot* bot) const {
+  if (bot->_nextPos == _pos) {
+    // The bots will meet
+    return true;
+  }
+
+  if (bot->_nextPos != _nextPos) {
+    // The bots will not meet
+    return false;
+  }
+
+  // Both bots will visit the same tile but may still avoid collision, for example when they
+  // approach a crossing for orthogonal directions. Look further ahead.
+  return (
+    bot->forcedNextNextPos() == _pos &&
+    forcedNextNextPos() == bot->_pos
+  );
+}
+
+bool Bot::isBlocked() {
+  if (_meetingBot != nullptr) {
+    // Never blocked when meeting another bot
+    return false;
+  }
+
+  Bot const* claimedBy = grid.claimTile(_nextPos, this);
+  if (claimedBy == this) {
+    //  Managed to claim the tile
+    return false;
+  }
+
+  if (willMeetWith(claimedBy)) {
+    // Detected a new meeting
+    _meetingBot = claimedBy;
+    claimedBy->_meetingBot = this;
+
+    return false;
+  }
+
+  // The tile is blocked by another bot but our paths will not necessarily cross, so just wait
+  return true;
 }
 
 void Bot::releasePrevious() {
@@ -227,6 +280,8 @@ void Bot::handleCrash() {
       _offset.x += 2;
       _offset.y = 2;
       break;
+    default:
+      assertTrue(false);
   }
   _spriteIndex = (int)_dir * 7;
 
@@ -240,10 +295,12 @@ void Bot::init(GridPos pos, Direction dir) {
   _nextDir = dir;
   assertTrue(grid.claimTile(pos, this) == this);
 
+  _activeImage = &botImage;
+  _meetingBot = nullptr;
+  _otherAnimFun = nullptr;
+
   _maxOffset = 6;
   moveStep();
-
-  _activeImage = &botImage;
 }
 
 void Bot::destroy() {

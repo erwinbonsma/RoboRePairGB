@@ -18,6 +18,9 @@ extern const Vector2D dirVectors[4] = {
   Vector2D { .x = -1, .y = 0 }
 };
 
+const GridPos GRIDPOS_NONE = makeGridPos(-1, -1);
+
+
 ScreenPos::ScreenPos(int x, int y) {
   setX(x);
   setY(y);

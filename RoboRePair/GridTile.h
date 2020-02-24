@@ -21,6 +21,9 @@ public:
     return _connections & ((0x1 << (int)from) << (int)to * 4);
   }
 
+  // Returns the only exit from the given entry or Direction::Multiple in case there is more than one
+  Direction exitFrom(Direction entry) const;
+
   Direction randomExitFrom(Direction entry) const;
 
   int probability() const { return _probability; }

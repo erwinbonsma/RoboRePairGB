@@ -14,6 +14,12 @@
 struct Vector2D {
   int8_t x;
   int8_t y;
+
+  Vector2D() = default;
+  Vector2D(const Vector2D& v) { x = v.x; y = v.y; }
+  Vector2D(int xVal, int yVal) { x = (int8_t)xVal; y = (int8_t)yVal; }
+
+  void add(Vector2D v) { x += v.x; y += v.y; }
 };
 
 inline bool operator==(const Vector2D &lhs, const Vector2D &rhs) {
@@ -25,6 +31,8 @@ inline bool operator!=(const Vector2D &lhs, const Vector2D &rhs) {
 
 typedef Vector2D GridPos;
 
+extern const GridPos GRIDPOS_NONE;
+
 inline GridPos makeGridPos(int x, int y) {
   return GridPos { .x = (int8_t)x, .y = (int8_t)y };
 }
@@ -33,7 +41,11 @@ enum class Direction : uint8_t {
   North = 0,
   East = 1,
   South = 2,
-  West = 3
+  West = 3,
+
+  // Special cases:
+  None = 16,
+  Multiple = 17
 };
 
 inline Direction clkwise(Direction dir) { return (Direction)(((int)dir + 1) % 4); }

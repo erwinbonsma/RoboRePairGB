@@ -28,6 +28,10 @@ class Bot {
   GridPos _pos, _nextPos, _prevPos;
   Direction _dir, _nextDir;
 
+  // The bot that this bot will be meeting given the paths both bots traverse.
+  // It's mutable, as this value may always be set by another bot
+  mutable const Bot* _meetingBot;
+
   // Main update frequency
   uint8_t _period = 25; //4;
   uint8_t _clk;
@@ -43,6 +47,8 @@ class Bot {
   AnimFunction _moveAnimFun;
   AnimFunction _otherAnimFun;
 
+  GridPos forcedNextNextPos()  const;
+  bool willMeetWith(const Bot* bot) const;
   bool isBlocked();
   void releasePrevious();
 
