@@ -6,6 +6,7 @@
 
 #include "GridCursor.h"
 
+#include "Bot.h"
 #include "Images.h"
 #include "TileTray.h"
 
@@ -53,8 +54,7 @@ void GridCursor::update() {
   }
 
   if (gb.buttons.held(BUTTON_A, 0)) {
-    // TODO: Check there's no bot either
-    if (_allowed) {
+    if (_allowed && !botAt(_pos)) {
       tileTray.placeSelectedTileAt(_pos);
       _contractionClk = 20;
       _allowed = false;

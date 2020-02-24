@@ -21,6 +21,7 @@ extern Bot** botsEnd;
 
 void destroyAllBots();
 void addBot(const BotSpec& botSpec);
+bool botAt(GridPos pos);
 
 class Bot {
   // Movement on grid
@@ -57,6 +58,8 @@ class Bot {
   void handleCrash();
 
 public:
+  GridPos position() const { return _pos; }
+
   void init(GridPos pos, Direction dir);
   void destroy();
 

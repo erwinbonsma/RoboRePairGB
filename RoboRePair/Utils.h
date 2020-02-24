@@ -16,6 +16,13 @@ struct Vector2D {
   int8_t y;
 };
 
+inline bool operator==(const Vector2D &lhs, const Vector2D &rhs) {
+  return (lhs.x == rhs.x && lhs.y == rhs.y);
+}
+inline bool operator!=(const Vector2D &lhs, const Vector2D &rhs) {
+  return !(lhs == rhs);
+}
+
 typedef Vector2D GridPos;
 
 inline GridPos makeGridPos(int x, int y) {

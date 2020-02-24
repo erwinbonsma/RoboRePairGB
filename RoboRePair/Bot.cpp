@@ -302,3 +302,13 @@ void addBot(const BotSpec& botSpec) {
   *botsEnd++ = &botStorage[botNum];
 }
 
+bool botAt(GridPos pos) {
+  for (auto bot = bots; bot < botsEnd; ++bot) {
+    if ((*bot)->position() == pos) {
+      return true;
+    }
+  }
+
+  return false;
+}
+
