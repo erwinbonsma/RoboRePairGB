@@ -39,10 +39,11 @@ void TileGrid::init(uint8_t width, uint8_t height) {
 
   for (int i = _maxIndex; --i >= 0; ) {
     GridPos pos = indexToPos(i);
-    _tiles[i].init(ScreenPos(80, 64));
+    _tiles[i].init(ScreenPos(74, 58));
     _tiles[i].setTargetPosition(targetScreenPosOf(pos));
     _tiles[i].setTile(emptyTile);
   }
+  _lastChangedPos = ScreenPos(74, 58);
 }
 
 void TileGrid::init(const GridSpec& gridSpec) {
