@@ -261,6 +261,8 @@ bool Bot::crashAnim() {
 }
 
 void Bot::handleCrash() {
+  stop();
+
   _activeImage = &crashedBotsImage;
 
   switch (_dir) {
@@ -286,14 +288,84 @@ void Bot::handleCrash() {
   _spriteIndex = (int)_dir * 7;
 
   _otherAnimFun = &Bot::crashAnim;
-  _moveAnimFun = nullptr;
   _animClk = 0;
 }
 
+// Returns the amount that both bots still need to rotate in order to face each other
+int Bot::pairRotationDelta(int rotation) {
+  return abs(8 - (16 + _pairedWithBot->_spriteIndex - rotation) % 16);
+}
+
+bool Bot::pairAnim() {
+  // Rotate so that bots face
+  while (_animClk == 0 && pairRotationDelta(_spriteIndex) > 0) {
+    if (
+      pairRotationDelta(_spriteIndex + 1) <
+      pairRotationDelta(_spriteIndex - 1)
+    ) {
+      _spriteIndex = (_spriteIndex + 1) % 16;
+    } else {
+      _spriteIndex = (_spriteIndex + 15) % 16;
+    }
+    return false;
+  }
+  if (_animClk == 0) {
+    // Signal loop exit
+    ++_animClk;
+  }
+
+  if (_animClk == 1) {
+    // Synchronize wiggle and pick who initiates sound effects
+    bool onlyDone = (_pairedWithBot->_animClk == 0);
+    if (onlyDone && this > _pairedWithBot) {
+      // Wait a cycle for the other bot to catch up
+      return false;
+    }
+
+    // Signal successful synchronization
+    ++_animClk;
+    _period = 10; // Fix speed
+  }
+
+  // Wiggle
+  if (_animClk < 2 + 5*4) {
+    switch ((_animClk - 2) % 4) {
+      case 0:
+        if (this <  _pairedWithBot) {
+          // TODO: SFX
+        }
+        // Fall through
+      case 3:
+        _spriteIndex = (_spriteIndex + 1) % 16;
+        break;
+      case 2:
+        if (this < _pairedWithBot) {
+          // TODO: SFX
+        }
+        // Fall through
+      case 1:
+        _spriteIndex = (_spriteIndex + 15) % 16;
+        break;
+      default:
+        assertTrue(false);
+    }
+
+    ++_animClk;
+    return false;
+  }
+
+  destroy();
+  return true;
+}
+
 void Bot::paired() {
-  // TODO: Pairing animation
-  _meetingBot = nullptr;
   stop();
+
+  _pairedWithBot = _meetingBot;
+  _meetingBot = nullptr;
+
+  _otherAnimFun = &Bot::pairAnim;
+  _animClk = 0;
 }
 
 void Bot::handleMeeting() {
@@ -320,7 +392,9 @@ void Bot::init(GridPos pos, Direction dir) {
 
   _activeImage = &botImage;
   _meetingBot = nullptr;
+  _pairedWithBot = nullptr;
   _otherAnimFun = nullptr;
+  _destroyed = false;
 
   _maxOffset = 6;
   moveStep();
@@ -331,6 +405,8 @@ void Bot::destroy() {
   grid.releaseTile(_prevPos, this);
   grid.releaseTile(_pos, this);
   grid.releaseTile(_nextPos, this);
+
+  _destroyed = true;
 }
 
 void Bot::stop() {
@@ -388,9 +464,27 @@ Bot** botsEnd = bots;
 
 void destroyAllBots() {
   for (auto bot = bots; bot < botsEnd; ++bot) {
-    (*bot)->destroy();
+    if (!(*bot)->isDestroyed()) {
+      (*bot)->destroy();
+    }
   }
   botsEnd = bots;
+}
+
+void updateBots() {
+  for (auto bot = botsBegin; bot < botsEnd; ++bot) {
+    if (!(*bot)->isDestroyed()) {
+      (*bot)->update();
+    }
+  }
+}
+
+void drawBots() {
+  for (auto bot = botsBegin; bot < botsEnd; ++bot) {
+    if (!(*bot)->isDestroyed()) {
+      (*bot)->draw();
+    }
+  }
 }
 
 void addBot(const BotSpec& botSpec) {

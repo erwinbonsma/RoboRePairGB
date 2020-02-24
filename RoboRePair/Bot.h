@@ -12,16 +12,14 @@ class GridTile;
 class Bot;
 class BotSpec;
 
-// Function for carrying out a step in an animation. It return true when the move is done.
-typedef bool (Bot::*AnimFunction)();
-
-// Globals for tracking set of bots
-extern Bot** botsBegin;
-extern Bot** botsEnd;
-
 void destroyAllBots();
+void updateBots();
+void drawBots();
 void addBot(const BotSpec& botSpec);
 bool botAt(GridPos pos);
+
+// Function for carrying out a step in an animation. It return true when the move is done.
+typedef bool (Bot::*AnimFunction)();
 
 class Bot {
   // Movement on grid
@@ -31,8 +29,13 @@ class Bot {
   // The bot that this bot will be meeting given the paths both bots traverse.
   const Bot* _meetingBot;
 
+  // The bot that this bot is paired with, if any.
+  const Bot* _pairedWithBot;
+
+  bool _destroyed;
+
   // Main update frequency
-  uint8_t _period = 25; //4;
+  uint8_t _period = 10; //4;
   uint8_t _clk;
 
   // Fine-grained drawing state
@@ -65,6 +68,8 @@ class Bot {
   bool crashAnim();
   void handleCrash();
 
+  int pairRotationDelta(int rotation);
+  bool pairAnim();
   void paired();
   void handleMeeting();
 
@@ -72,8 +77,11 @@ public:
   GridPos position() const { return _pos; }
 
   void init(GridPos pos, Direction dir);
-  void destroy();
+
   void stop();
+
+  void destroy();
+  bool isDestroyed() { return _destroyed; }
 
   void update();
   void draw();

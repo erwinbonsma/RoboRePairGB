@@ -77,9 +77,7 @@ void loop() {
   grid.update();
   gridCursor.update();
   tileTray.update();
-  for (auto bot = botsBegin; bot < botsEnd; ++bot) {
-    (*bot)->update();
-  }
+  updateBots();
 
   //if (gb.buttons.held(BUTTON_A, 0)) {
   //  initRandomGrid();
@@ -88,9 +86,7 @@ void loop() {
   gb.display.clear();
   grid.draw();
   tileTray.draw();
-  for (auto bot = botsBegin; bot < botsEnd; ++bot) {
-    (*bot)->draw();
-  }
+  drawBots();
   gridCursor.draw();
 
   displayCpuLoad();
