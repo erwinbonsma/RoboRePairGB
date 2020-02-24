@@ -210,10 +210,15 @@ bool Bot::crashAnim() {
 void Bot::handleCrash() {
   _activeImage = &crashedBotsImage;
 
-  _spriteIndex = 0;
-  _offset.x = 2;
-  _offset.y += 2;
-
+  if (_dir == Direction::North) {
+    _spriteIndex = 0;
+    _offset.x = 2;
+    _offset.y += 2;
+  } else if (_dir == Direction::East) {
+    _spriteIndex = 7;
+    _offset.x += 2;
+    _offset.y = 2;
+  }
   //_spriteIndex = (int)_dir * 7;
 
   _otherAnimFun = &Bot::crashAnim;
