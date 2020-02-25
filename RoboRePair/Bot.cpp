@@ -245,15 +245,15 @@ bool Bot::crashAnim() {
   }
 
   // Blink rear-light by switching between last two sprites
-  if (_animClk % 2 == 0) {
-    if (rand() % 8 < 5) {
-      --_spriteIndex;
-      ++_animClk;
-    }
-  } else {
+  if (_animClk == 5) {
     if (rand() % 8 < 3) {
       ++_spriteIndex;
-      ++_animClk;
+      _animClk = 6;
+    }
+  } else {
+    if (rand() % 8 < 5) {
+      --_spriteIndex;
+      _animClk = 5;
     }
   }
 
