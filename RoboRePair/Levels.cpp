@@ -7,8 +7,8 @@
 #include "Levels.h"
 
 // Bot speeds (periods)
-#define MEDIUM 24
-#define SLOW   36
+#define MEDIUM 20
+#define SLOW   30
 
 const uint8_t tilesCantFail[] = {
    2,10,10,10,10,10,10,10, 8,
