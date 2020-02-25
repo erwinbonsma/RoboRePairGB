@@ -495,16 +495,18 @@ void destroyAllBots() {
 }
 
 bool updateBots() {
+  bool botsUpdated = false;
   bool botsRemaining = false;
 
   for (auto bot = botsBegin; bot < botsEnd; ++bot) {
     if (!(*bot)->isDestroyed()) {
       (*bot)->update();
-      botsRemaining = true;
+      botsUpdated = true;
+      botsRemaining |= !(*bot)->isDestroyed();
     }
   }
 
-  return botsRemaining;
+  return botsRemaining==botsUpdated;
 }
 
 void drawBots() {
