@@ -19,6 +19,7 @@ typedef bool (*AnimFunction)();
 int8_t musicTrack;
 int8_t levelNum;
 uint32_t score;
+uint32_t drawScore;
 
 int animClk;
 AnimFunction gameAnimFun;
@@ -61,6 +62,21 @@ bool gameOverAnim() {
   return false;
 }
 
+bool loadLevelAnim() {
+  if (drawScore < score) {
+    return false;
+  }
+
+  ++animClk;
+
+  if (animClk == 50) {
+    loadLevel();
+    return true;
+  }
+
+  return  false;
+}
+
 void setAnimFunction(AnimFunction fun) {
   gameAnimFun = fun;
   animClk = 0;
@@ -90,7 +106,7 @@ void nextLevel() {
     // TO DO: Celebration!
     levelNum = 0;
   }
-  loadLevel();
+  setAnimFunction(loadLevelAnim);
 }
 
 void handleDeath() {
@@ -123,6 +139,10 @@ void signalBotCrashed() {
   handleDeath();
 }
 
+void incScore(int amount) {
+  score += amount;
+}
+
 void updateGame() {
   grid.update();
   gridCursor.update();
@@ -140,6 +160,10 @@ void updateGame() {
     }
   }
 
+  if (drawScore < score) {
+    drawScore++;
+  }
+
   if (!gb.sound.isPlaying(musicTrack)) {
     musicTrack = gb.sound.play("bb-track1-loop.wav", true);
   }
@@ -154,5 +178,9 @@ void drawGame() {
   grid.draw();
   drawBots();
   gridCursor.draw();
+
+  gb.display.setColor(INDEX_BROWN);
+  gb.display.setCursor(1,1);
+  gb.display.print(drawScore);
 }
 

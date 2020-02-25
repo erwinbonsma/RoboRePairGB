@@ -19,6 +19,6 @@ void loop() {
 
   updateGame();
   drawGame();
-  displayCpuLoad();
+  //displayCpuLoad();
 }
 

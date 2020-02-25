@@ -7,6 +7,7 @@
 #include "GridCursor.h"
 
 #include "Bot.h"
+#include "Game.h"
 #include "Images.h"
 #include "TileTray.h"
 
@@ -58,6 +59,7 @@ void GridCursor::update() {
       tileTray.placeSelectedTileAt(_pos);
       _contractionClk = 20;
       _allowed = false;
+      incScore(10);
     } else {
       // TODO: No Can Do SFX
     }
