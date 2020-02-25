@@ -6,6 +6,8 @@
 
 #include "TileTray.h"
 
+#include "Game.h"
+
 const int tileTraySep = 2;
 const int tileTrayMul = tileSize + tileTraySep;
 
@@ -175,7 +177,7 @@ void TileTray::placeSelectedTileAt(const GridPos pos) {
   // TODO: Placement SFX
 
   if (!replenish() && isDone()) {
-    // TODO: Handle
+    signalGridComplete();
   }
 }
 

@@ -12,20 +12,15 @@ class GridTile;
 class Bot;
 class BotSpec;
 
-enum class BotStatus : uint8_t {
-  Running = 0,
-  AllBotsPaired = 1,
-  SomeBotsCrashed = 2
-};
-
+bool speedUpBots();
 void destroyAllBots();
-BotStatus updateBots();
+bool updateBots();
 void drawBots();
 void addBot(const BotSpec& botSpec);
 bool botAt(GridPos pos);
 
 // Function for carrying out a step in an animation. It return true when the move is done.
-typedef bool (Bot::*AnimFunction)();
+typedef bool (Bot::*BotAnimFunction)();
 
 class Bot {
   // Movement on grid
@@ -53,8 +48,8 @@ class Bot {
 
   // Bot animation
   uint8_t _animClk;
-  AnimFunction _moveAnimFun;
-  AnimFunction _otherAnimFun;
+  BotAnimFunction _moveAnimFun;
+  BotAnimFunction _otherAnimFun;
 
   // Private function to allow mutual modification of bots
   Bot* mutableBot() const { return const_cast<Bot*>(this); }
@@ -84,6 +79,8 @@ public:
   GridPos position() const { return _pos; }
 
   void init(GridPos pos, Direction dir);
+
+  int getPeriod() { return _period; }
   void setPeriod(int period) { _period = period; }
 
   void stop();

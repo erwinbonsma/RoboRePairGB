@@ -6,6 +6,7 @@
 
 #include "Bot.h"
 
+#include "Game.h"
 #include "Images.h"
 #include "Levels.h"
 #include "TileGrid.h"
@@ -257,7 +258,10 @@ bool Bot::crashAnim() {
     }
   }
 
-  _crashed = true;
+  if (!_crashed) {
+    _crashed = true;
+    signalBotCrashed();
+  }
 
   return false;
 }
@@ -466,6 +470,21 @@ Bot* bots[maxBots];
 Bot** botsBegin = bots;
 Bot** botsEnd = bots;
 
+bool speedUpBots() {
+  bool spedUp = false;
+
+  for (auto bot = bots; bot < botsEnd; ++bot) {
+    if (!(*bot)->isDestroyed()) {
+      if ((*bot)->getPeriod() > 1) {
+        (*bot)->setPeriod((*bot)->getPeriod() / 2);
+        spedUp = true;
+      }
+    }
+  }
+
+  return spedUp;
+}
+
 void destroyAllBots() {
   for (auto bot = bots; bot < botsEnd; ++bot) {
     if (!(*bot)->isDestroyed()) {
@@ -475,19 +494,17 @@ void destroyAllBots() {
   botsEnd = bots;
 }
 
-BotStatus updateBots() {
+bool updateBots() {
   bool botsRemaining = false;
-  bool botsCrashed = false;
 
   for (auto bot = botsBegin; bot < botsEnd; ++bot) {
     if (!(*bot)->isDestroyed()) {
       (*bot)->update();
       botsRemaining = true;
-      botsCrashed |= (*bot)->didCrash();
     }
   }
 
-  return (BotStatus)((int)!botsRemaining + botsCrashed * 2);
+  return botsRemaining;
 }
 
 void drawBots() {
