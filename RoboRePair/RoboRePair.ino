@@ -4,6 +4,7 @@
 #include "GridCursor.h"
 #include "Images.h"
 #include "Levels.h"
+#include "Lives.h"
 #include "TileTray.h"
 
 const int w = 12;
@@ -71,6 +72,7 @@ void setup() {
   gb.begin();
   initGrid(0);
   tileTray.init(3);
+  lives.init();
   musicTrack = gb.sound.play("bb-track1-intro.wav");
 }
 
@@ -80,6 +82,7 @@ void loop() {
   grid.update();
   gridCursor.update();
   tileTray.update();
+  lives.update();
   updateBots();
 
   if (!gb.sound.isPlaying(musicTrack)) {
@@ -91,8 +94,9 @@ void loop() {
   //}
 
   gb.display.clear();
-  grid.draw();
   tileTray.draw();
+  lives.draw();
+  grid.draw();
   drawBots();
   gridCursor.draw();
 

@@ -11,6 +11,10 @@
 
 #define CALL_MEMBER_FN(object, ptrToMember)  ((object).*(ptrToMember))
 
+inline int sgn(int val) {
+  return (val > 0) - (val < 0);
+}
+
 struct Vector2D {
   int8_t x;
   int8_t y;
