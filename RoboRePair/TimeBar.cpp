@@ -6,6 +6,7 @@
 
 #include "TimeBar.h"
 
+#include "Game.h"
 #include "Images.h"
 #include "Utils.h"
 
@@ -21,6 +22,16 @@ const uint8_t timebarSpecs[numTimebarParts][4] = {
  {16,  4, (uint8_t)INDEX_BROWN ,   (uint8_t)INDEX_DARKGRAY},
  {28, 16, (uint8_t)INDEX_DARKGRAY, (uint8_t)INDEX_DARKGRAY}
 };
+
+bool TimeBar::scoreTicks() {
+  if (_ticksRemaining >= fps) {
+    incScore(1);
+    _ticksRemaining -= fps;
+    return true;
+  } else {
+    return false;
+  }
+}
 
 void TimeBar::init(int seconds) {
   _ticksRemaining = seconds * fps;

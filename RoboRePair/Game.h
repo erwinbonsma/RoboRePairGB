@@ -4,8 +4,8 @@
  * Copyright 2020, Erwin Bonsma
  */
 
-void signalGridComplete();
-void signalBotCrashed();
+void handleGridComplete();
+void handleBotCrashed();
 
 void incScore(int amount);
 

@@ -177,7 +177,7 @@ void TileTray::placeSelectedTileAt(const GridPos pos) {
   // TODO: Placement SFX
 
   if (!replenish() && isDone()) {
-    signalGridComplete();
+    handleGridComplete();
   }
 }
 

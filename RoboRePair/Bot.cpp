@@ -260,7 +260,7 @@ bool Bot::crashAnim() {
 
   if (!_crashed) {
     _crashed = true;
-    signalBotCrashed();
+    handleBotCrashed();
   }
 
   return false;

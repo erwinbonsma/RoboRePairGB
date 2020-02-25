@@ -10,6 +10,8 @@ class TimeBar {
   uint16_t _ticksRemaining;
 
 public:
+  bool scoreTicks();
+
   void init(int seconds);
 
   bool update();

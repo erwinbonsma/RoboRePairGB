@@ -22,12 +22,13 @@ uint32_t score;
 uint32_t drawScore;
 
 int animClk;
-AnimFunction gameAnimFun;
+AnimFunction endGameAnimFun;
+AnimFunction speedUpAnimFun;
 
 GridCursor gridCursor;
 
 void loadLevel();
-void nextLevel();
+void handleLevelDone();
 void handleDeath();
 
 bool speedUpBotsAnim() {
@@ -62,23 +63,51 @@ bool gameOverAnim() {
   return false;
 }
 
-bool loadLevelAnim() {
+bool levelDoneAnim() {
   if (drawScore < score) {
     return false;
   }
 
   ++animClk;
-
-  if (animClk == 50) {
-    loadLevel();
-    return true;
+  if (animClk < 30) {
+    // Wait
+    return false;
   }
 
-  return  false;
+  if (animClk == 30) {
+    if (!lives.inc()) {
+      score += 100;
+    }
+    return false;
+  }
+
+  if (animClk < 60) {
+    // Wait
+    return false;
+  }
+
+  if (timeBar.scoreTicks()) {
+    // TODO: SFX
+    return false;
+  }
+
+  ++levelNum;
+  if (levelNum == numLevels) {
+    // TO DO: Celebration!
+    levelNum = 0;
+  }
+  loadLevel();
+
+  return true;
 }
 
-void setAnimFunction(AnimFunction fun) {
-  gameAnimFun = fun;
+void setEndGameAnimFunction(AnimFunction fun) {
+  endGameAnimFun = fun;
+  animClk = 0;
+}
+
+void setSpeedUpAnimFunction() {
+  speedUpAnimFun = speedUpBotsAnim;
   animClk = 0;
 }
 
@@ -96,31 +125,23 @@ void loadLevel() {
   timeBar.init(levelSpec.timeLimit);
 }
 
-void nextLevel() {
-  ++levelNum;
-  if (!lives.inc()) {
-    score += 100;
-  }
-
-  if (levelNum == numLevels) {
-    // TO DO: Celebration!
-    levelNum = 0;
-  }
-  setAnimFunction(loadLevelAnim);
+void handleLevelDone() {
+  setEndGameAnimFunction(levelDoneAnim);
 }
 
 void handleDeath() {
   if (lives.dec()) {
-    setAnimFunction(retryAnim);
+    setEndGameAnimFunction(retryAnim);
   } else {
-    setAnimFunction(gameOverAnim);
+    setEndGameAnimFunction(gameOverAnim);
   }
 }
 
 void newGame() {
   levelNum = 0;
   score = 0;
-  gameAnimFun = nullptr;
+  endGameAnimFun = nullptr;
+  speedUpAnimFun = nullptr;
 
   lives.init();
   loadLevel();
@@ -131,12 +152,15 @@ void newGame() {
   musicTrack = gb.sound.play("bb-track1-intro.wav");
 }
 
-void signalGridComplete() {
-  setAnimFunction(speedUpBotsAnim);
+void handleGridComplete() {
+  setSpeedUpAnimFunction();
 }
 
-void signalBotCrashed() {
-  handleDeath();
+void handleBotCrashed() {
+  if (endGameAnimFun == nullptr) {
+    // Act only on first crash
+    handleDeath();
+  }
 }
 
 void incScore(int amount) {
@@ -145,18 +169,27 @@ void incScore(int amount) {
 
 void updateGame() {
   grid.update();
-  gridCursor.update();
-  tileTray.update();
   lives.update();
-  if (!timeBar.update()) {
-    handleDeath();
-  }
   if (!updateBots()) {
-    nextLevel();
+    handleLevelDone();
   }
-  if (gameAnimFun != nullptr) {
-    if (gameAnimFun()) {
-      gameAnimFun = nullptr;
+
+  if (endGameAnimFun != nullptr) {
+    if (endGameAnimFun()) {
+      endGameAnimFun = nullptr;
+    }
+  } else {
+    if (speedUpAnimFun != nullptr) {
+      if (speedUpAnimFun()) {
+        speedUpAnimFun = nullptr;
+      }
+    }
+
+    gridCursor.update();
+    tileTray.update();
+
+    if (!timeBar.update()) {
+      handleDeath();
     }
   }
 
@@ -172,12 +205,14 @@ void updateGame() {
 
 void drawGame() {
   gb.display.clear();
-  tileTray.draw();
   lives.draw();
   timeBar.draw();
   grid.draw();
   drawBots();
-  gridCursor.draw();
+  if (endGameAnimFun == nullptr) {
+    tileTray.draw();
+    gridCursor.draw();
+  }
 
   gb.display.setColor(INDEX_BROWN);
   gb.display.setCursor(1,1);
