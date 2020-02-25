@@ -192,7 +192,7 @@ void TileTray::draw() {
     _tiles[i]->draw();
   }
 
-  gb.display.setColor(GRAY);
+  gb.display.setColor(INDEX_GRAY);
   gb.display.drawRect(_cursorPos.getX(), _cursorPos.getY(), 13, 13);
 
   //gb.display.setCursor(100, 1);

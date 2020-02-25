@@ -40,7 +40,7 @@ void assertFailed(const char *function, const char *file, int lineNo, const char
   while (1) {
     if (gb.update()) {
       gb.display.clear();
-      gb.display.setColor(RED);
+      gb.display.setColor(INDEX_RED);
       gb.display.println("Assert failed:");
       gb.display.println(function);
       gb.display.println(file);

@@ -454,7 +454,7 @@ void Bot::draw() {
 
 //  if (_meetingBot != nullptr) {
 //    gb.display.setCursor(100, 1);
-//    gb.display.setColor(WHITE);
+//    gb.display.setColor(INDEX_WHITE);
 //    gb.display.printf("M");
 //    if (this < _meetingBot) {
 //      gb.display.printf(" d=%d", _dist);
