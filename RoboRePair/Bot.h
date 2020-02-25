@@ -12,8 +12,14 @@ class GridTile;
 class Bot;
 class BotSpec;
 
+enum class BotStatus : uint8_t {
+  Running = 0,
+  AllBotsPaired = 1,
+  SomeBotsCrashed = 2
+};
+
 void destroyAllBots();
-void updateBots();
+BotStatus updateBots();
 void drawBots();
 void addBot(const BotSpec& botSpec);
 bool botAt(GridPos pos);
@@ -33,9 +39,10 @@ class Bot {
   const Bot* _pairedWithBot;
 
   bool _destroyed;
+  bool _crashed;
 
   // Main update frequency
-  uint8_t _period = 10; //4;
+  uint8_t _period;
   uint8_t _clk;
 
   // Fine-grained drawing state
@@ -77,11 +84,13 @@ public:
   GridPos position() const { return _pos; }
 
   void init(GridPos pos, Direction dir);
+  void setPeriod(int period) { _period = period; }
 
   void stop();
 
   void destroy();
   bool isDestroyed() { return _destroyed; }
+  bool didCrash() { return _crashed; }
 
   void update();
   void draw();

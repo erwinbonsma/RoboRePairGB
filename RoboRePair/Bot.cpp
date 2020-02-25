@@ -257,6 +257,8 @@ bool Bot::crashAnim() {
     }
   }
 
+  _crashed = true;
+
   return false;
 }
 
@@ -394,7 +396,9 @@ void Bot::init(GridPos pos, Direction dir) {
   _meetingBot = nullptr;
   _pairedWithBot = nullptr;
   _otherAnimFun = nullptr;
+  _crashed = false;
   _destroyed = false;
+  _period = 12; // Default
 
   _maxOffset = 6;
   moveStep();
@@ -471,12 +475,19 @@ void destroyAllBots() {
   botsEnd = bots;
 }
 
-void updateBots() {
+BotStatus updateBots() {
+  bool botsRemaining = false;
+  bool botsCrashed = false;
+
   for (auto bot = botsBegin; bot < botsEnd; ++bot) {
     if (!(*bot)->isDestroyed()) {
       (*bot)->update();
+      botsRemaining = true;
+      botsCrashed |= (*bot)->didCrash();
     }
   }
+
+  return (BotStatus)((int)!botsRemaining + botsCrashed * 2);
 }
 
 void drawBots() {
@@ -490,8 +501,12 @@ void drawBots() {
 void addBot(const BotSpec& botSpec) {
   int botNum = botsEnd - bots;
   assertTrue(botNum < maxBots);
-  botStorage[botNum].init(botSpec.pos, botSpec.dir);
-  *botsEnd++ = &botStorage[botNum];
+
+  Bot& bot = botStorage[botNum];
+  bot.init(botSpec.pos, botSpec.dir);
+  bot.setPeriod(botSpec.period);
+
+  *botsEnd++ = &bot;
 }
 
 bool botAt(GridPos pos) {

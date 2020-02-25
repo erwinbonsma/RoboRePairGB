@@ -15,14 +15,17 @@ struct GridSpec {
 struct BotSpec {
   const GridPos pos;
   const Direction dir;
+  const uint8_t period;
 };
 
 struct LevelSpec {
+  const uint8_t numTiles;
+  const uint8_t timeLimit;
   const GridSpec grid;
   const uint8_t numBots;
   const BotSpec* bots;
 };
 
 const int maxBots = 4;
-const int numLevels = 2;
+const int numLevels = 4;
 extern const LevelSpec levels[numLevels];
