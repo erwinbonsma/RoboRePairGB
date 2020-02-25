@@ -6,6 +6,7 @@
 #include "Levels.h"
 #include "Lives.h"
 #include "TileTray.h"
+#include "Timebar.h"
 
 const int w = 12;
 const int h = 8;
@@ -73,6 +74,7 @@ void setup() {
   initGrid(0);
   tileTray.init(3);
   lives.init();
+  timeBar.init(30);
   musicTrack = gb.sound.play("bb-track1-intro.wav");
 }
 
@@ -83,6 +85,7 @@ void loop() {
   gridCursor.update();
   tileTray.update();
   lives.update();
+  timeBar.update();
   updateBots();
 
   if (!gb.sound.isPlaying(musicTrack)) {
@@ -96,6 +99,7 @@ void loop() {
   gb.display.clear();
   tileTray.draw();
   lives.draw();
+  timeBar.draw();
   grid.draw();
   drawBots();
   gridCursor.draw();

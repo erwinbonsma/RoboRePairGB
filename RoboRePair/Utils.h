@@ -11,6 +11,8 @@
 
 #define CALL_MEMBER_FN(object, ptrToMember)  ((object).*(ptrToMember))
 
+const int fps = 25;
+
 inline int sgn(int val) {
   return (val > 0) - (val < 0);
 }
