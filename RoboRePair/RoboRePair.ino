@@ -12,6 +12,8 @@ const int h = 8;
 bool data[w][h];
 GridCursor gridCursor;
 
+int8_t musicTrack;
+
 void displayCpuLoad() {
   uint8_t cpuLoad = gb.getCpuLoad();
   gb.display.setColor(cpuLoad < 80 ? INDEX_GREEN : (cpuLoad < 100 ? INDEX_YELLOW : INDEX_RED));
@@ -69,6 +71,7 @@ void setup() {
   gb.begin();
   initGrid(0);
   tileTray.init(3);
+  musicTrack = gb.sound.play("bb-track1-intro.wav");
 }
 
 void loop() {
@@ -78,6 +81,10 @@ void loop() {
   gridCursor.update();
   tileTray.update();
   updateBots();
+
+  if (!gb.sound.isPlaying(musicTrack)) {
+    musicTrack = gb.sound.play("bb-track1-loop.wav", true);
+  }
 
   //if (gb.buttons.held(BUTTON_A, 0)) {
   //  initRandomGrid();
