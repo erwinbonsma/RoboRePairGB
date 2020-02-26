@@ -26,6 +26,7 @@ int animClk;
 AnimFunction endGameAnimFun;
 AnimFunction speedUpAnimFun;
 
+bool inputDisabled;
 GridCursor gridCursor;
 
 void loadLevel();
@@ -109,11 +110,13 @@ bool levelDoneAnim() {
 void setEndGameAnimFunction(AnimFunction fun) {
   endGameAnimFun = fun;
   animClk = 0;
+  inputDisabled = true;
 }
 
 void setSpeedUpAnimFunction() {
   speedUpAnimFun = speedUpBotsAnim;
   animClk = 0;
+  inputDisabled = true;
 }
 
 void loadLevel() {
@@ -128,6 +131,8 @@ void loadLevel() {
 
   tileTray.init(levelSpec.numTiles);
   timeBar.init(levelSpec.timeLimit);
+
+  inputDisabled = false;
 }
 
 void handleLevelDone() {
@@ -192,8 +197,10 @@ void updateGame() {
       }
     }
 
-    gridCursor.update();
-    tileTray.update();
+    if (!inputDisabled) {
+      gridCursor.update();
+      tileTray.update();
+    }
 
     if (!timeBar.update()) {
       handleDeath();
@@ -218,7 +225,7 @@ void drawGame() {
   timeBar.draw();
   grid.draw();
   drawBots();
-  if (endGameAnimFun == nullptr) {
+  if (!inputDisabled) {
     tileTray.draw();
     gridCursor.draw();
   }
