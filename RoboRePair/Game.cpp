@@ -32,9 +32,8 @@ void loadLevel();
 void handleLevelDone();
 void handleDeath();
 
-// This seems much slower than a full screen clear. Why?
 void fastGameScreenClear() {
-  memset(gb.display._buffer, 0, 160 * 16 / 2);
+  memset(gb.display._buffer, (int)INDEX_DARKGRAY | ((int)INDEX_DARKGRAY << 4), 160 * 20 / 2);
 }
 
 bool speedUpBotsAnim() {
@@ -149,6 +148,8 @@ void newGame() {
   endGameAnimFun = nullptr;
   speedUpAnimFun = nullptr;
 
+  gb.display.clear(INDEX_DARKGRAY);
+
   lives.init();
   loadLevel();
 
@@ -210,8 +211,8 @@ void updateGame() {
 
 
 void drawGame() {
-  gb.display.clear(INDEX_DARKGRAY);
-  //fastGameScreenClear();
+  //gb.display.clear(INDEX_DARKGRAY);
+  fastGameScreenClear();
 
   lives.draw();
   timeBar.draw();
