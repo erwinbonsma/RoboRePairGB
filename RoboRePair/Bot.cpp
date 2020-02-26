@@ -11,6 +11,22 @@
 #include "Levels.h"
 #include "TileGrid.h"
 
+const Gamebuino_Meta::Sound_FX crashSfx[] = {
+  {Gamebuino_Meta::Sound_FX_Wave::NOISE,0,255,-10,0,128,10},
+};
+
+const Gamebuino_Meta::Sound_FX fallSfx[] = {
+  {Gamebuino_Meta::Sound_FX_Wave::SQUARE,0,128,-1,127,212,40},
+};
+
+const Gamebuino_Meta::Sound_FX wiggle1Sfx[] = {
+  {Gamebuino_Meta::Sound_FX_Wave::SQUARE,0,96,-1,0,56,2},
+};
+
+const Gamebuino_Meta::Sound_FX wiggle2Sfx[] = {
+  {Gamebuino_Meta::Sound_FX_Wave::SQUARE,0,96,-1,0,42,2},
+};
+
 GridPos Bot::forcedNextNextPos() const {
   const GridTile* tile = grid.tileAt(_nextPos);
   if (tile == nullptr) {
@@ -237,6 +253,9 @@ bool Bot::crashAnim() {
 
     ++_spriteIndex;
 
+    if (_animClk == 0) {
+      gb.sound.fx(fallSfx);
+    }
     if (_animClk == 2) {
       releasePrevious();
     }
@@ -261,6 +280,7 @@ bool Bot::crashAnim() {
   if (!_crashed) {
     _crashed = true;
     handleBotCrashed();
+    gb.sound.fx(crashSfx);
   }
 
   return false;
@@ -295,6 +315,7 @@ void Bot::handleCrash() {
 
   _otherAnimFun = &Bot::crashAnim;
   _animClk = 0;
+  _period = 6; // Fixed crash speed
 }
 
 // Returns the amount that both bots still need to rotate in order to face each other
@@ -330,7 +351,7 @@ bool Bot::pairAnim() {
 
     // Signal successful synchronization
     ++_animClk;
-    _period = 10; // Fix speed
+    _period = 6; // Fix speed
   }
 
   // Wiggle
@@ -338,7 +359,7 @@ bool Bot::pairAnim() {
     switch ((_animClk - 2) % 4) {
       case 0:
         if (this <  _pairedWithBot) {
-          // TODO: SFX
+          gb.sound.fx(wiggle1Sfx);
         }
         // Fall through
       case 3:
@@ -346,7 +367,7 @@ bool Bot::pairAnim() {
         break;
       case 2:
         if (this < _pairedWithBot) {
-          // TODO: SFX
+          gb.sound.fx(wiggle2Sfx);
         }
         // Fall through
       case 1:
@@ -427,11 +448,11 @@ void Bot::update() {
     return;
   }
 
-  if (_moveAnimFun != nullptr && CALL_MEMBER_FN(*this, _moveAnimFun)()) {
-    moveStep();
-  }
   if (_otherAnimFun != nullptr && CALL_MEMBER_FN(*this, _otherAnimFun)()) {
     _otherAnimFun = nullptr;
+  }
+  if (_moveAnimFun != nullptr && CALL_MEMBER_FN(*this, _moveAnimFun)()) {
+    moveStep();
   }
 
   if (_meetingBot != nullptr) {

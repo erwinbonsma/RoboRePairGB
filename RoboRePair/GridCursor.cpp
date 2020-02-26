@@ -11,6 +11,15 @@
 #include "Images.h"
 #include "TileTray.h"
 
+const Gamebuino_Meta::Sound_FX noCanDoSfx[] = {
+  {Gamebuino_Meta::Sound_FX_Wave::SQUARE,0,128,0,0,450,3},
+};
+
+const Gamebuino_Meta::Sound_FX tilePlacedSfx[] = {
+  {Gamebuino_Meta::Sound_FX_Wave::SQUARE,1,133,-24,127,100,1},
+  {Gamebuino_Meta::Sound_FX_Wave::SQUARE,0,128,-48,0,71,1},
+};
+
 void GridCursor::checkAllowed() {
   const GridTile* tile = tileTray.selectedTile();
   _allowed = (tile != nullptr && grid.canPlaceTileAt(_pos, tile));
@@ -60,9 +69,10 @@ void GridCursor::update() {
       _contractionClk = 20;
       _allowed = false;
       incScore(10);
+      gb.sound.fx(tilePlacedSfx);
     } else {
-      // TODO: No Can Do SFX
-    }
+      gb.sound.fx(noCanDoSfx);
+   }
   }
 
   if (gb.buttons.held(BUTTON_B, 0)) {
@@ -70,7 +80,7 @@ void GridCursor::update() {
       tileTray.switchTiles();
       checkAllowed();
     } else {
-      // TODO: No Can Do SFX
+      gb.sound.fx(noCanDoSfx);
     }
   }
 
