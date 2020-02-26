@@ -84,7 +84,7 @@ void GridCursor::draw() {
     gb.display.drawRect(_drawPos.getX() + d, _drawPos.getY() + d, 13 - 2*d, 13 - 2*d);
   } else {
     const GridTile* tile = tileTray.selectedTile();
-    if (tile != nullptr && grid.tileAt(_pos) == nullptr) {
+    if (tile != nullptr) {
       tilesPreviewImage.setFrame(tile->index() + numTiles * _allowed);
       gb.display.drawImage(_drawPos.getX(), _drawPos.getY(), tilesPreviewImage);
     }
