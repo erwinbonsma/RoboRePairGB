@@ -79,6 +79,8 @@ public:
   void add(Vector2D v) { _x += (v.x << 4); _y += (v.y << 4); }
 };
 
+void drawText(int x, int y, const char* s, ColorIndex color);
+
 void assertFailed(const char *function, const char *file, int lineNo, const char *expression);
 
 #define assertTrue(condition) \
