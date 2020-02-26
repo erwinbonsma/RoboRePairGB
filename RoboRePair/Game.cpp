@@ -113,11 +113,11 @@ bool gameOverAnim() {
     gb.sound.fx(diedSfx);
   }
 
-  if (animClk == 60) {
+  if (animClk == 90) {
     gb.sound.fx(gameOverSfx);
   }
 
-  if (animClk == 120) {
+  if (animClk == 180) {
     newGame();
     return true;
   }
