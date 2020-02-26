@@ -84,7 +84,8 @@ public:
   int getPeriod() { return _period; }
   void setPeriod(int period) { _period = period; }
 
-  void stop();
+  void stop() { _moveAnimFun = nullptr; }
+  bool isMoving() { return _moveAnimFun != nullptr; }
 
   void destroy();
   bool isDestroyed() { return _destroyed; }

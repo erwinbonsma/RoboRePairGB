@@ -351,7 +351,8 @@ bool Bot::pairAnim() {
 
     // Signal successful synchronization
     ++_animClk;
-    _period = 6; // Fix speed
+    _period = 4; // Fix speed
+    return false;
   }
 
   // Wiggle
@@ -438,10 +439,6 @@ void Bot::destroy() {
   _destroyed = true;
 }
 
-void Bot::stop() {
-  _moveAnimFun = nullptr;
-}
-
 void Bot::update() {
   _clk = (_clk + 1) % _period;
   if (_clk > 0) {
@@ -496,7 +493,7 @@ bool speedUpBots() {
 
   for (auto bot = bots; bot < botsEnd; ++bot) {
     if (!(*bot)->isDestroyed()) {
-      if ((*bot)->getPeriod() > 1) {
+      if ((*bot)->isMoving() && (*bot)->getPeriod() > 1) {
         (*bot)->setPeriod((*bot)->getPeriod() / 2);
         spedUp = true;
       }
