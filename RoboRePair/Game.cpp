@@ -18,6 +18,8 @@
 typedef bool (*AnimFunction)();
 
 int8_t musicTrack;
+bool musicPaused;
+
 int8_t levelNum;
 uint32_t score;
 uint32_t drawScore;
@@ -107,10 +109,20 @@ bool levelDoneAnim() {
   return true;
 }
 
+void pauseMusic() {
+  if (!musicPaused) {
+    if (gb.sound.isPlaying(musicTrack)) {
+      gb.sound.stop(musicTrack);
+    }
+    musicPaused = true;
+  }
+}
+
 void setEndGameAnimFunction(AnimFunction fun) {
   endGameAnimFun = fun;
   animClk = 0;
   inputDisabled = true;
+  pauseMusic();
 }
 
 void setSpeedUpAnimFunction() {
@@ -133,6 +145,8 @@ void loadLevel() {
   timeBar.init(levelSpec.timeLimit);
 
   inputDisabled = false;
+  musicPaused = false;
+  musicTrack = gb.sound.play("bb-track1-intro.wav");
 }
 
 void handleLevelDone() {
@@ -157,11 +171,6 @@ void newGame() {
 
   lives.init();
   loadLevel();
-
-  if (gb.sound.isPlaying(musicTrack)) {
-    gb.sound.stop(musicTrack);
-  }
-  musicTrack = gb.sound.play("bb-track1-intro.wav");
 }
 
 void handleGridComplete() {
@@ -211,7 +220,7 @@ void updateGame() {
     drawScore++;
   }
 
-  if (!gb.sound.isPlaying(musicTrack)) {
+  if (!musicPaused && !gb.sound.isPlaying(musicTrack)) {
     musicTrack = gb.sound.play("bb-track1-loop.wav", true);
   }
 }
