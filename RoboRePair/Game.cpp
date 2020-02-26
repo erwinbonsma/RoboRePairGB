@@ -11,6 +11,7 @@
 #include "Images.h"
 #include "Levels.h"
 #include "Lives.h"
+#include "Palettes.h"
 #include "TileTray.h"
 #include "Timebar.h"
 
@@ -30,6 +31,11 @@ GridCursor gridCursor;
 void loadLevel();
 void handleLevelDone();
 void handleDeath();
+
+// This seems much slower than a full screen clear. Why?
+void fastGameScreenClear() {
+  memset(gb.display._buffer, 0, 160 * 16 / 2);
+}
 
 bool speedUpBotsAnim() {
   if (animClk++ % 6 == 0) {
@@ -204,7 +210,9 @@ void updateGame() {
 
 
 void drawGame() {
-  gb.display.clear();
+  gb.display.clear(INDEX_DARKGRAY);
+  //fastGameScreenClear();
+
   lives.draw();
   timeBar.draw();
   grid.draw();
