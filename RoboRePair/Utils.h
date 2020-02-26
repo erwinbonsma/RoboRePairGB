@@ -11,6 +11,13 @@
 
 #define CALL_MEMBER_FN(object, ptrToMember)  ((object).*(ptrToMember))
 
+typedef void (*UpdateFunction)();
+typedef void (*DrawFunction)();
+
+// Defined in .ino file. Declared here for convenience
+extern UpdateFunction updateFunction;
+extern DrawFunction drawFunction;
+
 const int fps = 25;
 
 inline int sgn(int val) {
@@ -79,7 +86,7 @@ public:
   void add(Vector2D v) { _x += (v.x << 4); _y += (v.y << 4); }
 };
 
-void drawText(int x, int y, const char* s, ColorIndex color);
+void drawText(int x, int y, const char* s);
 
 void assertFailed(const char *function, const char *file, int lineNo, const char *expression);
 

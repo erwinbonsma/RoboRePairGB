@@ -1,6 +1,11 @@
 #include <Gamebuino-Meta.h>
 
 #include "Game.h"
+#include "HelpMenu.h"
+#include "Utils.h"
+
+UpdateFunction updateFunction;
+DrawFunction drawFunction;
 
 void displayCpuLoad() {
   uint8_t cpuLoad = gb.getCpuLoad();
@@ -11,14 +16,18 @@ void displayCpuLoad() {
 
 void setup() {
   gb.begin();
-  newGame();
+
+  updateFunction = updateHelp;
+  drawFunction = drawHelp;
+  //newGame();
 }
 
 void loop() {
   while(!gb.update());
 
-  updateGame();
-  drawGame();
+  updateFunction();
+  drawFunction();
+
   displayCpuLoad();
 }
 
