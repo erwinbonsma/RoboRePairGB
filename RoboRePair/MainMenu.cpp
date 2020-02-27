@@ -8,6 +8,9 @@
 
 #include "Images.h"
 
+uint8_t activeButton = 1;
+bool musicOn = true;
+
 const uint8_t w = 12;
 const uint8_t h = 11;
 const uint8_t tilesTitle[] = {
@@ -24,8 +27,36 @@ const uint8_t tilesTitle[] = {
    1,  1,  3,  8,  0,  1,  0,  1,  1,  1,  1,  1
 };
 
+void highlightButton(int x0, int y0, ColorIndex iconColor = INDEX_ORANGE) {
+  gb.display.setColor(INDEX_YELLOW);
+  for (int x = x0 + 15; --x >= x0; ) {
+    for (int y = y0 + 17; --y >= y0; ) {
+      if (
+        gb.display.getPixelIndex(x, y)==INDEX_BLACK && (
+          gb.display.getPixelIndex(x + 1, y) == iconColor ||
+          gb.display.getPixelIndex(x - 1, y) == iconColor ||
+          gb.display.getPixelIndex(x, y + 1) == iconColor ||
+          gb.display.getPixelIndex(x, y - 1) == iconColor
+        )
+      ) {
+        gb.display.drawPixel(x, y);
+      }
+    }
+  }
+}
+
 void updateMainMenu() {
-  // TODO
+  if (gb.buttons.held(BUTTON_LEFT, 0)) {
+    activeButton = (activeButton + 2) % 3;
+  }
+  if (gb.buttons.held(BUTTON_RIGHT, 0)) {
+    activeButton = (activeButton + 1) % 3;
+  }
+  if (gb.buttons.held(BUTTON_A, 0)) {
+    if (activeButton == 2) {
+      musicOn = !musicOn;
+    }
+  }
 }
 
 void drawMainMenu() {
@@ -43,8 +74,13 @@ void drawMainMenu() {
   int sep = 16;
   int x0 = 80 - (15 * 3 + sep * 2) / 2;
   for (int i = 0; i < 3; i++) {
-    buttonsImage.setFrame(i);
-    gb.display.drawImage(x0 + i * (15 + sep), 108, buttonsImage);
+    int frameIndex = i + (i == 2 && !musicOn);
+    buttonsImage.setFrame(frameIndex);
+    int x = x0 + i * (15 + sep);
+    gb.display.drawImage(x, 108, buttonsImage);
+    if (i == activeButton) {
+      highlightButton(x - 1, 107, (frameIndex < 3) ? INDEX_ORANGE : INDEX_BROWN);
+    }
   }
 }
 
