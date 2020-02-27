@@ -14,6 +14,8 @@ class BotSpec;
 
 bool speedUpBots();
 void destroyAllBots();
+void stopAllBots();
+
 // Returns false when no more bots are remaining (and the level should end). This is only signalled once.
 bool updateBots();
 void drawBots();

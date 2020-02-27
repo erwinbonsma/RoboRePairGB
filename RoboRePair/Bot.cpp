@@ -512,6 +512,14 @@ void destroyAllBots() {
   botsEnd = bots;
 }
 
+void stopAllBots() {
+  for (auto bot = bots; bot < botsEnd; ++bot) {
+    if (!(*bot)->isDestroyed()) {
+      (*bot)->stop();
+    }
+  }
+}
+
 bool updateBots() {
   bool botsUpdated = false;
   bool botsRemaining = false;

@@ -267,7 +267,9 @@ void updateGame() {
     }
 
     if (!timeBar.update()) {
+      // Timed out!
       gb.sound.fx(timedOutSfx);
+      stopAllBots();
       handleDeath();
     }
   }
