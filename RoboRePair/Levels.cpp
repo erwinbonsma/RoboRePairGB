@@ -52,6 +52,20 @@ const BotSpec botsSpacious[] = {
   BotSpec { .pos = GridPos(8, 0), .dir = Direction::North, .period = MEDIUM }
 };
 
+const uint8_t tilesDetour[] = {
+   0, 0, 0, 0, 6, 0, 0, 0, 0,
+   0, 0, 0, 0, 5, 0, 0, 0, 0,
+   0, 0, 0, 0, 1, 0, 0, 0, 0,
+   0,15, 0, 3,10,12, 0,15, 0,
+   0, 0, 0, 0, 4, 0, 0, 0, 0,
+   0, 0, 0, 0, 5, 0, 0, 0, 0,
+   0, 0, 0, 0, 9, 0, 0, 0, 0
+};
+const BotSpec botsDetour[] = {
+  BotSpec { .pos = GridPos(4, 0), .dir = Direction::West, .period = SLOW },
+  BotSpec { .pos = GridPos(4, 6), .dir = Direction::East, .period = SLOW }
+};
+
 const uint8_t tilesTest[] = {
    0, 0, 0, 0, 0, 0, 0, 0, 0,
    2,10,10,10,10,10,10,10, 8,
@@ -92,10 +106,10 @@ const LevelSpec levels[numLevels] = {
   },
   LevelSpec {
     .numTiles = 3,
-    .timeLimit = 120,
-    .grid = GridSpec { .w = 9, .h = 7, .tiles = tilesTest },
-    .numBots = 4,
-    .bots = botsTest,
+    .timeLimit = 240,
+    .grid = GridSpec { .w = 9, .h = 7, .tiles = tilesDetour },
+    .numBots = 2,
+    .bots = botsDetour,
   }
 };
 
