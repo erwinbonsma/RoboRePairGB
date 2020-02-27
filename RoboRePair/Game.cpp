@@ -128,7 +128,7 @@ bool gameOverAnim() {
 }
 
 bool levelDoneAnim() {
-  if (drawScore < score) {
+  if (drawScore < score || !lives.fullyDrawn()) {
     return false;
   }
 
@@ -158,6 +158,11 @@ bool levelDoneAnim() {
 
   if (timeBar.scoreTicks()) {
     gb.sound.fx(scoreSfx);
+    return false;
+  }
+
+  if (animClk < 120) {
+    // Wait
     return false;
   }
 

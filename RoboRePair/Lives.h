@@ -15,6 +15,8 @@ public:
   bool inc();
   bool dec();
 
+  bool fullyDrawn() { return _drawLives == 8 * _numLives; }
+
   void init();
 
   void update();
