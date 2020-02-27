@@ -71,7 +71,7 @@ const BotSpec botsTest[] = {
 const LevelSpec levels[numLevels] = {
   LevelSpec {
     .numTiles = 3,
-    .timeLimit = 120,
+    .timeLimit = 45,
     .grid = GridSpec { .w = 9, .h = 7, .tiles = tilesCantFail },
     .numBots = 2,
     .bots = botsCantFail,
@@ -85,7 +85,7 @@ const LevelSpec levels[numLevels] = {
   },
   LevelSpec {
     .numTiles = 3,
-    .timeLimit = 180,
+    .timeLimit = 240,
     .grid = GridSpec { .w = 9, .h = 7, .tiles = tilesSpacious },
     .numBots = 2,
     .bots = botsSpacious,
