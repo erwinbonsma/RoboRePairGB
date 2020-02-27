@@ -7,6 +7,8 @@
 #include "MainMenu.h"
 #include "Utils.h"
 
+bool helpDrawn;
+
 void updateHelp() {
   if (gb.buttons.held(BUTTON_A, 0)) {
     showMainMenu();
@@ -14,6 +16,12 @@ void updateHelp() {
 }
 
 void drawHelp() {
+  if (helpDrawn) {
+    // Draw only once, as screen is static and drawText is slow. The avoids CPU overload
+    // when music is enabled.
+    return;
+  }
+
   gb.display.clear();
 
   gb.display.setColor(INDEX_BROWN);
@@ -28,10 +36,13 @@ void drawHelp() {
   drawText(0, 28, "re-unite (re-pair) the bots");
   drawText(2, 77, "a");
   drawText(2, 95, "b");
+
+  helpDrawn = true;
 }
 
 void showHelp() {
   updateFunction = updateHelp;
   drawFunction = drawHelp;
+  helpDrawn = false;
 }
 
