@@ -11,14 +11,13 @@
 #include "Images.h"
 #include "Levels.h"
 #include "Lives.h"
+#include "MainMenu.h"
+#include "Music.h"
 #include "Palettes.h"
 #include "TileTray.h"
 #include "Timebar.h"
 
 typedef bool (*AnimFunction)();
-
-int8_t musicTrack;
-bool musicPaused;
 
 int8_t levelNum;
 uint32_t score;
@@ -34,6 +33,9 @@ GridCursor gridCursor;
 void loadLevel();
 void handleLevelDone();
 void handleDeath();
+
+void updateGame();
+void drawGame();
 
 const Gamebuino_Meta::Sound_FX diedSfx[] = {
   {Gamebuino_Meta::Sound_FX_Wave::SQUARE,1,255,0,0,253,10},
@@ -118,7 +120,7 @@ bool gameOverAnim() {
   }
 
   if (animClk == 180) {
-    newGame();
+    showMainMenu();
     return true;
   }
 
@@ -169,20 +171,11 @@ bool levelDoneAnim() {
   return true;
 }
 
-void pauseMusic() {
-  if (!musicPaused) {
-    if (gb.sound.isPlaying(musicTrack)) {
-      gb.sound.stop(musicTrack);
-    }
-    musicPaused = true;
-  }
-}
-
 void setEndGameAnimFunction(AnimFunction fun) {
   endGameAnimFun = fun;
   animClk = 0;
   inputDisabled = true;
-  pauseMusic();
+  music.stop();
 }
 
 void setSpeedUpAnimFunction() {
@@ -205,8 +198,7 @@ void loadLevel() {
   timeBar.init(levelSpec.timeLimit);
 
   inputDisabled = false;
-  musicPaused = false;
-  //musicTrack = gb.sound.play("bb-track1-intro.wav");
+  music.start();
 }
 
 void handleLevelDone() {
@@ -221,7 +213,7 @@ void handleDeath() {
   }
 }
 
-void newGame() {
+void startGame() {
   levelNum = 0;
   score = 0;
   endGameAnimFun = nullptr;
@@ -231,6 +223,9 @@ void newGame() {
 
   lives.init();
   loadLevel();
+
+  updateFunction = updateGame;
+  drawFunction = drawGame;
 }
 
 void handleGridComplete() {
@@ -281,9 +276,7 @@ void updateGame() {
     drawScore++;
   }
 
-  if (!musicPaused && !gb.sound.isPlaying(musicTrack)) {
-    //musicTrack = gb.sound.play("bb-track1-loop.wav", true);
-  }
+  music.update();
 }
 
 

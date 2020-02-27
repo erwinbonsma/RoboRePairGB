@@ -4,5 +4,5 @@
  * Copyright 2020, Erwin Bonsma
  */
 
-void updateHelp();
-void drawHelp();
+void showHelp();
+

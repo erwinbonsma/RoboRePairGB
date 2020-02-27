@@ -9,8 +9,5 @@ void handleBotCrashed();
 
 void incScore(int amount);
 
-void newGame();
-
-void updateGame();
-void drawGame();
+void startGame();
 

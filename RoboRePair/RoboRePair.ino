@@ -1,7 +1,5 @@
 #include <Gamebuino-Meta.h>
 
-#include "Game.h"
-#include "HelpMenu.h"
 #include "MainMenu.h"
 #include "Utils.h"
 
@@ -18,8 +16,7 @@ void displayCpuLoad() {
 void setup() {
   gb.begin();
 
-  updateFunction = updateMainMenu;
-  drawFunction = drawMainMenu;
+  showMainMenu();
 }
 
 void loop() {

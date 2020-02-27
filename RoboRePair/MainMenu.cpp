@@ -6,10 +6,13 @@
 
 #include "MainMenu.h"
 
+#include "Game.h"
+#include "HelpMenu.h"
 #include "Images.h"
+#include "Music.h"
+#include "Utils.h"
 
 uint8_t activeButton = 1;
-bool musicOn = true;
 
 const uint8_t w = 12;
 const uint8_t h = 11;
@@ -53,8 +56,18 @@ void updateMainMenu() {
     activeButton = (activeButton + 1) % 3;
   }
   if (gb.buttons.held(BUTTON_A, 0)) {
-    if (activeButton == 2) {
-      musicOn = !musicOn;
+    switch (activeButton) {
+      case 0:
+        showHelp();
+        break;
+      case 1:
+        startGame();
+        break;
+      case 2:
+        music.toggleEnabled();
+        break;
+      default:
+        assertTrue(false);
     }
   }
 }
@@ -74,7 +87,7 @@ void drawMainMenu() {
   int sep = 16;
   int x0 = 80 - (15 * 3 + sep * 2) / 2;
   for (int i = 0; i < 3; i++) {
-    int frameIndex = i + (i == 2 && !musicOn);
+    int frameIndex = i + (i == 2 && !music.isEnabled());
     buttonsImage.setFrame(frameIndex);
     int x = x0 + i * (15 + sep);
     gb.display.drawImage(x, 108, buttonsImage);
@@ -82,5 +95,10 @@ void drawMainMenu() {
       highlightButton(x - 1, 107, (frameIndex < 3) ? INDEX_ORANGE : INDEX_BROWN);
     }
   }
+}
+
+void showMainMenu() {
+  updateFunction = updateMainMenu;
+  drawFunction = drawMainMenu;
 }
 

@@ -4,10 +4,13 @@
  * Copyright 2020, Erwin Bonsma
  */
 
+#include "MainMenu.h"
 #include "Utils.h"
 
 void updateHelp() {
-  // TODO
+  if (gb.buttons.held(BUTTON_A, 0)) {
+    showMainMenu();
+  }
 }
 
 void drawHelp() {
@@ -25,5 +28,10 @@ void drawHelp() {
   drawText(0, 28, "re-unite (re-pair) the bots");
   drawText(2, 77, "a");
   drawText(2, 95, "b");
+}
+
+void showHelp() {
+  updateFunction = updateHelp;
+  drawFunction = drawHelp;
 }
 

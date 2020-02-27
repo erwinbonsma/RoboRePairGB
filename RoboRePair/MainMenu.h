@@ -4,6 +4,5 @@
  * Copyright 2020, Erwin Bonsma
  */
 
-void updateMainMenu();
-void drawMainMenu();
+void showMainMenu();
 
