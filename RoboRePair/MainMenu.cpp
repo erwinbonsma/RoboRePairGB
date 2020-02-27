@@ -39,5 +39,12 @@ void drawMainMenu() {
       }
     }
   }
+
+  int sep = 16;
+  int x0 = 80 - (15 * 3 + sep * 2) / 2;
+  for (int i = 0; i < 3; i++) {
+    buttonsImage.setFrame(i);
+    gb.display.drawImage(x0 + i * (15 + sep), 108, buttonsImage);
+  }
 }
 
