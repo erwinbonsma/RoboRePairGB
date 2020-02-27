@@ -31,6 +31,7 @@ bool inputDisabled;
 GridCursor gridCursor;
 
 void loadLevel();
+void startLevel();
 void handleLevelDone();
 void handleDeath();
 
@@ -52,6 +53,13 @@ const Gamebuino_Meta::Sound_FX gameOverSfx[] = {
   {Gamebuino_Meta::Sound_FX_Wave::SQUARE,1,236,-2,10,268,17},
   {Gamebuino_Meta::Sound_FX_Wave::SQUARE,1,216,-2,10,300,17},
   {Gamebuino_Meta::Sound_FX_Wave::SQUARE,0,186,-2,8,337,34},
+};
+
+const Gamebuino_Meta::Sound_FX getReadySfx[] = {
+  {Gamebuino_Meta::Sound_FX_Wave::SQUARE,1,128,0,0,50,3},
+  {Gamebuino_Meta::Sound_FX_Wave::SQUARE,1,4,0,0,100,4},
+  {Gamebuino_Meta::Sound_FX_Wave::SQUARE,1,128,0,0,47,6},
+  {Gamebuino_Meta::Sound_FX_Wave::SQUARE,0,128,-2,0,50,7},
 };
 
 const Gamebuino_Meta::Sound_FX levelDoneSfx[] = {
@@ -101,7 +109,7 @@ bool retryAnim() {
   }
 
   if (animClk == 90) {
-    loadLevel();
+    startLevel();
     return true;
   }
 
@@ -171,9 +179,41 @@ bool levelDoneAnim() {
     // TO DO: Celebration!
     levelNum = 0;
   }
-  loadLevel();
+  startLevel();
 
   return true;
+}
+
+ScreenPos levelTitlePos;
+ScreenPos targetLevelTitlePos;
+
+void updateLevelStart() {
+  levelTitlePos.lerp(targetLevelTitlePos, 48);
+  ++animClk;
+
+  if (animClk == 30) {
+    gb.sound.fx(getReadySfx);
+  }
+
+  if (animClk == 60 || gb.buttons.held(BUTTON_A, 0)) {
+    loadLevel();
+  }
+}
+
+void drawLevelStart() {
+  gb.display.clear();
+  gb.display.setColor(animClk < 30 ? INDEX_ORANGE : INDEX_YELLOW);
+  drawText(levelTitlePos.getX(), levelTitlePos.getY(), "get ready!");
+}
+
+void startLevel() {
+  levelTitlePos = ScreenPos(48, 0);
+  targetLevelTitlePos = ScreenPos(48, 60);
+  music.stop();
+  animClk = 0;
+
+  updateFunction = updateLevelStart;
+  drawFunction = drawLevelStart;
 }
 
 void setEndGameAnimFunction(AnimFunction fun) {
@@ -204,6 +244,11 @@ void loadLevel() {
 
   inputDisabled = false;
   music.start();
+
+  gb.display.clear(INDEX_DARKGRAY);
+
+  updateFunction = updateGame;
+  drawFunction = drawGame;
 }
 
 void handleLevelDone() {
@@ -224,13 +269,8 @@ void startGame() {
   endGameAnimFun = nullptr;
   speedUpAnimFun = nullptr;
 
-  gb.display.clear(INDEX_DARKGRAY);
-
   lives.init();
-  loadLevel();
-
-  updateFunction = updateGame;
-  drawFunction = drawGame;
+  startLevel();
 }
 
 void handleGridComplete() {
