@@ -115,6 +115,19 @@ void drawText(int x, int y, const char* s) {
           gb.display.drawPixel(x + 1, y0 + 2);
           gb.display.drawPixel(x + 2, y0 + 1);
           gb.display.drawPixel(x + 2, y0 + 2);
+        } else {
+          if ((v & 0x03) == 0x03) {
+            gb.display.drawPixel(x + 2, y0 + 1);
+          }
+          if ((v & 0x06) == 0x06) {
+            gb.display.drawPixel(x + 2, y0 + 2);
+          }
+          if ((v & 0x0c) == 0x0c) {
+            gb.display.drawPixel(x + 1, y0 + 2);
+          }
+          if ((v & 0x09) == 0x09) {
+            gb.display.drawPixel(x + 1, y0 + 1);
+          }
         }
         row += 1;
       }

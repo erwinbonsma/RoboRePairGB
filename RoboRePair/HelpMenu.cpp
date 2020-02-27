@@ -4,10 +4,21 @@
  * Copyright 2020, Erwin Bonsma
  */
 
+#include "HelpMenu.h"
+
+#include "Images.h"
 #include "MainMenu.h"
 #include "Utils.h"
 
 bool helpDrawn;
+
+const uint8_t logoWidth = 8;
+const uint8_t logoHeight = 3;
+const uint8_t helpLogo[] = {
+   4,  4,  6,  8,  4,  0, 17, 12,
+  20, 22, 20,  8,  5,  0, 20,  9,
+   1,  1,  3,  8, 16,  8,  1,  0
+};
 
 void updateHelp() {
   if (gb.buttons.held(BUTTON_A, 0)) {
@@ -24,7 +35,17 @@ void drawHelp() {
 
   gb.display.clear();
 
-  gb.display.setColor(INDEX_BROWN);
+  for (int x = 0; x < logoWidth; x++) {
+    for (int y = 0; y < logoHeight; y++) {
+      int frameIndex = helpLogo[x + y * logoWidth];
+      if (frameIndex > 0) {
+        smallTilesImage.setFrame(frameIndex);
+        gb.display.drawImage(48 + x * 8, y * 8, smallTilesImage);
+      }
+    }
+  }
+
+  gb.display.setColor(INDEX_ORANGE);
   drawText(6, 46, "guide them by extending");
   drawText(1, 59, "the tracks they traverse");
 
