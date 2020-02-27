@@ -2,6 +2,7 @@
 
 #include "Game.h"
 #include "HelpMenu.h"
+#include "MainMenu.h"
 #include "Utils.h"
 
 UpdateFunction updateFunction;
@@ -17,9 +18,8 @@ void displayCpuLoad() {
 void setup() {
   gb.begin();
 
-  updateFunction = updateHelp;
-  drawFunction = drawHelp;
-  //newGame();
+  updateFunction = updateMainMenu;
+  drawFunction = drawMainMenu;
 }
 
 void loop() {

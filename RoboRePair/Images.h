@@ -9,6 +9,7 @@
 extern Image botImage;
 extern Image crashedBotsImage;
 extern Image livesImage;
+extern Image smallTilesImage;
 extern Image tilesImage;
 extern Image tilesPreviewImage;
 extern Image timedOutImage;
