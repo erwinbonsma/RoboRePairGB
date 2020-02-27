@@ -98,6 +98,8 @@ void drawMainMenu() {
 }
 
 void showMainMenu() {
+  music.start();
+
   updateFunction = updateMainMenu;
   drawFunction = drawMainMenu;
 }

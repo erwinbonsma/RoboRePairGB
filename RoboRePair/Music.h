@@ -12,7 +12,7 @@ const char *const loopTrack = "bb-track1-loop.wav";
 class Music {
   int8_t _track;
   bool _enabled = true;
-  bool _stopped = false;
+  bool _stopped = true;
 
 public:
   bool isEnabled() { return _enabled; }
