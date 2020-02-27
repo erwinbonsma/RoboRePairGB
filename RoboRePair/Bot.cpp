@@ -20,11 +20,11 @@ const Gamebuino_Meta::Sound_FX fallSfx[] = {
 };
 
 const Gamebuino_Meta::Sound_FX wiggle1Sfx[] = {
-  {Gamebuino_Meta::Sound_FX_Wave::SQUARE,0,96,-1,0,56,2},
+  {Gamebuino_Meta::Sound_FX_Wave::SQUARE,0,64,-1,0,56,2},
 };
 
 const Gamebuino_Meta::Sound_FX wiggle2Sfx[] = {
-  {Gamebuino_Meta::Sound_FX_Wave::SQUARE,0,96,-1,0,42,2},
+  {Gamebuino_Meta::Sound_FX_Wave::SQUARE,0,64,-1,0,42,2},
 };
 
 GridPos Bot::forcedNextNextPos() const {

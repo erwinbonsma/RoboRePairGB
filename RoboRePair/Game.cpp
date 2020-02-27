@@ -55,11 +55,11 @@ const Gamebuino_Meta::Sound_FX gameOverSfx[] = {
 };
 
 const Gamebuino_Meta::Sound_FX levelDoneSfx[] = {
-  {Gamebuino_Meta::Sound_FX_Wave::SQUARE,1,128,0,0,67,14},
-  {Gamebuino_Meta::Sound_FX_Wave::SQUARE,1,128,0,0,63,14},
-  {Gamebuino_Meta::Sound_FX_Wave::SQUARE,1,131,2,0,56,7},
-  {Gamebuino_Meta::Sound_FX_Wave::SQUARE,1,128,0,0,63,7},
-  {Gamebuino_Meta::Sound_FX_Wave::SQUARE,0,128,-1,0,56,14},
+  {Gamebuino_Meta::Sound_FX_Wave::SQUARE,1,96,0,0,67,14},
+  {Gamebuino_Meta::Sound_FX_Wave::SQUARE,1,96,0,0,63,14},
+  {Gamebuino_Meta::Sound_FX_Wave::SQUARE,1,98,2,0,56,7},
+  {Gamebuino_Meta::Sound_FX_Wave::SQUARE,1,96,0,0,63,7},
+  {Gamebuino_Meta::Sound_FX_Wave::SQUARE,0,96,-1,0,56,14},
 };
 
 const Gamebuino_Meta::Sound_FX liveBonusSfx[] = {
