@@ -15,6 +15,7 @@
 uint8_t activeButton = 1;
 uint8_t clk = 0;
 bool buttonsShown = false;
+bool firstDraw;
 
 const uint8_t w = 12;
 const uint8_t h = 11;
@@ -96,13 +97,19 @@ void updateMainMenu() {
 }
 
 void drawMainMenu() {
-  gb.display.clear(INDEX_DARKGRAY);
+  if (firstDraw) {
+    // Only draw this fixed contents once, to reduce CPU load.
+    gb.display.clear(INDEX_DARKGRAY);
 
-  gb.display.setColor(INDEX_BROWN);
-  gb.display.fillRoundRect(30, 1, 100, 14, 1);
+    gb.display.setColor(INDEX_BROWN);
+    gb.display.fillRoundRect(30, 1, 100, 14, 1);
 
-  gb.display.setColor(INDEX_BLACK);
-  drawText(31, 2, "eriban presents");
+    gb.display.setColor(INDEX_BLACK);
+    drawText(31, 2, "eriban presents");
+    drawText(46, 112, "version 0.1");
+
+    firstDraw = false;
+  }
 
   // Draw Title
   for (int x = 0; x < w; x++) {
@@ -125,15 +132,15 @@ void drawMainMenu() {
   gb.display.drawImage(84, 97, titleCapacitor2Image);
 
   if (buttonsShown) {
+    // Clear display buffer where buttons are drawn
+    memset(gb.display._buffer + (40 * 109), (int)INDEX_DARKGRAY | ((int)INDEX_DARKGRAY << 4), 80 * 17);
     drawButtons();
-  } else {
-    //gb.display.fillRect(46, 123, 66, 2);
-    drawText(46, 112, "version 0.1");
   }
 }
 
 void showMainMenu() {
   music.start();
+  firstDraw = true;
 
   updateFunction = updateMainMenu;
   drawFunction = drawMainMenu;
