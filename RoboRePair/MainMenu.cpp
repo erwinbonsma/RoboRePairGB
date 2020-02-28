@@ -66,6 +66,8 @@ void drawButtons() {
 }
 
 void updateMainMenu() {
+  music.update();
+  
   if (!buttonsShown) {
     if (++clk < 50) {
       return;
