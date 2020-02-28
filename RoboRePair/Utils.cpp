@@ -62,9 +62,20 @@ const int8_t fontSpec[][26] = {
   {3, 16,0,16},    // :
   {3, 20,21,16},   // !
   {4, -2,0,0,9},   // ,
+  {3, 0,0,16},  // .
+  {6, 22,21,19,28,21,25}, // 0
+  {5, -2,28,21,27,-2},    // 1
+  {6, 18,22,19,12,9,24},  // 2
+  {6, 18,18,18,12,13,9},  // 3
+  {6, 20,19,0,20,29,17},  // 4
+  {6, 22,19,18,24,12,9},  // 5
+  {6, 6,23,3,24,12,9},    // 6
+  {6, 18,0,0,28,21,17},   // 7
+  {6, 6,7,3,12,13,9},     // 8
+  {6, 6,3,18,12,29,9}     // 9
 };
 // Could speed text drawing up a bit by ordering characters by usage
-const char* fontChars = "ertsabcdfghijklmnopquvwxyz -()+:!,";
+const char* fontChars = "ertsabcdfghijklmnopquvwxyz -()+:!,.0123456789";
 
 const int8_t* fontSpecForChar(char ch) {
   const char* p = fontChars;

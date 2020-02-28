@@ -13,6 +13,8 @@
 #include "Utils.h"
 
 uint8_t activeButton = 1;
+uint8_t clk = 0;
+bool buttonsShown = false;
 
 const uint8_t w = 12;
 const uint8_t h = 11;
@@ -35,7 +37,7 @@ void highlightButton(int x0, int y0, ColorIndex iconColor = INDEX_ORANGE) {
   for (int x = x0 + 15; --x >= x0; ) {
     for (int y = y0 + 17; --y >= y0; ) {
       if (
-        gb.display.getPixelIndex(x, y)==INDEX_BLACK && (
+        gb.display.getPixelIndex(x, y)==INDEX_DARKGRAY && (
           gb.display.getPixelIndex(x + 1, y) == iconColor ||
           gb.display.getPixelIndex(x - 1, y) == iconColor ||
           gb.display.getPixelIndex(x, y + 1) == iconColor ||
@@ -48,7 +50,28 @@ void highlightButton(int x0, int y0, ColorIndex iconColor = INDEX_ORANGE) {
   }
 }
 
+void drawButtons() {
+  constexpr int sep = 16;
+  constexpr int x0 = 80 - (15 * 3 + sep * 2) / 2;
+  for (int i = 0; i < 3; i++) {
+    int frameIndex = i + (i == 2 && !music.isEnabled());
+    buttonsImage.setFrame(frameIndex);
+    int x = x0 + i * (15 + sep);
+    gb.display.drawImage(x, 110, buttonsImage);
+    if (i == activeButton) {
+      highlightButton(x - 1, 109, (frameIndex < 3) ? INDEX_ORANGE : INDEX_BROWN);
+    }
+  }
+}
+
 void updateMainMenu() {
+  if (!buttonsShown) {
+    if (++clk < 50) {
+      return;
+    }
+    buttonsShown = true;
+  }
+
   if (gb.buttons.held(BUTTON_LEFT, 0)) {
     activeButton = (activeButton + 2) % 3;
   }
@@ -73,27 +96,28 @@ void updateMainMenu() {
 }
 
 void drawMainMenu() {
-  gb.display.clear();
+  gb.display.clear(INDEX_DARKGRAY);
+
+  gb.display.setColor(INDEX_BROWN);
+  gb.display.fillRoundRect(30, 1, 100, 14, 1);
+
+  gb.display.setColor(INDEX_BLACK);
+  drawText(31, 2, "eriban presents");
+
+  // Draw Title
   for (int x = 0; x < w; x++) {
     for (int y = 0; y < h; y++) {
       int v = tilesTitle[x + y * w];
-      if (v > 0) {
-        smallTilesImage.setFrame(v);
-        gb.display.drawImage(32 + x * 8, y * 8 + 12, smallTilesImage);
-      }
+      smallTilesImage.setFrame(v);
+      gb.display.drawImage(32 + x * 8, y * 8 + 19, smallTilesImage);
     }
   }
 
-  int sep = 16;
-  int x0 = 80 - (15 * 3 + sep * 2) / 2;
-  for (int i = 0; i < 3; i++) {
-    int frameIndex = i + (i == 2 && !music.isEnabled());
-    buttonsImage.setFrame(frameIndex);
-    int x = x0 + i * (15 + sep);
-    gb.display.drawImage(x, 108, buttonsImage);
-    if (i == activeButton) {
-      highlightButton(x - 1, 107, (frameIndex < 3) ? INDEX_ORANGE : INDEX_BROWN);
-    }
+  if (buttonsShown) {
+    drawButtons();
+  } else {
+    //gb.display.fillRect(46, 123, 66, 2);
+    drawText(46, 112, "version 0.1");
   }
 }
 
