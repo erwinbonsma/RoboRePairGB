@@ -25,7 +25,7 @@ public:
   void stop();
 
   void update() {
-    if (!_stopped && !gb.sound.isPlaying(_track)) {
+    if (_enabled && !_stopped && !gb.sound.isPlaying(_track)) {
       _track = gb.sound.play(loopTrack, true);
     }
   }

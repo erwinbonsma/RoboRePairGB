@@ -8,6 +8,7 @@
 
 #include "Images.h"
 #include "MainMenu.h"
+#include "Music.h"
 #include "Utils.h"
 
 bool helpDrawn;
@@ -21,6 +22,7 @@ const uint8_t helpLogo[] = {
 };
 
 void updateHelp() {
+  music.update();
   if (gb.buttons.held(BUTTON_A, 0)) {
     showMainMenu();
   }
