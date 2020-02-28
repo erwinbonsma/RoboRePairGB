@@ -200,6 +200,7 @@ bool gameOverAnim() {
   }
 
   if (animClk == 90) {
+    stopAllBots();
     gb.sound.fx(gameOverSfx);
     gridMorpher.init(&gameOverGridSpec);
     setEndGameAnimFunction(endGameAnim);
