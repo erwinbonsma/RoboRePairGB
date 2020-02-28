@@ -135,7 +135,6 @@ class GridMorpher {
   uint8_t _numReady;
   GridIndex _ready[maxWidth * maxHeight];
 
-  void dumpReady(const char* when);
   void updateTileAt(GridPos pos);
   const GridTile* targetTileAt(GridIndex index);
 public:

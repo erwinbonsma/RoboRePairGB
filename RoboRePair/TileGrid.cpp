@@ -235,14 +235,6 @@ void TileGrid::draw() {
   }
 }
 
-void GridMorpher::dumpReady(const char* when) {
-  SerialUSB.printf("%s: ", when);
-  for (int i = _numReady; --i >= 0; ) {
-    SerialUSB.printf("%d ", _ready[i]);
-  }
-  SerialUSB.println();
-}
-
 const GridTile* GridMorpher::targetTileAt(GridIndex index) {
   return tiles + _targetSpec->tiles[(int)index];
 }
@@ -261,12 +253,10 @@ void GridMorpher::updateTileAt(GridPos pos) {
 
       // Find and remove it from the ready queue
       int j = _numReady;
-      SerialUSB.printf("Removing %d\n", index);
       while (_ready[--j] != index) {
         assertTrue(j >= 0);
       }
       _ready[j] = _ready[--_numReady];
-      dumpReady("#3");
     }
   }
 }
@@ -287,7 +277,6 @@ void GridMorpher::init(const GridSpec* targetSpec) {
       _status[i] = MorphStatus::Blocked;
     }
   }
-  dumpReady("#0");
 }
 
 bool GridMorpher::morphStep() {
@@ -301,9 +290,6 @@ bool GridMorpher::morphStep() {
   GridIndex index = _ready[rndVal];
   _ready[rndVal] = _ready[--_numReady];
 
-  SerialUSB.printf("Selected %d at %d\n", index, rndVal);
-  dumpReady("#1");
-
   GridPos pos = grid.indexToPos(index);
   grid.placeTileAt(pos, targetTileAt(index), true);
   _status[index] = MorphStatus::Done;
@@ -316,7 +302,6 @@ bool GridMorpher::morphStep() {
       updateTileAt(nbPos);
     }
   }
-  dumpReady("#2");
 
   return false;
 }
