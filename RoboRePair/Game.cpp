@@ -30,6 +30,17 @@ AnimFunction speedUpAnimFun;
 bool inputDisabled;
 GridCursor gridCursor;
 
+void fastGameScreenClear();
+
+bool speedUpBotsAnim();
+bool retryAnim();
+bool endGameAnim();
+bool gameOverAnim();
+bool levelDoneAnim();
+
+void setEndGameAnimFunction(AnimFunction fun);
+void setSpeedUpAnimFunction();
+
 void loadLevel();
 void startLevel();
 void handleLevelDone();
@@ -145,28 +156,54 @@ bool retryAnim() {
   return false;
 }
 
-bool gameOverAnim() {
-  if (animClk == 90) {
-    if (!gridMorpher.morphStep()) {
-      // Pause reset of animation while morphing is ongoing
-      return false;
-    }
+bool endGameAnim() {
+  if (drawScore < score) {
+    gb.sound.fx(scoreSfx);
+    return false;
   }
 
+  if (!lives.fullyDrawn()) {
+    return false;
+  }
+
+  if (!gridMorpher.morphStep()) {
+    return false;
+  }
+
+  if (animClk < 60) {
+    ++animClk;
+    return false;
+  }
+  if (animClk == 60) {
+    if (lives.dec()) {
+      incScore(100);
+    } else {
+      ++animClk;
+    }
+    return false;
+  }
+
+  ++animClk;
+  if (animClk == 250 || gb.buttons.held(BUTTON_A, 0)) {
+    showMainMenu();
+    return true;
+  }
+  return false;
+}
+
+bool gameOverAnim() {
   ++animClk;
 
   if (animClk == 30) {
     gb.sound.fx(diedSfx);
+    return false;
   }
 
   if (animClk == 90) {
     gb.sound.fx(gameOverSfx);
     gridMorpher.init(&gameOverGridSpec);
-  }
-
-  if (animClk == 180) {
-    showMainMenu();
-    return true;
+    setEndGameAnimFunction(endGameAnim);
+    return false;
   }
 
   return false;
@@ -215,8 +252,9 @@ bool levelDoneAnim() {
 
   ++levelNum;
   if (levelNum == numLevels) {
-    // TO DO: Celebration!
-    levelNum = 0;
+    gridMorpher.init(&theEndGridSpec);
+    setEndGameAnimFunction(endGameAnim);
+    return false;
   }
   startLevel();
 
