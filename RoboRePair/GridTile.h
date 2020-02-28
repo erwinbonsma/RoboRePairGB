@@ -33,6 +33,6 @@ public:
   GridTile(uint8_t entries, uint16_t connections, uint8_t probability);
 };
 
-const int numTiles = 16;
+const int numTiles = 25;
 extern const GridTile tiles[numTiles];
 

@@ -134,6 +134,24 @@ void TileGrid::placeTileAt(GridPos pos, const GridTile* tile, ScreenPos fromPos)
   screenTile->setPosition(fromPos);
 }
 
+const GridTile* TileGrid::patchTileAt(GridPos pos) {
+  int mask = 0;
+  for (int d = 4; --d >= 0; ) {
+    const Vector2D dirv = dirVectors[d];
+    GridPos nbPos(pos.x + dirv.x, pos.y + dirv.y);
+    const GridTile* nbTile = tileAt(nbPos);
+    if (
+      nbTile != nullptr &&
+      nbTile->hasEntry(opposite((Direction)d))
+    ) {
+      mask |= 0x01 << d;
+    }
+  }
+
+  const GridTile* tile = tiles + mask;
+  placeTileAt(pos, tile, true);
+  return tile;
+}
 
 bool TileGrid::canPlaceTileAt(GridPos pos, const GridTile* tile) {
   assertTrue(tile != nullptr);
@@ -166,6 +184,17 @@ bool TileGrid::isPlaceable(const GridTile* tile) {
     }
   }
 
+  return false;
+}
+
+bool TileGrid::hasNeighbour(GridPos pos) {
+  for (int d = 4; --d >= 0; ) {
+    const Vector2D dirv = dirVectors[d];
+    GridPos nbPos(pos.x + dirv.x, pos.y + dirv.y);
+    if (contains(nbPos) && tileAt(nbPos) != nullptr) {
+      return true;
+    }
+  }
   return false;
 }
 
@@ -206,3 +235,90 @@ void TileGrid::draw() {
   }
 }
 
+void GridMorpher::dumpReady(const char* when) {
+  SerialUSB.printf("%s: ", when);
+  for (int i = _numReady; --i >= 0; ) {
+    SerialUSB.printf("%d ", _ready[i]);
+  }
+  SerialUSB.println();
+}
+
+const GridTile* GridMorpher::targetTileAt(GridIndex index) {
+  return tiles + _targetSpec->tiles[(int)index];
+}
+
+void GridMorpher::updateTileAt(GridPos pos) {
+  GridIndex index = grid.posToIndex(pos);
+  if (_status[index] == MorphStatus::Blocked) {
+    _status[index] = MorphStatus::Ready;
+    _ready[_numReady++] = index;
+  }
+  if (_status[index] == MorphStatus::Ready) {
+    const GridTile* tile = grid.patchTileAt(pos);
+    if (tile == targetTileAt(index)) {
+      // No further update needed
+      _status[index] = MorphStatus::Done;
+
+      // Find and remove it from the ready queue
+      int j = _numReady;
+      SerialUSB.printf("Removing %d\n", index);
+      while (_ready[--j] != index) {
+        assertTrue(j >= 0);
+      }
+      _ready[j] = _ready[--_numReady];
+      dumpReady("#3");
+    }
+  }
+}
+
+void GridMorpher::init(const GridSpec* targetSpec) {
+  _targetSpec = targetSpec;
+  grid.expand(targetSpec->w, targetSpec->h);
+
+  _numReady = 0;
+  for (GridIndex i = grid.maxIndex(); --i >= 0; ) {
+    const GridTile* tile = grid.tileAt(i);
+    if (tile == targetTileAt(i)) {
+      _status[i] = MorphStatus::Done;
+    } else if (tile != nullptr || grid.hasNeighbour(grid.indexToPos(i))) {
+      _status[i] = MorphStatus::Ready;
+      _ready[_numReady++] = i;
+    } else {
+      _status[i] = MorphStatus::Blocked;
+    }
+  }
+  dumpReady("#0");
+}
+
+bool GridMorpher::morphStep() {
+  if (_numReady == 0) {
+    // We're done!
+    return true;
+  }
+
+  // Select random ready tile
+  int rndVal = rand() % _numReady;
+  GridIndex index = _ready[rndVal];
+  _ready[rndVal] = _ready[--_numReady];
+
+  SerialUSB.printf("Selected %d at %d\n", index, rndVal);
+  dumpReady("#1");
+
+  GridPos pos = grid.indexToPos(index);
+  grid.placeTileAt(pos, targetTileAt(index), true);
+  _status[index] = MorphStatus::Done;
+
+  // Update neighbours
+  for (int d = 4; --d >= 0; ) {
+    const Vector2D dirv = dirVectors[d];
+    GridPos nbPos(pos.x + dirv.x, pos.y + dirv.y);
+    if (grid.contains(nbPos)) {
+      updateTileAt(nbPos);
+    }
+  }
+  dumpReady("#2");
+
+  return false;
+}
+
+GridMorpher gridMorpher;

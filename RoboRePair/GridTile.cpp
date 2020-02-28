@@ -86,6 +86,19 @@ const GridTile tiles[numTiles] = {
   GridTile(12, 0x4800, 2),
   GridTile(13, 0x5808, 2),
   GridTile(14, 0x4A40, 2),
-  GridTile(15, 0x2184, 2)
+  GridTile(15, 0x2184, 2),
+
+  // Hard corners
+  GridTile( 3, 0x0012, 0),
+  GridTile( 6, 0x0240, 0),
+  GridTile(10, 0x2080, 0),
+  GridTile( 9, 0x1008, 0),
+  GridTile( 7, 0x0154, 0),
+  GridTile(14, 0x2A80, 0),
+  GridTile(13, 0x5104, 0),
+  GridTile(11, 0x208A, 0),
+
+  // Single dot
+  GridTile( 0, 0x0000, 0),
 };
 

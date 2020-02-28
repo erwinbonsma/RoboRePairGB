@@ -89,6 +89,35 @@ const Gamebuino_Meta::Sound_FX timedOutSfx[] = {
   {Gamebuino_Meta::Sound_FX_Wave::SQUARE,0,255,-6,-32,142,25},
 };
 
+const uint8_t gameOverGrid[] = {
+   2, 10, 10, 10, 10, 10, 10, 10,  8,
+   6,  8,  6, 12,  6, 14, 12,  6,  8,
+   5,  4, 20, 22,  5,  5,  5, 20,  8,
+   3,  9,  1,  1,  1,  1,  1,  3,  8,
+   6, 12,  4,  4,  6,  8, 17, 12,  4,
+   5,  5,  5,  5, 20,  8, 20, 13,  1,
+   3,  9, 16,  9,  3,  8,  1,  1, 24,
+   2, 10, 10, 10, 10, 10, 10, 10,  8,
+};
+const GridSpec gameOverGridSpec = GridSpec {
+  .w = 9, .h = 8, .tiles = gameOverGrid
+};
+
+const uint8_t theEndGrid[] = {
+   6, 10, 10, 10, 10, 10, 10, 10, 12,
+   5,  2, 21,  8,  4,  4,  6,  8,  5,
+   5,  0,  5,  0, 20, 22, 20,  8,  5,
+   5,  0,  1,  0,  1,  1,  3,  8,  5,
+   5,  0,  6,  8, 17, 12, 17, 12,  5,
+   5,  0, 20,  8,  5,  5,  5,  5,  5,
+   5,  0,  3,  8,  1,  1, 16,  9,  5,
+   3, 10, 10, 10, 10, 10, 10, 10,  9,
+};
+const GridSpec theEndGridSpec = GridSpec {
+  .w = 9, .h = 8, .tiles = theEndGrid
+};
+
+
 void fastGameScreenClear() {
   memset(gb.display._buffer, (int)INDEX_DARKGRAY | ((int)INDEX_DARKGRAY << 4), 160 * 20 / 2);
 }
@@ -117,6 +146,13 @@ bool retryAnim() {
 }
 
 bool gameOverAnim() {
+  if (animClk == 90) {
+    if (!gridMorpher.morphStep()) {
+      // Pause reset of animation while morphing is ongoing
+      return false;
+    }
+  }
+
   ++animClk;
 
   if (animClk == 30) {
@@ -125,6 +161,7 @@ bool gameOverAnim() {
 
   if (animClk == 90) {
     gb.sound.fx(gameOverSfx);
+    gridMorpher.init(&gameOverGridSpec);
   }
 
   if (animClk == 180) {

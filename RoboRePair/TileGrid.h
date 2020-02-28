@@ -104,11 +104,15 @@ public:
   }
 
   const GridTile* tileAt(GridPos pos);
+  const GridTile* tileAt(GridIndex index) { return _tiles[index].getTile(); }
   void placeTileAt(GridPos pos, const GridTile* tile, bool force);
   void placeTileAt(GridPos pos, const GridTile* tile, ScreenPos fromPos);
+  const GridTile* patchTileAt(GridPos index);
 
   bool canPlaceTileAt(GridPos pos, const GridTile* tile);
   bool isPlaceable(const GridTile* tile);
+
+  bool hasNeighbour(GridPos pos);
 
   const Bot* claimTile(GridPos pos, const Bot* bot);
   void releaseTile(GridPos pos, const Bot* bot);
@@ -118,4 +122,27 @@ public:
 };
 
 extern TileGrid grid;
+
+enum class MorphStatus : uint8_t {
+  Blocked,
+  Ready,
+  Done
+};
+
+class GridMorpher {
+  const GridSpec* _targetSpec;
+  MorphStatus _status[maxWidth * maxHeight];
+  uint8_t _numReady;
+  GridIndex _ready[maxWidth * maxHeight];
+
+  void dumpReady(const char* when);
+  void updateTileAt(GridPos pos);
+  const GridTile* targetTileAt(GridIndex index);
+public:
+  void init(const GridSpec* targetSpec);
+
+  bool morphStep();
+};
+
+extern GridMorpher gridMorpher;
 
