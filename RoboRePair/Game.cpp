@@ -167,6 +167,7 @@ bool levelDoneAnim() {
   }
 
   if (timeBar.scoreTicks()) {
+    gb.sound.fx(scoreSfx);
     return false;
   }
 
