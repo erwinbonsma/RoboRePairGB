@@ -6,6 +6,8 @@
 
 #include <Gamebuino-Meta.h>
 
+constexpr int numPreviewTiles = 16;
+
 extern Image botImage;
 extern Image buttonsImage;
 extern Image crashedBotsImage;

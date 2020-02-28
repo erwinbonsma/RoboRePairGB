@@ -95,7 +95,7 @@ void GridCursor::draw() {
   } else {
     const GridTile* tile = tileTray.selectedTile();
     if (tile != nullptr) {
-      tilesPreviewImage.setFrame(tile->index() + numTiles * _allowed);
+      tilesPreviewImage.setFrame(tile->index() + numPreviewTiles * _allowed);
       gb.display.drawImage(_drawPos.getX(), _drawPos.getY(), tilesPreviewImage);
     }
 
