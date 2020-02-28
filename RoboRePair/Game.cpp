@@ -309,6 +309,13 @@ void updateGame() {
     if (!inputDisabled) {
       gridCursor.update();
       tileTray.update();
+
+      if (gb.buttons.held(BUTTON_MENU, 0)) {
+        // Suicide. Can be useful when pairing is impossible.
+        inputDisabled = true;
+        speedUpBots();
+        crashAllBots();
+      }
     }
 
     if (!timeBar.update()) {

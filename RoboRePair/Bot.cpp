@@ -237,7 +237,7 @@ void Bot::moveStep() {
   _spriteIndex = (int)_dir * 4;
 
   const GridTile* tile = grid.tileAt(_pos);
-  if (tile != nullptr) {
+  if (tile != nullptr && !_shouldCrash) {
     handleMove(tile);
   } else {
     handleCrash();
@@ -422,6 +422,7 @@ void Bot::init(GridPos pos, Direction dir) {
   _meetingBot = nullptr;
   _pairedWithBot = nullptr;
   _otherAnimFun = nullptr;
+  _shouldCrash = false;
   _crashed = false;
   _destroyed = false;
   _period = 12; // Default
@@ -437,6 +438,14 @@ void Bot::destroy() {
   grid.releaseTile(_nextPos, this);
 
   _destroyed = true;
+}
+
+void Bot::crash() {
+  // Do not let bot crash when it is about to meet another bot. Note, when bot is not moving
+  // anymore, the request is anyway ignored.
+  if (_meetingBot == nullptr) {
+    _shouldCrash = true;
+  }
 }
 
 void Bot::update() {
@@ -501,6 +510,14 @@ bool speedUpBots() {
   }
 
   return spedUp;
+}
+
+void crashAllBots() {
+  for (auto bot = bots; bot < botsEnd; ++bot) {
+    if (!(*bot)->isDestroyed()) {
+      (*bot)->crash();
+    }
+  }
 }
 
 void destroyAllBots() {

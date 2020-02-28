@@ -13,6 +13,7 @@ class Bot;
 class BotSpec;
 
 bool speedUpBots();
+void crashAllBots();
 void destroyAllBots();
 void stopAllBots();
 
@@ -37,6 +38,7 @@ class Bot {
   const Bot* _pairedWithBot;
 
   bool _destroyed;
+  bool _shouldCrash;
   bool _crashed;
 
   // Main update frequency
@@ -91,6 +93,8 @@ public:
 
   void destroy();
   bool isDestroyed() { return _destroyed; }
+
+  void crash(); // Request bot to crash
   bool didCrash() { return _crashed; }
 
   void update();
