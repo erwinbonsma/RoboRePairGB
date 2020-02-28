@@ -112,6 +112,17 @@ void drawMainMenu() {
       gb.display.drawImage(32 + x * 8, y * 8 + 19, smallTilesImage);
     }
   }
+  gb.display.drawImage(35, 45, titleResistor1Image);
+  gb.display.drawImage(35, 58, titleResistor2Image);
+  gb.display.drawImage(35, 71, titleResistor1Image);
+  gb.display.drawImage(121, 45, titleImpedanceImage);
+  gb.display.drawImage(122, 58, titleResistor1Image);
+  gb.display.drawImage(121, 71, titleImpedanceImage);
+  gb.display.drawImage(90, 59, titleICImage);
+  gb.display.drawImage(90, 68, titleICImage);
+  gb.display.drawImage(65, 85, titleCapacitor1Image);
+  gb.display.drawImage(80, 100, titleCapacitor2Image);
+  gb.display.drawImage(84, 97, titleCapacitor2Image);
 
   if (buttonsShown) {
     drawButtons();

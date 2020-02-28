@@ -14,3 +14,10 @@ extern Image smallTilesImage;
 extern Image tilesImage;
 extern Image tilesPreviewImage;
 extern Image timedOutImage;
+
+extern Image titleCapacitor1Image;
+extern Image titleCapacitor2Image;
+extern Image titleICImage;
+extern Image titleImpedanceImage;
+extern Image titleResistor1Image;
+extern Image titleResistor2Image;
