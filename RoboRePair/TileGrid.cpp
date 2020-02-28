@@ -27,15 +27,19 @@ void ScreenTile::draw() {
   gb.display.drawImage(_pos.getX(), _pos.getY(), tilesImage);
 }
 
-void TileGrid::init(uint8_t width, uint8_t height) {
+void TileGrid::initOrigin() {
+  _x0 = 80 - _width * _tileSize / 2;
+  _y0 = 20;
+}
+
+void TileGrid::init(int width, int height) {
   _width = width;
   _height = height;
-  _maxIndex = _width * _height;
+  _maxIndex = width * height;
   _tilesEnd = _tiles + _maxIndex;
   _tileSize = 13;
 
-  _x0 = 80 - _width * _tileSize / 2;
-  _y0 = 64 - _height * _tileSize / 2;
+  initOrigin();
 
   for (int i = _maxIndex; --i >= 0; ) {
     GridPos pos = indexToPos(i);
@@ -53,6 +57,39 @@ void TileGrid::init(const GridSpec& gridSpec) {
   for (int i = _maxIndex; --i >= 0; ) {
     GridPos pos = indexToPos(i);
     placeTileAt(pos, &tiles[tileIndices[i]], true);
+  }
+}
+
+void TileGrid::expand(int width, int height) {
+  assertTrue(width >= _width && height >= _height);
+  assertTrue(width <= maxWidth && height <= maxHeight);
+
+  int oldw = _width;
+  int oldh = _height;
+
+  _width = width;
+  _height = height;
+  _maxIndex = _width * _height;
+  _tilesEnd = _tiles + _maxIndex;
+
+  initOrigin();
+
+  // Update tiles
+  for (int index = _maxIndex; --index >= 0; ) {
+    GridPos pos = indexToPos(index);
+    if (pos.x >= oldw || pos.y >= oldh) {
+      // Create new, empty tile
+      _tiles[index].init(ScreenPos(74, 58));
+      _tiles[index].setTile(emptyTile);
+    } else {
+      GridIndex oldIndex = pos.x + pos.y * oldw;
+      if (index != oldIndex) {
+        // Copy tile from old position
+        _tiles[index] = _tiles[oldIndex];
+      }
+    }
+    // Update target position
+    _tiles[index].setTargetPosition(targetScreenPosOf(pos));
   }
 }
 

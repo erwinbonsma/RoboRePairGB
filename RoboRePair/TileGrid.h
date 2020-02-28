@@ -7,10 +7,10 @@
 #include "GridTile.h"
 
 // Size of tiles (in game mode)
-const int tileSize = 13;
+constexpr int tileSize = 13;
 
-const int maxWidth = 12;
-const int maxHeight = 8;
+constexpr int maxWidth = 12;
+constexpr int maxHeight = 8;
 
 class Bot;
 class TileGrid;
@@ -26,6 +26,8 @@ protected:
 public:
 
   ScreenTile() = default;
+  ScreenTile(const ScreenTile& source)
+  : _tile(source._tile), _targetPos(source._targetPos), _pos(source._pos) {}
 
   const GridTile* getTile() const { return _tile; }
   void setTile(const GridTile* tile) { _tile = tile; }
@@ -45,6 +47,10 @@ class GridScreenTile : public ScreenTile {
   const Bot* _bot;
 
 public:
+  GridScreenTile() = default;
+  GridScreenTile(const GridScreenTile& source)
+  : ScreenTile(source), _bot(source._bot) {}
+
   const Bot* getBot() { return _bot; }
   void setBot(const Bot* bot) { _bot = bot; }
 
@@ -68,19 +74,23 @@ class TileGrid {
 
   ScreenPos _lastChangedPos;
 
+  void initOrigin();
+
 public:
-  void init(uint8_t width, uint8_t height);
+  void init(int width, int height);
   void init(const GridSpec& gridSpec);
 
   int width() const { return _width; }
   int height() const { return _height; }
   GridIndex maxIndex() const { return _maxIndex; }
 
+  void expand(int width, int height);
+
   GridPos indexToPos(GridIndex index) const {
     return GridPos { .x = (int8_t)(index % _width), .y = (int8_t)(index / _width) };
   }
   GridIndex posToIndex(GridPos pos) const {
-    return pos.x + _width * pos.y;
+    return pos.x + pos.y * _width;
   }
 
   // Current position, is changes while level is "exploding" into view
