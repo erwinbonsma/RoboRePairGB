@@ -12,7 +12,7 @@ class Lives {
   uint8_t _clk;
 
 public:
-  bool inc();
+  void inc();
   bool dec();
 
   bool fullyDrawn() { return _drawLives == 8 * _numLives; }

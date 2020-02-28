@@ -6,19 +6,19 @@
 
 #include "Lives.h"
 
+#include "Game.h"
 #include "Images.h"
 #include "Utils.h"
 
 // Global
 Lives lives;
 
-bool Lives::inc() {
-  if (_numLives >= 3) {
-    return false;
-  }
+constexpr int maxLives = 3;
 
+void Lives::inc() {
+  // Allow the number of lives to (temporarily) exceed the maximum. These bonus lives will be
+  // converted into points.
   ++_numLives;
-  return true;
 }
 
 bool Lives::dec() {
@@ -31,7 +31,7 @@ bool Lives::dec() {
 }
 
 void Lives::init() {
-  _numLives = 3;
+  _numLives = maxLives;
   _drawLives = 0;
   _clk = 0;
 }
@@ -42,8 +42,15 @@ void Lives::update() {
     return;
   }
 
-  int delta = _numLives * 8 - _drawLives;
+  int delta = (_numLives << 3) - _drawLives;
   _drawLives += sgn(delta);
+
+  // Prevent the lives from exceeding the maximum
+  if (_drawLives == ((maxLives + 1) << 3)) {
+    _numLives--;
+    incScore(100);
+    --_drawLives;
+  }
 }
 
 void Lives::draw() {

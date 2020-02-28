@@ -136,7 +136,12 @@ bool gameOverAnim() {
 }
 
 bool levelDoneAnim() {
-  if (drawScore < score || !lives.fullyDrawn()) {
+  if (drawScore < score) {
+    gb.sound.fx(scoreSfx);
+    return false;
+  }
+
+  if (!lives.fullyDrawn()) {
     return false;
   }
 
@@ -151,11 +156,8 @@ bool levelDoneAnim() {
   }
 
   if (animClk == 60) {
-    if (!lives.inc()) {
-      score += 100;
-    } else {
-      gb.sound.fx(liveBonusSfx);
-    }
+    lives.inc();
+    gb.sound.fx(liveBonusSfx);
     return false;
   }
 
@@ -165,7 +167,6 @@ bool levelDoneAnim() {
   }
 
   if (timeBar.scoreTicks()) {
-    gb.sound.fx(scoreSfx);
     return false;
   }
 
