@@ -33,6 +33,7 @@ class Bot {
 
   // The bot that this bot will be meeting given the paths both bots traverse.
   const Bot* _meetingBot;
+  int _lastDist; // TMP
 
   // The bot that this bot is paired with, if any.
   const Bot* _pairedWithBot;
@@ -78,6 +79,8 @@ class Bot {
   int pairRotationDelta(int rotation);
   bool pairAnim();
   void paired();
+
+  int meetingDistance();
   void handleMeeting();
 
 public:

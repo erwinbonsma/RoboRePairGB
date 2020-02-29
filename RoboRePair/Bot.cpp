@@ -79,6 +79,11 @@ bool Bot::isBlocked() {
     _meetingBot = claimedBy;
     claimedBy->mutableBot()->_meetingBot = this;
 
+    // TMP: Check that meeting bots always move closer
+    int dist = meetingDistance();
+    claimedBy->mutableBot()->_lastDist = dist;
+    _lastDist = dist;
+
     return false;
   }
 
@@ -396,7 +401,7 @@ void Bot::paired() {
   _animClk = 0;
 }
 
-void Bot::handleMeeting() {
+int Bot::meetingDistance() {
   ScreenPos p1 = grid.screenPosOf(_pos);
   p1.add(_offset);
 
@@ -405,11 +410,22 @@ void Bot::handleMeeting() {
 
   int dx = p1.getX() - p2.getX();
   int dy = p2.getY() - p2.getY();
-  int dist = dx * dx + dy * dy;
+  return dx * dx + dy * dy;
+}
 
+void Bot::handleMeeting() {
+  int dist = meetingDistance();
   if (dist <= 125) {
     _meetingBot->mutableBot()->paired();
     paired();
+  } else {
+    if (dist > _lastDist) {
+      // This should not happen
+      stopAllBots();
+      _lastDist = -1;
+    } else {
+      _lastDist = dist;
+    }
   }
 }
 
@@ -426,6 +442,8 @@ void Bot::init(GridPos pos, Direction dir) {
   _crashed = false;
   _destroyed = false;
   _period = 12; // Default
+
+  _lastDist = 0;
 
   _maxOffset = 6;
   moveStep();
@@ -478,6 +496,12 @@ void Bot::draw() {
     screenPos.getY() + _offset.y,
     *_activeImage
   );
+
+  if (_lastDist < 0) {
+    gb.display.setCursor(20, 1);
+    gb.display.setColor(INDEX_RED);
+    gb.display.print("!!!");
+  }
 
 //  if (_meetingBot != nullptr) {
 //    gb.display.setCursor(100, 1);
