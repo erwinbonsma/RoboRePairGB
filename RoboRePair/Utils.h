@@ -87,7 +87,6 @@ public:
 };
 
 void drawText(int x, int y, const char* s);
-void drawTextUsingGlyphs(int x, int y, const char* s);
 int textWidth(const char* s);
 
 void assertFailed(const char *function, const char *file, int lineNo, const char *expression);

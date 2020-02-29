@@ -6,8 +6,6 @@
 
 #include "Utils.h"
 
-#include "Images.h"
-
 int orientation(Vector2D v1, Vector2D v2) {
   int val = v1.y * v2.x - v1.x * v2. y;
   return (val == 0) ? 0 : ((val > 0) ? 1 : -1);
@@ -146,34 +144,6 @@ void drawText(int x0, int y0, const char* s) {
             gb.display._drawPixel(x + 1, y + 1);
           }
         }
-
-        row += 1;
-      }
-    }
-    x += 3;
-    ++p;
-  }
-}
-
-void drawTextUsingGlyphs(int x, int y, const char* s) {
-  const char* p = s;
-  while (*p) {
-    const int8_t* fontSpec = fontSpecForChar(*p);
-    int row = 0;
-    int len = fontSpec[0];
-    // Draw character
-    for (int i = 1; i <= len; ++i) {
-      int v = fontSpec[i];
-      if (v < 0) {
-        x += v + 3; // Tweak spacing
-      } else {
-        if (row == 3) {
-          row = 0;
-          x += 4;
-        }
-
-        fontGlyphImage.setFrame(v);
-        gb.display.drawImage(x, y + 4 * row, fontGlyphImage);
 
         row += 1;
       }

@@ -3,19 +3,8 @@
 #include "MainMenu.h"
 #include "Utils.h"
 
-void updateTest() {}
-
-void drawTest() {
-  gb.display.clear();
-  gb.display.setColor(INDEX_WHITE);
-  for (int i = 0; i < 9; i++) {
-    drawText(0, i * 14, "the very quick brown fox");
-    //drawTextUsingGlyphs(0, i * 14, "the very quick brown fox");
-  }
-}
-
-UpdateFunction updateFunction = updateTest;
-DrawFunction drawFunction = drawTest;
+UpdateFunction updateFunction;
+DrawFunction drawFunction;
 
 void displayCpuLoad() {
   int cpuLoad = gb.getCpuLoad();
@@ -40,7 +29,7 @@ void displayCpuLoad() {
 void setup() {
   gb.begin();
 
-  //showMainMenu();
+  showMainMenu();
 }
 
 void loop() {
