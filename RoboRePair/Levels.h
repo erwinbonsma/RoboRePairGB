@@ -27,5 +27,5 @@ struct LevelSpec {
 };
 
 const int maxBots = 4;
-const int numLevels = 4;
+const int numLevels = 5;
 extern const LevelSpec levels[numLevels];

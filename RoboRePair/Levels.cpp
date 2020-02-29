@@ -66,6 +66,23 @@ const BotSpec botsDetour[] = {
   BotSpec { .pos = GridPos(4, 6), .dir = Direction::East, .period = SLOW }
 };
 
+const uint8_t tilesTwoPair[] = {
+   2,10,10,10,12, 0, 0, 0, 4,
+   0, 0, 0, 0, 0, 0, 0, 0, 5,
+   0, 0, 0, 0, 0, 0, 0, 0, 5,
+   6, 0, 0, 0, 7, 0, 0, 0, 5,
+   5, 0, 0, 0,13, 0, 0, 0, 9,
+   5, 0, 0, 0, 0, 0, 0, 0, 0,
+   5, 0, 0, 0, 0, 0, 0, 0, 0,
+   1, 0, 0, 0, 3,10,10,10, 8
+};
+const BotSpec botsTwoPair[] = {
+  BotSpec { .pos = GridPos(3, 0), .dir = Direction::West, .period = MEDIUM },
+  BotSpec { .pos = GridPos(8, 3), .dir = Direction::North, .period = MEDIUM },
+  BotSpec { .pos = GridPos(5, 7), .dir = Direction::East, .period = MEDIUM },
+  BotSpec { .pos = GridPos(0, 4), .dir = Direction::South, .period = MEDIUM }
+};
+
 const uint8_t tilesTest[] = {
    0, 0, 0, 0, 0, 0, 0, 0, 0,
    2,10,10,10,10,10,10,10, 8,
@@ -110,6 +127,13 @@ const LevelSpec levels[numLevels] = {
     .grid = GridSpec { .w = 9, .h = 7, .tiles = tilesDetour },
     .numBots = 2,
     .bots = botsDetour,
+  },
+  LevelSpec {
+    .numTiles = 3,
+    .timeLimit = 240,
+    .grid = GridSpec { .w = 9, .h = 8, .tiles = tilesTwoPair },
+    .numBots = 4,
+    .bots = botsTwoPair,
   }
 };
 
