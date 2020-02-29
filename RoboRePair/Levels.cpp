@@ -66,7 +66,22 @@ const BotSpec botsDetour[] = {
   BotSpec { .pos = GridPos(4, 6), .dir = Direction::East, .period = SLOW }
 };
 
-const uint8_t tilesTwoPair[] = {
+const uint8_t tilesDeathValley[] = {
+   0, 0, 0, 0, 0,10,10,10,12,
+   0, 0, 0, 0, 0, 0, 0, 0, 1,
+   0, 0, 0, 0, 0, 0, 0, 0, 0,
+   0, 0, 0, 9, 0, 3, 0, 0, 0,
+   0, 0, 0,12, 0, 6, 0, 0, 0,
+   0, 0, 0, 0, 0, 0, 0, 0, 0,
+   4, 0, 0, 0, 0, 0, 0, 0, 0,
+   3,10,10,10, 0, 0, 0, 0, 0
+};
+const BotSpec botsDeathValley[] = {
+  BotSpec { .pos = GridPos(0, 7), .dir = Direction::West, .period = MEDIUM },
+  BotSpec { .pos = GridPos(8, 0), .dir = Direction::East, .period = MEDIUM }
+};
+
+const uint8_t tilesFourOfAKind[] = {
    2,10,10,10,12, 0, 0, 0, 4,
    0, 0, 0, 0, 0, 0, 0, 0, 5,
    0, 0, 0, 0, 0, 0, 0, 0, 5,
@@ -76,7 +91,7 @@ const uint8_t tilesTwoPair[] = {
    5, 0, 0, 0, 0, 0, 0, 0, 0,
    1, 0, 0, 0, 3,10,10,10, 8
 };
-const BotSpec botsTwoPair[] = {
+const BotSpec botsFourOfAKind[] = {
   BotSpec { .pos = GridPos(3, 0), .dir = Direction::West, .period = MEDIUM },
   BotSpec { .pos = GridPos(8, 3), .dir = Direction::North, .period = MEDIUM },
   BotSpec { .pos = GridPos(5, 7), .dir = Direction::East, .period = MEDIUM },
@@ -131,9 +146,16 @@ const LevelSpec levels[numLevels] = {
   LevelSpec {
     .numTiles = 3,
     .timeLimit = 240,
-    .grid = GridSpec { .w = 9, .h = 8, .tiles = tilesTwoPair },
+    .grid = GridSpec { .w = 9, .h = 8, .tiles = tilesDeathValley },
+    .numBots = 2,
+    .bots = botsDeathValley,
+  },
+  LevelSpec {
+    .numTiles = 3,
+    .timeLimit = 240,
+    .grid = GridSpec { .w = 9, .h = 8, .tiles = tilesFourOfAKind },
     .numBots = 4,
-    .bots = botsTwoPair,
+    .bots = botsFourOfAKind,
   }
 };
 
