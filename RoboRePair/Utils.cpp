@@ -6,6 +6,8 @@
 
 #include "Utils.h"
 
+#include "Images.h"
+
 int orientation(Vector2D v1, Vector2D v2) {
   int val = v1.y * v2.x - v1.x * v2. y;
   return (val == 0) ? 0 : ((val > 0) ? 1 : -1);
@@ -86,7 +88,74 @@ const int8_t* fontSpecForChar(char ch) {
   return fontSpec[p - fontChars];
 }
 
-void drawText(int x, int y, const char* s) {
+void drawText(int x0, int y0, const char* s) {
+  const char* p = s;
+  int x = x0;
+  while (*p) {
+    const int8_t* fontSpec = fontSpecForChar(*p);
+    int row = 0;
+    // fontSpec[0] is the number of glyphs + spacing tweaks
+    const int8_t* endP = fontSpec + *fontSpec;
+    // Draw character
+    while (++fontSpec <= endP) {
+      int v = *fontSpec;
+      if (v < 0) {
+        x += v + 3; // Tweak spacing
+      } else {
+        if (row == 3) {
+          row = 0;
+          x += 4;
+        }
+
+        // Draw glyph
+        // Note: Using _drawPixel instead of drawPixel for performance. The latter only redirects to
+        // the former anyway.
+        int y = y0 + 4 * row;
+        if (v & 0x01) {
+          gb.display._drawPixel(x + 1, y);
+          gb.display._drawPixel(x + 2, y);
+        }
+        if (v & 0x02) {
+          gb.display._drawPixel(x + 3, y + 1);
+          gb.display._drawPixel(x + 3, y + 2);
+        }
+        if (v & 0x04) {
+          gb.display._drawPixel(x + 1, y + 3);
+          gb.display._drawPixel(x + 2, y + 3);
+        }
+        if (v & 0x08) {
+          gb.display._drawPixel(x    , y + 1);
+          gb.display._drawPixel(x    , y + 2);
+        }
+        if (v & 0x10) {
+          gb.display._drawPixel(x + 1, y + 1);
+          gb.display._drawPixel(x + 1, y + 2);
+          gb.display._drawPixel(x + 2, y + 1);
+          gb.display._drawPixel(x + 2, y + 2);
+        } else {
+          if ((v & 0x03) == 0x03) {
+            gb.display._drawPixel(x + 2, y + 1);
+          }
+          if ((v & 0x06) == 0x06) {
+            gb.display._drawPixel(x + 2, y + 2);
+          }
+          if ((v & 0x0c) == 0x0c) {
+            gb.display._drawPixel(x + 1, y + 2);
+          }
+          if ((v & 0x09) == 0x09) {
+            gb.display._drawPixel(x + 1, y + 1);
+          }
+        }
+
+        row += 1;
+      }
+    }
+    x += 3;
+    ++p;
+  }
+}
+
+void drawTextUsingGlyphs(int x, int y, const char* s) {
   const char* p = s;
   while (*p) {
     const int8_t* fontSpec = fontSpecForChar(*p);
@@ -103,43 +172,9 @@ void drawText(int x, int y, const char* s) {
           x += 4;
         }
 
-        // Draw glyph
-        int y0 = y + 4 * row;
-        if (v & 0x01) {
-          gb.display.drawPixel(x + 1, y0);
-          gb.display.drawPixel(x + 2, y0);
-        }
-        if (v & 0x02) {
-          gb.display.drawPixel(x + 3, y0 + 1);
-          gb.display.drawPixel(x + 3, y0 + 2);
-        }
-        if (v & 0x04) {
-          gb.display.drawPixel(x + 1, y0 + 3);
-          gb.display.drawPixel(x + 2, y0 + 3);
-        }
-        if (v & 0x08) {
-          gb.display.drawPixel(x    , y0 + 1);
-          gb.display.drawPixel(x    , y0 + 2);
-        }
-        if (v & 0x10) {
-          gb.display.drawPixel(x + 1, y0 + 1);
-          gb.display.drawPixel(x + 1, y0 + 2);
-          gb.display.drawPixel(x + 2, y0 + 1);
-          gb.display.drawPixel(x + 2, y0 + 2);
-        } else {
-          if ((v & 0x03) == 0x03) {
-            gb.display.drawPixel(x + 2, y0 + 1);
-          }
-          if ((v & 0x06) == 0x06) {
-            gb.display.drawPixel(x + 2, y0 + 2);
-          }
-          if ((v & 0x0c) == 0x0c) {
-            gb.display.drawPixel(x + 1, y0 + 2);
-          }
-          if ((v & 0x09) == 0x09) {
-            gb.display.drawPixel(x + 1, y0 + 1);
-          }
-        }
+        fontGlyphImage.setFrame(v);
+        gb.display.drawImage(x, y + 4 * row, fontGlyphImage);
+
         row += 1;
       }
     }
