@@ -22,6 +22,8 @@ typedef bool (*AnimFunction)();
 int8_t levelNum;
 uint32_t score;
 uint32_t drawScore;
+constexpr int maxScoreDigits = 6;
+char scoreString[maxScoreDigits + 1];
 
 int animClk;
 AnimFunction endGameAnimFun;
@@ -422,8 +424,9 @@ void updateGame() {
     }
   }
 
-  if (drawScore < score) {
-    drawScore++;
+  if (drawScore != score) {
+    drawScore += sgn(score - drawScore);
+    snprintf(scoreString, maxScoreDigits + 1, "%lu", drawScore);
   }
 
   music.update();
@@ -444,7 +447,5 @@ void drawGame() {
   }
 
   gb.display.setColor(INDEX_BROWN);
-  gb.display.setCursor(1,1);
-  gb.display.print(drawScore);
+  drawText(1, 1, scoreString);
 }
-
