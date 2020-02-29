@@ -63,9 +63,9 @@ const int8_t fontSpec[][26] = {
   {3, 20,21,16},   // !
   {4, -2,0,0,9},   // ,
   {3, 0,0,16},  // .
-  {6, 22,21,19,28,21,25}, // 0
+  {6, 6,23,3,12,29,9},    // 0
   {5, -2,28,21,27,-2},    // 1
-  {6, 18,22,19,12,9,24},  // 2
+  {6, 18, 6,19,12,9,24},  // 2
   {6, 18,18,18,12,13,9},  // 3
   {6, 20,19,0,20,29,17},  // 4
   {6, 22,19,18,24,12,9},  // 5
@@ -146,6 +146,34 @@ void drawText(int x, int y, const char* s) {
     x += 3;
     ++p;
   }
+}
+
+int textWidth(const char* s) {
+  const char* p = s;
+  int w = 0;
+  while (*p) {
+    const int8_t* fontSpec = fontSpecForChar(*p);
+    int row = 0;
+    int len = fontSpec[0];
+    for (int i = 1; i <= len; ++i) {
+      int v = fontSpec[i];
+      if (v < 0) {
+        w += v + 3;
+      } else {
+        if (row == 3) {
+          row = 0;
+          w += 4;
+        }
+        row += 1;
+      }
+    }
+    w += 3;
+    ++p;
+  }
+  if (p != s) {
+    w += 1; // Also leave one pixel spacing at the end
+  }
+  return w;
 }
 
 void assertFailed(const char *function, const char *file, int lineNo, const char *expression) {

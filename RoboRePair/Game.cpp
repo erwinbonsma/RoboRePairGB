@@ -262,10 +262,14 @@ bool levelDoneAnim() {
   return true;
 }
 
+ScreenPos levelNumberPos;
+ScreenPos targetLevelNumberPos;
 ScreenPos levelTitlePos;
 ScreenPos targetLevelTitlePos;
+char levelNumString[3];
 
 void updateLevelStart() {
+  levelNumberPos.lerp(targetLevelNumberPos, 48);
   levelTitlePos.lerp(targetLevelTitlePos, 48);
   ++animClk;
 
@@ -280,13 +284,27 @@ void updateLevelStart() {
 
 void drawLevelStart() {
   gb.display.clear();
-  gb.display.setColor(animClk < 30 ? INDEX_ORANGE : INDEX_YELLOW);
-  drawText(levelTitlePos.getX(), levelTitlePos.getY(), "get ready!");
+
+  gb.display.setColor(INDEX_ORANGE);
+  drawText(levelNumberPos.getX(), levelNumberPos.getY(), "level");
+  drawText(levelNumberPos.getX() + 40, levelNumberPos.getY(), levelNumString);
+  drawText(levelTitlePos.getX(), levelTitlePos.getY(), levels[levelNum].name);
+
+  if (animClk >= 30) {
+    gb.display.setColor(INDEX_YELLOW);
+    drawText(49, 74, "get ready!");
+  }
 }
 
 void startLevel() {
-  levelTitlePos = ScreenPos(48, 0);
-  targetLevelTitlePos = ScreenPos(48, 60);
+  levelNumberPos = ScreenPos(53, 0);
+  targetLevelNumberPos = ScreenPos(53, 46);
+  int x0 = 80 - textWidth(levels[levelNum].name) / 2;
+  levelTitlePos = ScreenPos(x0, 120);
+  targetLevelTitlePos = ScreenPos(x0, 60);
+
+  snprintf(levelNumString, 3, "%02d", levelNum);
+
   music.stop();
   animClk = 0;
 

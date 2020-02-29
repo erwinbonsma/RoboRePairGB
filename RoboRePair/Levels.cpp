@@ -165,6 +165,7 @@ const BotSpec botsObstructions[] = {
 
 const LevelSpec levels[numLevels] = {
   LevelSpec {
+    .name = "can't fail",
     .numTiles = 3,
     .timeLimit = 45,
     .grid = GridSpec { .w = 9, .h = 7, .tiles = tilesCantFail },
@@ -172,6 +173,7 @@ const LevelSpec levels[numLevels] = {
     .bots = botsCantFail,
   },
   LevelSpec {
+    .name = "no choice",
     .numTiles = 1,
     .timeLimit = 120,
     .grid = GridSpec { .w = 9, .h = 7, .tiles = tilesNoChoice },
@@ -179,6 +181,7 @@ const LevelSpec levels[numLevels] = {
     .bots = botsNoChoice,
   },
   LevelSpec {
+    .name = "spacious",
     .numTiles = 3,
     .timeLimit = 240,
     .grid = GridSpec { .w = 9, .h = 7, .tiles = tilesSpacious },
@@ -186,6 +189,7 @@ const LevelSpec levels[numLevels] = {
     .bots = botsSpacious,
   },
   LevelSpec {
+    .name = "detour",
     .numTiles = 3,
     .timeLimit = 240,
     .grid = GridSpec { .w = 9, .h = 7, .tiles = tilesDetour },
@@ -193,6 +197,7 @@ const LevelSpec levels[numLevels] = {
     .bots = botsDetour,
   },
   LevelSpec {
+    .name = "death valley",
     .numTiles = 3,
     .timeLimit = 240,
     .grid = GridSpec { .w = 9, .h = 8, .tiles = tilesDeathValley },
@@ -200,6 +205,7 @@ const LevelSpec levels[numLevels] = {
     .bots = botsDeathValley,
   },
   LevelSpec {
+    .name = "twist",
     .numTiles = 3,
     .timeLimit = 240,
     .grid = GridSpec { .w = 9, .h = 8, .tiles = tilesTwist },
@@ -207,6 +213,7 @@ const LevelSpec levels[numLevels] = {
     .bots = botsTwist,
   },
   LevelSpec {
+    .name = "cramped",
     .numTiles = 3,
     .timeLimit = 240,
     .grid = GridSpec { .w = 8, .h = 8, .tiles = tilesCramped },
@@ -214,6 +221,7 @@ const LevelSpec levels[numLevels] = {
     .bots = botsCramped,
   },
   LevelSpec {
+    .name = "obstructed",
     .numTiles = 3,
     .timeLimit = 240,
     .grid = GridSpec { .w = 9, .h = 8, .tiles = tilesObstructions },
@@ -221,6 +229,7 @@ const LevelSpec levels[numLevels] = {
     .bots = botsObstructions,
   },
   LevelSpec {
+    .name = "four of a kind",
     .numTiles = 3,
     .timeLimit = 240,
     .grid = GridSpec { .w = 9, .h = 8, .tiles = tilesFourOfAKind },

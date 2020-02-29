@@ -19,6 +19,7 @@ struct BotSpec {
 };
 
 struct LevelSpec {
+  const char* name;
   const uint8_t numTiles;
   const uint8_t timeLimit;
   const GridSpec grid;
