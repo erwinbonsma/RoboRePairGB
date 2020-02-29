@@ -129,6 +129,21 @@ const BotSpec botsTwist[] = {
   BotSpec { .pos = GridPos(4, 6), .dir = Direction::South, .period = MEDIUM },
 };
 
+const uint8_t tilesCramped[] = {
+   0, 0, 0, 0, 0, 0, 6, 8,
+   0, 0, 0, 0, 0, 0, 3,12,
+   0, 0, 0, 0, 0, 0, 0, 9,
+   0, 0, 0, 9, 3, 0, 0, 0,
+   0, 0, 0,12, 6, 0, 0, 0,
+   6, 0, 0, 0, 0, 0, 0, 0,
+   3,12, 0, 0, 0, 0, 0, 0,
+   2, 9, 0, 0, 0, 0, 0, 0
+};
+const BotSpec botsCramped[] = {
+  BotSpec { .pos = GridPos(0, 5), .dir = Direction::West, .period = MEDIUM },
+  BotSpec { .pos = GridPos(7, 2), .dir = Direction::East, .period = MEDIUM },
+};
+
 const uint8_t tilesObstructions[] = {
    0, 0, 0, 0, 0, 0, 0, 0, 4,
    0, 0, 0, 0, 0, 0, 9, 0, 5,
@@ -144,6 +159,9 @@ const BotSpec botsObstructions[] = {
   BotSpec { .pos = GridPos(8, 2), .dir = Direction::North, .period = MEDIUM },
 };
 
+// TODO:
+// - Four of a Kind: Introduces clash
+// _ Divide & Conquer: Bots start in a queue with different times intermingled
 
 const LevelSpec levels[numLevels] = {
   LevelSpec {
@@ -187,6 +205,13 @@ const LevelSpec levels[numLevels] = {
     .grid = GridSpec { .w = 9, .h = 8, .tiles = tilesTwist },
     .numBots = 2,
     .bots = botsTwist,
+  },
+  LevelSpec {
+    .numTiles = 3,
+    .timeLimit = 240,
+    .grid = GridSpec { .w = 8, .h = 8, .tiles = tilesCramped },
+    .numBots = 2,
+    .bots = botsCramped,
   },
   LevelSpec {
     .numTiles = 3,
