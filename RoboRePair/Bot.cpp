@@ -170,6 +170,8 @@ bool Bot::moveTurnAnim() {
   // Move diagonally and turn
   if (_animClk < 3+4) {
     if (_animClk == 3+1) {
+      releasePrevious();
+
       if (isBlocked()) {
         return false;
       }
@@ -187,10 +189,6 @@ bool Bot::moveTurnAnim() {
       _offset.y += dirv2.y;
     }
     _spriteIndex = (_spriteIndex + rotDir + 16) % 16;
-
-    if (_animClk == 3+2) {
-      releasePrevious();
-    }
 
     ++_animClk;
     return false;
