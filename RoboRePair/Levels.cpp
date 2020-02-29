@@ -129,6 +129,22 @@ const BotSpec botsTwist[] = {
   BotSpec { .pos = GridPos(4, 6), .dir = Direction::South, .period = MEDIUM },
 };
 
+const uint8_t tilesObstructions[] = {
+   0, 0, 0, 0, 0, 0, 0, 0, 4,
+   0, 0, 0, 0, 0, 0, 9, 0, 5,
+   0, 0, 3, 0, 0, 0, 0, 0, 5,
+   0, 0, 0, 0, 0, 0, 5, 0, 9,
+   6, 0, 5, 0, 0, 0, 0, 0, 0,
+   5, 0, 0, 0, 0, 0,12, 0, 0,
+   5, 0, 6, 0, 0, 0, 0, 0, 0,
+   1, 0, 0, 0, 0, 0, 0, 0, 0,
+};
+const BotSpec botsObstructions[] = {
+  BotSpec { .pos = GridPos(0, 5), .dir = Direction::South, .period = MEDIUM },
+  BotSpec { .pos = GridPos(8, 2), .dir = Direction::North, .period = MEDIUM },
+};
+
+
 const LevelSpec levels[numLevels] = {
   LevelSpec {
     .numTiles = 3,
@@ -171,6 +187,13 @@ const LevelSpec levels[numLevels] = {
     .grid = GridSpec { .w = 9, .h = 8, .tiles = tilesTwist },
     .numBots = 2,
     .bots = botsTwist,
+  },
+  LevelSpec {
+    .numTiles = 3,
+    .timeLimit = 240,
+    .grid = GridSpec { .w = 9, .h = 8, .tiles = tilesObstructions },
+    .numBots = 2,
+    .bots = botsObstructions,
   },
   LevelSpec {
     .numTiles = 3,
