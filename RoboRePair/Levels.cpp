@@ -114,6 +114,21 @@ const BotSpec botsTest[] = {
   BotSpec { .pos = GridPos(2, 5), .dir = Direction::East, .period = MEDIUM }
 };
 
+const uint8_t tilesTwist[] = {
+   0, 0, 0, 0, 0,10, 0, 0, 0,
+   0, 0, 0, 0, 0, 4, 0, 0, 0,
+   0, 0, 0, 0, 0, 5, 0, 0, 0,
+   0, 0, 0, 0, 6,15, 0, 0, 0,
+   0, 0, 0, 0,15, 9, 0, 0, 0,
+   0, 0, 0, 0, 5, 0, 0, 0, 0,
+   0, 0, 0, 0, 1, 0, 0, 0, 0,
+   0, 0, 0, 0,10, 0, 0, 0, 0
+};
+const BotSpec botsTwist[] = {
+  BotSpec { .pos = GridPos(5, 1), .dir = Direction::North, .period = MEDIUM },
+  BotSpec { .pos = GridPos(4, 6), .dir = Direction::South, .period = MEDIUM },
+};
+
 const LevelSpec levels[numLevels] = {
   LevelSpec {
     .numTiles = 3,
@@ -153,9 +168,16 @@ const LevelSpec levels[numLevels] = {
   LevelSpec {
     .numTiles = 3,
     .timeLimit = 240,
+    .grid = GridSpec { .w = 9, .h = 8, .tiles = tilesTwist },
+    .numBots = 2,
+    .bots = botsTwist,
+  },
+  LevelSpec {
+    .numTiles = 3,
+    .timeLimit = 240,
     .grid = GridSpec { .w = 9, .h = 8, .tiles = tilesFourOfAKind },
     .numBots = 4,
     .bots = botsFourOfAKind,
-  }
+  },
 };
 
