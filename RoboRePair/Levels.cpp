@@ -82,20 +82,20 @@ const BotSpec botsDeathValley[] = {
 };
 
 const uint8_t tilesFourOfAKind[] = {
-   2,10,10,10,12, 0, 0, 0, 4,
+   6,10,10,12, 0, 0, 0, 2,12,
+   1, 0, 0, 0, 0, 0, 0, 0, 5,
    0, 0, 0, 0, 0, 0, 0, 0, 5,
-   0, 0, 0, 0, 0, 0, 0, 0, 5,
-   6, 0, 0, 0, 7, 0, 0, 0, 5,
-   5, 0, 0, 0,13, 0, 0, 0, 9,
+   0, 0, 0, 0,13, 0, 0, 0, 9,
+   6, 0, 0, 0, 7, 0, 0, 0, 0,
    5, 0, 0, 0, 0, 0, 0, 0, 0,
-   5, 0, 0, 0, 0, 0, 0, 0, 0,
-   1, 0, 0, 0, 3,10,10,10, 8
+   5, 0, 0, 0, 0, 0, 0, 0, 4,
+   3, 8, 0, 0, 0, 3,10,10, 9
 };
 const BotSpec botsFourOfAKind[] = {
-  BotSpec { .pos = GridPos(3, 0), .dir = Direction::West, .period = MEDIUM },
-  BotSpec { .pos = GridPos(8, 3), .dir = Direction::North, .period = MEDIUM },
-  BotSpec { .pos = GridPos(5, 7), .dir = Direction::East, .period = MEDIUM },
-  BotSpec { .pos = GridPos(0, 4), .dir = Direction::South, .period = MEDIUM }
+  BotSpec { .pos = GridPos(2, 0), .dir = Direction::West, .period = MEDIUM },
+  BotSpec { .pos = GridPos(8, 2), .dir = Direction::North, .period = MEDIUM },
+  BotSpec { .pos = GridPos(6, 7), .dir = Direction::East, .period = MEDIUM },
+  BotSpec { .pos = GridPos(0, 5), .dir = Direction::South, .period = MEDIUM }
 };
 
 const uint8_t tilesTest[] = {
