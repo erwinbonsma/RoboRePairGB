@@ -135,6 +135,12 @@ void fastGameScreenClear() {
   memset(gb.display._buffer, (int)INDEX_DARKGRAY | ((int)INDEX_DARKGRAY << 4), 160 * 20 / 2);
 }
 
+void disableInput() {
+  inputDisabled = true;
+  gridCursor.setDisabled(true);
+  gridCursor.setHidden(true);
+}
+
 bool speedUpBotsAnim() {
   if (animClk++ % 6 == 0) {
    return !speedUpBots();
@@ -213,8 +219,9 @@ bool gameOverAnim() {
 }
 
 bool levelDoneAnim() {
-  if (drawScore < score) {
+  if (drawScore != score) {
     gb.sound.fx(scoreSfx);
+    // TODO: Different SFX for subtraction
     return false;
   }
 
@@ -232,6 +239,7 @@ bool levelDoneAnim() {
     return false;
   }
 
+  // Life (or score) bonus
   if (animClk == 60) {
     lives.inc();
     gb.sound.fx(liveBonusSfx);
@@ -243,6 +251,7 @@ bool levelDoneAnim() {
     return false;
   }
 
+  // Score remaining time
   if (timeBar.scoreTicks()) {
     gb.sound.fx(scoreSfx);
     return false;
@@ -250,6 +259,33 @@ bool levelDoneAnim() {
 
   if (animClk < 120) {
     // Wait
+    return false;
+  }
+
+  // Penalize imperfections
+  if (animClk < (120 + grid.maxIndex() * 5)) {
+    if ((animClk - 120) % 5 != 0) {
+      return false;
+    }
+    if (animClk == 120) {
+      gridCursor.setHidden(false);
+    }
+    GridIndex index = (animClk - 120) / 5;
+    GridPos pos = grid.indexToPos(index);
+    gridCursor.setPos(pos);
+    const GridTile* tile = grid.tileAt(pos);
+    if (tile != nullptr && grid.patchTileAt(pos) != tile) {
+      // Tile was patched so had open ends. Subtract points
+      score -= 10;
+    }
+    return false;
+  }
+  if (animClk == (120 + grid.maxIndex() * 5)) {
+    gridCursor.setHidden(true);
+  }
+
+  if (animClk < (150 + grid.maxIndex() * 5)) {
+    // Wait some more
     return false;
   }
 
@@ -317,14 +353,14 @@ void startLevel() {
 void setEndGameAnimFunction(AnimFunction fun) {
   endGameAnimFun = fun;
   animClk = 0;
-  inputDisabled = true;
+  disableInput();
   music.stop();
 }
 
 void setSpeedUpAnimFunction() {
   speedUpAnimFun = speedUpBotsAnim;
   animClk = 0;
-  inputDisabled = true;
+  disableInput();
 }
 
 void loadLevel() {
@@ -393,6 +429,9 @@ void updateGame() {
     handleLevelDone();
   }
 
+  // Also update when user input is disabled as the cursor is also used when scoring the level.
+  gridCursor.update();
+
   if (endGameAnimFun != nullptr) {
     if (endGameAnimFun()) {
       endGameAnimFun = nullptr;
@@ -405,12 +444,11 @@ void updateGame() {
     }
 
     if (!inputDisabled) {
-      gridCursor.update();
       tileTray.update();
 
       if (gb.buttons.held(BUTTON_MENU, 0)) {
         // Suicide. Can be useful when pairing is impossible.
-        inputDisabled = true;
+        disableInput();
         speedUpBots();
         crashAllBots();
       }
@@ -443,8 +481,8 @@ void drawGame() {
   drawBots();
   if (!inputDisabled) {
     tileTray.draw();
-    gridCursor.draw();
   }
+  gridCursor.draw();
 
   gb.display.setColor(INDEX_BROWN);
   drawText(1, 1, scoreString);

@@ -33,12 +33,23 @@ void GridCursor::positionChanged() {
 
 void GridCursor::init(GridPos pos) {
   _pos = pos;
+  _hidden = false;
+  _disabled = false;
   positionChanged();
 }
 
 void GridCursor::update() {
-  bool posChanged = false;
+  _drawPos.lerp(_targetDrawPos, 128);
+  if (_contractionClk > 0) {
+    _contractionClk--;
+  }
 
+  if (_disabled) {
+    // Do not handle user input
+    return;
+  }
+
+  bool posChanged = false;
   if (gb.buttons.held(BUTTON_LEFT, 0)) {
     _pos.x = (_pos.x + grid.width() - 1) % grid.width();
     posChanged = true;
@@ -57,10 +68,6 @@ void GridCursor::update() {
   }
   if (posChanged) {
     positionChanged();
-  }
-
-  if (_contractionClk > 0) {
-    _contractionClk--;
   }
 
   if (gb.buttons.held(BUTTON_A, 0)) {
@@ -83,18 +90,19 @@ void GridCursor::update() {
       gb.sound.fx(noCanDoSfx);
     }
   }
-
-  _drawPos.lerp(_targetDrawPos, 128);
 }
 
 void GridCursor::draw() {
+  if (_hidden) {
+    return; 
+  }
   if (_contractionClk > 0) {
     int d = _contractionClk == 0 ? 0 : (10 - abs(_contractionClk - 10)) / 2;
     gb.display.setColor(INDEX_GRAY);
     gb.display.drawRect(_drawPos.getX() + d, _drawPos.getY() + d, 13 - 2*d, 13 - 2*d);
   } else {
     const GridTile* tile = tileTray.selectedTile();
-    if (tile != nullptr) {
+    if (tile != nullptr && !_disabled) {
       tilesPreviewImage.setFrame(tile->index() + numPreviewTiles * _allowed);
       gb.display.drawImage(_drawPos.getX(), _drawPos.getY(), tilesPreviewImage);
     }
