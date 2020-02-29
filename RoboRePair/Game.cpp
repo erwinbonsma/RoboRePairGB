@@ -254,6 +254,7 @@ bool levelDoneAnim() {
   // Score remaining time
   if (timeBar.scoreTicks()) {
     gb.sound.fx(scoreSfx);
+    --animClk; // Undo increase
     return false;
   }
 
@@ -263,14 +264,15 @@ bool levelDoneAnim() {
   }
 
   // Penalize imperfections
-  if (animClk < (120 + grid.maxIndex() * 5)) {
-    if ((animClk - 120) % 5 != 0) {
+  constexpr int gridScanPeriod = 5;
+  if (animClk < (120 + grid.maxIndex() * gridScanPeriod)) {
+    if ((animClk - 120) % gridScanPeriod != 0) {
       return false;
     }
     if (animClk == 120) {
       gridCursor.setHidden(false);
     }
-    GridIndex index = (animClk - 120) / 5;
+    GridIndex index = (animClk - 120) / gridScanPeriod;
     GridPos pos = grid.indexToPos(index);
     gridCursor.setPos(pos);
     const GridTile* tile = grid.tileAt(pos);
@@ -280,11 +282,11 @@ bool levelDoneAnim() {
     }
     return false;
   }
-  if (animClk == (120 + grid.maxIndex() * 5)) {
+  if (animClk == (120 + grid.maxIndex() * gridScanPeriod)) {
     gridCursor.setHidden(true);
   }
 
-  if (animClk < (150 + grid.maxIndex() * 5)) {
+  if (animClk < (150 + grid.maxIndex() * gridScanPeriod)) {
     // Wait some more
     return false;
   }
@@ -341,7 +343,7 @@ void startLevel() {
   levelTitlePos = ScreenPos(x0, 120);
   targetLevelTitlePos = ScreenPos(x0, 60);
 
-  snprintf(levelNumString, 3, "%02d", levelNum);
+  snprintf(levelNumString, 3, "%02d", (levelNum + 1));
 
   music.stop();
   animClk = 0;
