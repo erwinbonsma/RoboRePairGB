@@ -90,8 +90,11 @@ const Gamebuino_Meta::Sound_FX liveBonusSfx[] = {
   {Gamebuino_Meta::Sound_FX_Wave::SQUARE,0,255,0,0,25,1},
 };
 
-const Gamebuino_Meta::Sound_FX scoreSfx[] = {
-  {Gamebuino_Meta::Sound_FX_Wave::SQUARE,0,128,-32,0,119,1},
+const Gamebuino_Meta::Sound_FX scoreIncSfx[] = {
+  {Gamebuino_Meta::Sound_FX_Wave::SQUARE,0,128,-32,0,106,1},
+};
+const Gamebuino_Meta::Sound_FX scoreDecSfx[] = {
+  {Gamebuino_Meta::Sound_FX_Wave::SQUARE,0,128,-32,0,212,1},
 };
 
 const Gamebuino_Meta::Sound_FX timedOutSfx[] = {
@@ -166,7 +169,7 @@ bool retryAnim() {
 
 bool endGameAnim() {
   if (drawScore < score) {
-    gb.sound.fx(scoreSfx);
+    gb.sound.fx(scoreIncSfx);
     return false;
   }
 
@@ -220,8 +223,7 @@ bool gameOverAnim() {
 
 bool levelDoneAnim() {
   if (drawScore != score) {
-    gb.sound.fx(scoreSfx);
-    // TODO: Different SFX for subtraction
+    gb.sound.fx(drawScore < score ? scoreIncSfx : scoreDecSfx);
     return false;
   }
 
@@ -253,7 +255,7 @@ bool levelDoneAnim() {
 
   // Score remaining time
   if (timeBar.scoreTicks()) {
-    gb.sound.fx(scoreSfx);
+    gb.sound.fx(scoreIncSfx);
     --animClk; // Undo increase
     return false;
   }
