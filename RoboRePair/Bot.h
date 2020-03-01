@@ -33,7 +33,9 @@ class Bot {
 
   // The bot that this bot will be meeting given the paths both bots traverse.
   const Bot* _meetingBot;
+#ifdef DEVELOPMENT
   int _lastDist; // TMP
+#endif
 
   // The bot that this bot is paired with, if any.
   const Bot* _pairedWithBot;

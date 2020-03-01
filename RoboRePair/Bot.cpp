@@ -79,10 +79,12 @@ bool Bot::isBlocked() {
     _meetingBot = claimedBy;
     claimedBy->mutableBot()->_meetingBot = this;
 
+#ifdef DEVELOPMENT
     // TMP: Check that meeting bots always move closer
     int dist = meetingDistance();
     claimedBy->mutableBot()->_lastDist = dist;
     _lastDist = dist;
+#endif
 
     return false;
   }
@@ -240,10 +242,10 @@ void Bot::moveStep() {
   _spriteIndex = (int)_dir * 4;
 
   const GridTile* tile = grid.tileAt(_pos);
-  if (tile != nullptr && !_shouldCrash) {
-    handleMove(tile);
-  } else {
+  if (tile == nullptr || _shouldCrash) {
     handleCrash();
+  } else {
+    handleMove(tile);
   }
 }
 
@@ -417,6 +419,7 @@ void Bot::handleMeeting() {
     _meetingBot->mutableBot()->paired();
     paired();
   } else {
+#ifdef DEVELOPMENT
     if (dist > _lastDist) {
       // This should not happen
       stopAllBots();
@@ -424,6 +427,7 @@ void Bot::handleMeeting() {
     } else {
       _lastDist = dist;
     }
+#endif
   }
 }
 
@@ -441,7 +445,9 @@ void Bot::init(GridPos pos, Direction dir) {
   _destroyed = false;
   _period = 12; // Default
 
+#ifdef DEVELOPMENT
   _lastDist = 0;
+#endif
 
   _maxOffset = 6;
   moveStep();
@@ -495,11 +501,28 @@ void Bot::draw() {
     *_activeImage
   );
 
+#ifdef DEVELOPMENT
+  if (_shouldCrash) {
+    gb.display.setColor(INDEX_RED);
+    gb.display.drawPixel(
+      screenPos.getX() + _offset.x + 6,
+      screenPos.getY() + _offset.y + 6
+    );
+  }
+  if (_meetingBot != nullptr) {
+    gb.display.setColor(INDEX_WHITE);
+    gb.display.drawPixel(
+      screenPos.getX() + _offset.x + 7,
+      screenPos.getY() + _offset.y + 7
+    );
+  }
+
   if (_lastDist < 0) {
     gb.display.setCursor(20, 1);
     gb.display.setColor(INDEX_RED);
     gb.display.print("!!!");
   }
+#endif
 
 //  if (_meetingBot != nullptr) {
 //    gb.display.setCursor(100, 1);
