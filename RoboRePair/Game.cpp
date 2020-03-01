@@ -406,6 +406,7 @@ void handleDeath() {
 void startGame() {
   levelNum = 0;
   score = 0;
+  drawScore = 1; // Forces re-generation of drawScoreString
   endGameAnimFun = nullptr;
   speedUpAnimFun = nullptr;
 
