@@ -274,7 +274,13 @@ bool levelDoneAnim() {
       return false;
     }
     if (animClk == 120) {
-      gridCursor.setHidden(false);
+      if (grid.isComplete()) {
+        // No imperfections. Skip this scoring step
+        animClk = 120 + grid.maxIndex() * gridScanPeriod;
+        return false;
+      } else {
+        gridCursor.setHidden(false);
+      }
     }
     GridIndex index = (animClk - 120) / gridScanPeriod;
     GridPos pos = grid.indexToPos(index);

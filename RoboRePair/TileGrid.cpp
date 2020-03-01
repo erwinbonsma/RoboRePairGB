@@ -153,6 +153,36 @@ const GridTile* TileGrid::patchTileAt(GridPos pos) {
   return tile;
 }
 
+bool TileGrid::hasOpenEnds(GridPos pos) {
+  const GridTile* tile = tileAt(pos);
+  if (tile == nullptr) {
+    return false;
+  }
+
+  for (int d = 4; --d >= 0; ) {
+    if (tile->hasEntry((Direction)d)) {
+      const Vector2D dirv = dirVectors[d];
+      GridPos nbPos(pos.x + dirv.x, pos.y + dirv.y);
+      if (tileAt(nbPos) == nullptr) {
+        return true;
+      }
+    }
+  }
+
+  return false;
+}
+
+bool TileGrid::isComplete() {
+  for (int i = _maxIndex; --i >= 0; ) {
+    if (hasOpenEnds(indexToPos(i))) {
+      return false;
+    }
+  }
+
+  return true;
+}
+
+
 bool TileGrid::canPlaceTileAt(GridPos pos, const GridTile* tile) {
   assertTrue(tile != nullptr);
 
