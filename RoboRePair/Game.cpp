@@ -459,16 +459,16 @@ void updateGame() {
     if (!inputDisabled) {
       tileTray.update();
 
-#ifndef DEVELOPMENT
-      // Only enable while not in development, to avoid clash with screen recorder
+#ifndef SCREEN_RECORDING
+      // Ignore while recording is enabled, as both are triggered via the same button
       if (gb.buttons.held(BUTTON_MENU, 0)) {
         // Suicide. Can be useful when pairing is impossible.
         disableInput();
         speedUpBots();
         crashAllBots();
       }
-#endif
     }
+#endif
 
     if (!timeBar.update()) {
       // Timed out!

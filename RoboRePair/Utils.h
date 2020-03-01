@@ -9,7 +9,10 @@
 
 #include <Gamebuino-Meta.h>
 
-//#define DEVELOPMENT
+#define DEVELOPMENT
+#ifdef DEVELOPMENT
+//#define SCREEN_RECORDING
+#endif
 
 #define CALL_MEMBER_FN(object, ptrToMember)  ((object).*(ptrToMember))
 

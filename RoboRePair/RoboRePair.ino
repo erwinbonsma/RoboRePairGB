@@ -3,7 +3,7 @@
 #include "MainMenu.h"
 #include "Utils.h"
 
-#ifdef DEVELOPMENT
+#ifdef SCREEN_RECORDING
 #include "ScreenRecorder.h"
 #endif
 
@@ -33,7 +33,7 @@ void displayCpuLoad() {
 void setup() {
   gb.begin();
 
-#ifdef DEVELOPMENT
+#ifdef SCREEN_RECORDING
   ScreenRecorder::init(16, true);
 #endif
   showMainMenu();
@@ -46,8 +46,12 @@ void loop() {
   drawFunction();
 
 #ifdef DEVELOPMENT
-  //displayCpuLoad();
+  #ifdef SCREEN_RECORDING
   ScreenRecorder::monitor(gb.display._buffer);
+  #else
+  displayCpuLoad();
+  #endif
 #endif
+
 }
 
