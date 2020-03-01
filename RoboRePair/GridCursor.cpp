@@ -36,6 +36,7 @@ void GridCursor::init(GridPos pos) {
   _hidden = false;
   _disabled = false;
   positionChanged();
+  _drawPos = _targetDrawPos;
 }
 
 void GridCursor::update() {
