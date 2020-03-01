@@ -34,7 +34,7 @@ void setup() {
   gb.begin();
 
 #ifdef DEVELOPMENT
-  ScreenRecorder::init();
+  ScreenRecorder::init(16, true);
 #endif
   showMainMenu();
 }
