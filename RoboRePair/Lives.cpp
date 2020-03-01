@@ -58,14 +58,14 @@ void Lives::draw() {
   livesImage.setFrame(0);
   int fullLives = _drawLives >> 3; // Fast division by eight
   for (int i = fullLives; --i >= 0; ) {
-    gb.display.drawImage(152 - 8 * i, 1, livesImage);
+    gb.display.drawImage(151 - 9 * i, 1, livesImage);
   }
 
   // Draw live that is appearing/disappearing
   int mod = _drawLives & 0x07; // Fast modulus eight
   if (mod != 0) {
     livesImage.setFrame(8 - mod);
-    gb.display.drawImage(152 - 8 * fullLives, 1, livesImage);
+    gb.display.drawImage(151 - 9 * fullLives, 1, livesImage);
   }
 }
 

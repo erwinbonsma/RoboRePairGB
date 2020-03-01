@@ -89,7 +89,7 @@ const int8_t* fontSpecForChar(char ch) {
   return fontSpec[p - fontChars];
 }
 
-void drawText(int x0, int y0, const char* s) {
+void drawText(int x0, int y0, const char* s, int sep) {
   const char* p = s;
   int x = x0;
   while (*p) {
@@ -151,7 +151,7 @@ void drawText(int x0, int y0, const char* s) {
         row += 1;
       }
     }
-    x += 3;
+    x += 2 + sep;
     ++p;
   }
 }

@@ -51,7 +51,7 @@ void TimeBar::draw() {
   }  else {
     int i = 0;
     int secs = _ticksRemaining / fps;
-    int x = 159;
+    int x = 158;
     while (secs > 0) {
       const uint8_t* spec = timebarSpecs[i];
       int l = min(spec[0], max(1, secs/spec[1]));

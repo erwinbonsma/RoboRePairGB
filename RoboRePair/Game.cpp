@@ -135,7 +135,9 @@ const GridSpec theEndGridSpec = GridSpec {
 
 
 void fastGameScreenClear() {
-  memset(gb.display._buffer, (int)INDEX_DARKGRAY | ((int)INDEX_DARKGRAY << 4), 160 * 20 / 2);
+  // Only clear top of screen. No need to clear grid, as it will overwrite itself
+  memset(gb.display._buffer, (int)INDEX_DARKGRAY | ((int)INDEX_DARKGRAY << 4), 80 * 15);
+  memset(gb.display._buffer + 40 * 15, (int)INDEX_BLACK | ((int)INDEX_BLACK << 4), 80 * 5);
 }
 
 void disableInput() {
@@ -383,7 +385,7 @@ void loadLevel() {
   inputDisabled = false;
   music.start();
 
-  gb.display.clear(INDEX_DARKGRAY);
+  gb.display.clear(INDEX_BLACK);
 
   updateFunction = updateGame;
   drawFunction = drawGame;
@@ -489,5 +491,5 @@ void drawGame() {
   gridCursor.draw();
 
   gb.display.setColor(INDEX_BROWN);
-  drawText(1, 1, scoreString);
+  drawText(2, 1, scoreString, 2);
 }

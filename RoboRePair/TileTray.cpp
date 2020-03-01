@@ -8,7 +8,7 @@
 
 #include "Game.h"
 
-const int tileTraySep = 2;
+const int tileTraySep = 3;
 const int tileTrayMul = tileSize + tileTraySep;
 
 // Global
