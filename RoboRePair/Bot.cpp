@@ -407,7 +407,7 @@ int Bot::meetingDistance() {
   p2.add(_meetingBot->_offset);
 
   int dx = p1.getX() - p2.getX();
-  int dy = p2.getY() - p2.getY();
+  int dy = p1.getY() - p2.getY();
   return dx * dx + dy * dy;
 }
 
