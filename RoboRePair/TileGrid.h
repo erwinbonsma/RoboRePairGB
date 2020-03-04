@@ -33,8 +33,8 @@ public:
   void setTile(const GridTile* tile) { _tile = tile; }
 
   ScreenPos getPosition() const { return _pos; }
-  ScreenPos* getTargetPosition() { return &_targetPos; }
 
+  ScreenPos* getTargetPosition() { return &_targetPos; }
   void setTargetPosition(ScreenPos targetPos) { _targetPos = targetPos; }
 
   void init(ScreenPos pos);
@@ -43,8 +43,29 @@ public:
   void draw();
 };
 
+// Values chosen for use in GridSceenTile::mask()
+enum class NeighbourStatus : uint8_t {
+  NoTile = 0,
+  Gate = 1,   // Tile with gate to facing tile
+  NoGate = 2  // Tile without a gate facing tile
+};
+
 class GridScreenTile : public ScreenTile {
+  friend class TileGrid;
+
   const Bot* _bot;
+
+  // Mask representing the tiles and facing gates present at neighbouring tiles.
+  uint8_t _mask;
+
+  void clearMask() { _mask = 0; }
+  void updateMask(Direction d, NeighbourStatus s) {
+    _mask &= ~(0x3 << ((int)d * 2)); // Reset bits for direction
+    _mask |= (int)s << ((int)d * 2); // Set bits for direction
+  }
+
+  bool canPlaceTile(const GridTile* tile) const;
+  bool hasOpenEnds() const;
 
 public:
   GridScreenTile() = default;
@@ -75,6 +96,7 @@ class TileGrid {
   ScreenPos _lastChangedPos;
 
   void initOrigin();
+  void updateNeighbourMasks(GridPos pos, const GridTile* tile);
 
 public:
   void init(int width, int height);

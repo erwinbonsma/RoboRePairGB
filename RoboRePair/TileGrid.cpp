@@ -27,6 +27,31 @@ void ScreenTile::draw() {
   gb.display.drawImage(_pos.getX(), _pos.getY(), tilesImage);
 }
 
+bool GridScreenTile::canPlaceTile(const GridTile* tile) const {
+  if (getTile() != emptyTile) {
+    // There's already a tile at this position
+    return false;
+  }
+
+  if ((tile->mask() & _mask) != 0) {
+    // The tile does not fit
+    return false;
+  }
+
+  // At least one gate of the tile should connect to a gate at a neighbouring tile.
+  // - AND with 0xaa to only preserve bits representing gates
+  // - Shifting mask one bit to align bits for neighbouring gates with those in tile mask
+  return ((tile->mask() & 0xaa) & (_mask << 1)) != 0;
+}
+
+bool GridScreenTile::hasOpenEnds() const {
+  int tileMask = getTile()->mask() & 0xaa;
+
+  // All gates of the tile should connect to corresponding gates at neighbouring tiles
+  return (tileMask & (_mask << 1)) != tileMask;
+}
+
+
 void TileGrid::initOrigin() {
   _x0 = 80 - _width * _tileSize / 2;
   _y0 = 20;
@@ -43,11 +68,29 @@ void TileGrid::init(int width, int height) {
 
   for (int i = _maxIndex; --i >= 0; ) {
     GridPos pos = indexToPos(i);
-    _tiles[i].init(ScreenPos(74, 58));
-    _tiles[i].setTargetPosition(targetScreenPosOf(pos));
-    _tiles[i].setTile(emptyTile);
+    GridScreenTile& tile = _tiles[i];
+    tile.init(ScreenPos(74, 58));
+    tile.setTargetPosition(targetScreenPosOf(pos));
+    tile.setTile(emptyTile);
+    tile.clearMask();
   }
   _lastChangedPos = ScreenPos(74, 58);
+
+  // Set masks for border tiles
+  for (int x = _width; --x >= 0; ) {
+    GridScreenTile& topTile = _tiles[posToIndex(GridPos(x, 0))];
+    topTile.updateMask(Direction::North, NeighbourStatus::NoGate);
+
+    GridScreenTile& bottomTile = _tiles[posToIndex(GridPos(x, _height - 1))];
+    bottomTile.updateMask(Direction::South, NeighbourStatus::NoGate);
+  }
+  for (int y = _height; --y >= 0; ) {
+    GridScreenTile& leftTile = _tiles[posToIndex(GridPos(0, y))];
+    leftTile.updateMask(Direction::West, NeighbourStatus::NoGate);
+
+    GridScreenTile& rightTile = _tiles[posToIndex(GridPos(_width - 1, y))];
+    rightTile.updateMask(Direction::East, NeighbourStatus::NoGate);
+  }
 }
 
 void TileGrid::init(const GridSpec& gridSpec) {
@@ -81,6 +124,7 @@ void TileGrid::expand(int width, int height) {
       // Create new, empty tile
       _tiles[index].init(ScreenPos(74, 58));
       _tiles[index].setTile(emptyTile);
+      _tiles[index].clearMask();
     } else {
       GridIndex oldIndex = pos.x + pos.y * oldw;
       if (index != oldIndex) {
@@ -90,6 +134,28 @@ void TileGrid::expand(int width, int height) {
     }
     // Update target position
     _tiles[index].setTargetPosition(targetScreenPosOf(pos));
+  }
+
+  // Update masks (currently not needed, as masks are not used after expansion, but no harm)
+  if (_height > oldh) {
+    for (int x = oldw; --x >= 0; ) {
+      GridIndex index = posToIndex(GridPos(x, oldh));
+      GridScreenTile& tile = _tiles[index];
+      tile.updateMask(
+        Direction::North,
+        _tiles[index - _width].getTile() != nullptr ? NeighbourStatus::NoGate : NeighbourStatus::NoTile
+      );
+    }
+  }
+  if (_width > oldw) {
+    for (int y = oldh; --y >= 0; ) {
+      GridIndex index = posToIndex(GridPos(oldw, y));
+      GridScreenTile& tile = _tiles[index];
+      tile.updateMask(
+        Direction::West,
+        _tiles[index - 1].getTile() != nullptr ? NeighbourStatus::NoGate : NeighbourStatus::NoTile
+      );
+    }
   }
 }
 
@@ -119,10 +185,28 @@ const GridTile* TileGrid::tileAt(GridPos pos) {
   }
 }
 
+void TileGrid::updateNeighbourMasks(GridPos pos, const GridTile* tile) {
+  for (int d = 4; --d >= 0; ) {
+    const Vector2D dirv = dirVectors[d];
+    GridPos nbPos(pos.x + dirv.x, pos.y + dirv.y);
+    if (contains(nbPos)) {
+      GridScreenTile& nbTile = _tiles[posToIndex(nbPos)];
+      nbTile.updateMask(
+        opposite((Direction)d),
+        (tile == emptyTile) ? NeighbourStatus::NoTile : (
+          tile->hasGate((Direction)d) 
+          ? NeighbourStatus::Gate : NeighbourStatus::NoGate
+        )
+      );
+    }
+  }
+}
+
 void TileGrid::placeTileAt(GridPos pos, const GridTile* tile, bool force) {
   assertTrue(force || canPlaceTileAt(pos, tile));
 
   _tiles[posToIndex(pos)].setTile(tile);
+  updateNeighbourMasks(pos,  tile);
 }
 
 void TileGrid::placeTileAt(GridPos pos, const GridTile* tile, ScreenPos fromPos) {
@@ -130,6 +214,8 @@ void TileGrid::placeTileAt(GridPos pos, const GridTile* tile, ScreenPos fromPos)
 
   GridScreenTile* screenTile = &_tiles[posToIndex(pos)];
   screenTile->setTile(tile);
+  updateNeighbourMasks(pos,  tile);
+
   _lastChangedPos = screenTile->getPosition();
   screenTile->setPosition(fromPos);
 }
@@ -142,7 +228,7 @@ const GridTile* TileGrid::patchTileAt(GridPos pos) {
     const GridTile* nbTile = tileAt(nbPos);
     if (
       nbTile != nullptr &&
-      nbTile->hasEntry(opposite((Direction)d))
+      nbTile->hasGate(opposite((Direction)d))
     ) {
       mask |= 0x01 << d;
     }
@@ -153,28 +239,10 @@ const GridTile* TileGrid::patchTileAt(GridPos pos) {
   return tile;
 }
 
-bool TileGrid::hasOpenEnds(GridPos pos) {
-  const GridTile* tile = tileAt(pos);
-  if (tile == nullptr) {
-    return false;
-  }
-
-  for (int d = 4; --d >= 0; ) {
-    if (tile->hasEntry((Direction)d)) {
-      const Vector2D dirv = dirVectors[d];
-      GridPos nbPos(pos.x + dirv.x, pos.y + dirv.y);
-      if (tileAt(nbPos) == nullptr) {
-        return true;
-      }
-    }
-  }
-
-  return false;
-}
-
 bool TileGrid::isComplete() {
-  for (int i = _maxIndex; --i >= 0; ) {
-    if (hasOpenEnds(indexToPos(i))) {
+  GridScreenTile* p = _tiles;
+  while (p < _tilesEnd) {
+    if ((p++)->hasOpenEnds()) {
       return false;
     }
   }
@@ -182,34 +250,16 @@ bool TileGrid::isComplete() {
   return true;
 }
 
-
 bool TileGrid::canPlaceTileAt(GridPos pos, const GridTile* tile) {
   assertTrue(tile != nullptr);
 
-  if (tileAt(pos) != nullptr) {
-    // There's already a tile at this position
-    return false;
-  }
-
-  bool connects = false;
-  for (int d = 4; --d >= 0; ) {
-    const Vector2D dirv = dirVectors[d];
-    const GridTile* nbTile = tileAt(GridPos(pos.x + dirv.x, pos.y + dirv.y));
-    bool hasPath = tile->hasEntry((Direction)d);
-    if (nbTile != nullptr) {
-      if (hasPath != nbTile->hasEntry( opposite((Direction)d) )) {
-        return false;
-      }
-      connects |= hasPath;
-    }
-  }
-
-  return connects;
+  return _tiles[posToIndex(pos)].canPlaceTile(tile);
 }
 
 bool TileGrid::isPlaceable(const GridTile* tile) {
-  for (int i = _maxIndex; --i >= 0; ) {
-    if (canPlaceTileAt(indexToPos(i), tile)) {
+  GridScreenTile* p = _tiles;
+  while (p < _tilesEnd) {
+    if ((p++)->canPlaceTile(tile)) {
       return true;
     }
   }

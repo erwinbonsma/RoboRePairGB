@@ -8,11 +8,16 @@
 
 static int _nxtIndex = 0;
 
-GridTile::GridTile(uint8_t entries, uint16_t connections, uint8_t probability) {
-  _entries = entries;
+GridTile::GridTile(uint8_t gates, uint16_t connections, uint8_t probability) {
+  _gates = gates;
   _connections = connections;
   _probability = probability;
   _index = _nxtIndex++;
+
+  _mask = 0;
+  for (int d = 4; --d >= 0; ) {
+    _mask |= (hasGate((Direction)d) ? 0x2 : 0x1) << (d * 2);
+  }
 }
 
 Direction GridTile::exitFrom(Direction entry) const {
