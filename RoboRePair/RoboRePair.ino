@@ -28,6 +28,11 @@ void displayCpuLoad() {
     gb.display.setColor(INDEX_BLACK);
     gb.display.drawLine(max(0, cpuLoad - 69), 127, 50, 127);
   }
+  gb.display.setColor(INDEX_BLACK);
+  gb.display.fillRect(0,112,25,12);
+  gb.display.setCursor(1,113);
+  gb.display.setColor(INDEX_WHITE);
+  gb.display.print(cpuLoad);
 }
 
 void setup() {
