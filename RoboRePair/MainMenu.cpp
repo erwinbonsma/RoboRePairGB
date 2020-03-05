@@ -9,16 +9,16 @@
 #include "Game.h"
 #include "HelpMenu.h"
 #include "Images.h"
+#include "Levels.h" // for GridSpec
 #include "Music.h"
 #include "Utils.h"
+#include "TileGrid.h"
 
 uint8_t activeButton = 1;
 uint8_t clk = 0;
 bool buttonsShown = false;
 bool firstDraw;
 
-const uint8_t w = 12;
-const uint8_t h = 11;
 const uint8_t tilesTitle[] = {
   17, 12,  4,  4,  6, 14, 12, 17, 12,  4,  6,  8,
   20, 13,  5,  5,  5,  5,  5, 20, 13,  5, 20,  8,
@@ -32,6 +32,8 @@ const uint8_t tilesTitle[] = {
   20, 13, 20,  8, 24, 20,  9, 20, 22,  5, 20, 13,
    1,  1,  3,  8,  0,  1,  0,  1,  1,  1,  1,  1
 };
+
+const GridSpec titleGrid = GridSpec { .w = 12, .h = 11, .tiles = tilesTitle };
 
 void highlightButton(int x0, int y0, ColorIndex iconColor = INDEX_ORANGE) {
   gb.display.setColor(INDEX_YELLOW);
@@ -67,7 +69,9 @@ void drawButtons() {
 
 void updateMainMenu() {
   music.update();
-  
+
+  grid.update();
+
   if (!buttonsShown) {
     if (++clk < 50) {
       return;
@@ -117,14 +121,8 @@ void drawMainMenu() {
     firstDraw = false;
   }
 
-  // Draw Title
-  for (int x = 0; x < w; x++) {
-    for (int y = 0; y < h; y++) {
-      int v = tilesTitle[x + y * w];
-      smallTilesImage.setFrame(v);
-      gb.display.drawImage(32 + x * 8, y * 8 + 19, smallTilesImage);
-    }
-  }
+  grid.draw();
+
   gb.display.drawImage(35, 45, titleResistor1Image);
   gb.display.drawImage(35, 58, titleResistor2Image);
   gb.display.drawImage(35, 71, titleResistor1Image);
@@ -147,6 +145,8 @@ void drawMainMenu() {
 void showMainMenu() {
   music.start();
   firstDraw = true;
+
+  grid.init(titleGrid, 8);
 
   updateFunction = updateMainMenu;
   drawFunction = drawMainMenu;

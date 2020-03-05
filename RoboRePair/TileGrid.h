@@ -10,7 +10,7 @@
 constexpr int tileSize = 13;
 
 constexpr int maxWidth = 12;
-constexpr int maxHeight = 8;
+constexpr int maxHeight = 11; // Applies only for title grid
 
 class Bot;
 class TileGrid;
@@ -99,8 +99,8 @@ class TileGrid {
   void updateNeighbourMasks(GridPos pos, const GridTile* tile);
 
 public:
-  void init(int width, int height);
-  void init(const GridSpec& gridSpec);
+  void init(int width, int height, int tileSize = 13);
+  void init(const GridSpec& gridSpec, int tileSize = 13);
 
   int width() const { return _width; }
   int height() const { return _height; }

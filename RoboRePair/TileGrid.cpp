@@ -12,6 +12,8 @@ TileGrid grid;
 
 const GridTile* emptyTile = &tiles[0];
 
+Image* activeTilesImage = nullptr;
+
 void ScreenTile::init(ScreenPos pos) {
   _pos = pos;
   _targetPos = pos;
@@ -23,8 +25,8 @@ void ScreenTile::update() {
 }
 
 void ScreenTile::draw() {
-  tilesImage.setFrame(_tile->index());
-  gb.display.drawImage(_pos.getX(), _pos.getY(), tilesImage);
+  activeTilesImage->setFrame(_tile->index());
+  gb.display.drawImage(_pos.getX(), _pos.getY(), *activeTilesImage);
 }
 
 bool GridScreenTile::canPlaceTile(const GridTile* tile) const {
@@ -54,15 +56,21 @@ bool GridScreenTile::hasOpenEnds() const {
 
 void TileGrid::initOrigin() {
   _x0 = 80 - _width * _tileSize / 2;
-  _y0 = 20;
+  _y0 = (_tileSize == 13) ? 20 : 19;
 }
 
-void TileGrid::init(int width, int height) {
+void TileGrid::init(int width, int height, int tileSize) {
   _width = width;
   _height = height;
   _maxIndex = width * height;
   _tilesEnd = _tiles + _maxIndex;
-  _tileSize = 13;
+  _tileSize = tileSize;
+
+  switch (tileSize) {
+    case 8: activeTilesImage = &smallTilesImage; break;
+    case 13: activeTilesImage = &tilesImage; break;
+    default: assertTrue(false);
+  }
 
   initOrigin();
 
@@ -93,8 +101,8 @@ void TileGrid::init(int width, int height) {
   }
 }
 
-void TileGrid::init(const GridSpec& gridSpec) {
-  init(gridSpec.w, gridSpec.h);
+void TileGrid::init(const GridSpec& gridSpec, int tileSize) {
+  init(gridSpec.w, gridSpec.h, tileSize);
 
   const uint8_t* tileIndices = gridSpec.tiles;
   for (int i = _maxIndex; --i >= 0; ) {
