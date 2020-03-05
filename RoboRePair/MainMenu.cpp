@@ -151,8 +151,8 @@ void showMainMenu() {
   music.start();
   firstDraw = true;
 
-  grid.init(titleGrid, 8);
   destroyAllBots();
+  grid.init(titleGrid, 8);
   addBot(titleBot1);
   addBot(titleBot2);
 

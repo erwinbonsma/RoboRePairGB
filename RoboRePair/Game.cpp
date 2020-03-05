@@ -376,10 +376,12 @@ void setSpeedUpAnimFunction() {
 }
 
 void loadLevel() {
+  // Destroy bots before creating new grid, so that they can release all claimed tiles of the old grid
+  destroyAllBots();
+
   const LevelSpec& levelSpec = levels[levelNum];
   grid.init(levelSpec.grid);
 
-  destroyAllBots();
   for (int i = 0; i < levelSpec.numBots; ++i) {
     addBot(levelSpec.bots[i]);
   }
