@@ -40,7 +40,11 @@ public:
   void init(ScreenPos pos);
 
   void update();
+#ifdef SHOW_CLAIMED
   virtual void draw();
+#else
+  void draw();
+#endif
 };
 
 // Values chosen for use in GridSceenTile::mask()
@@ -77,7 +81,9 @@ public:
 
   void setPosition(ScreenPos pos) { _pos = pos; }
 
+#ifdef SHOW_CLAIMED
   void draw();
+#endif
 };
 
 using GridIndex = int;

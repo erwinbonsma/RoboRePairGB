@@ -12,6 +12,7 @@
 #define DEVELOPMENT
 #ifdef DEVELOPMENT
 //#define SCREEN_RECORDING
+//#define SHOW_CLAIMED
 #endif
 
 #define CALL_MEMBER_FN(object, ptrToMember)  ((object).*(ptrToMember))
