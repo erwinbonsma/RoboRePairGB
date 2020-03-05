@@ -40,7 +40,7 @@ public:
   void init(ScreenPos pos);
 
   void update();
-  void draw();
+  virtual void draw();
 };
 
 // Values chosen for use in GridSceenTile::mask()
@@ -76,6 +76,8 @@ public:
   void setBot(const Bot* bot) { _bot = bot; }
 
   void setPosition(ScreenPos pos) { _pos = pos; }
+
+  void draw();
 };
 
 using GridIndex = int;
@@ -102,6 +104,7 @@ public:
   void init(int width, int height, int tileSize = 13);
   void init(const GridSpec& gridSpec, int tileSize = 13);
 
+  int tileSize() const { return _tileSize; }
   int width() const { return _width; }
   int height() const { return _height; }
   GridIndex maxIndex() const { return _maxIndex; }

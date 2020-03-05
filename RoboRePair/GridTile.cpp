@@ -8,10 +8,11 @@
 
 static int _nxtIndex = 0;
 
-GridTile::GridTile(uint8_t gates, uint16_t connections, uint8_t probability) {
+GridTile::GridTile(uint8_t gates, uint16_t connections, uint8_t probability, bool hardCorners) {
   _gates = gates;
   _connections = connections;
   _probability = probability;
+  _hardCorners = hardCorners;
   _index = _nxtIndex++;
 
   _mask = 0;
@@ -94,14 +95,14 @@ const GridTile tiles[numTiles] = {
   GridTile(15, 0x2184, 2),
 
   // Hard corners
-  GridTile( 3, 0x0012, 0),
-  GridTile( 6, 0x0240, 0),
-  GridTile(10, 0x2080, 0),
-  GridTile( 9, 0x1008, 0),
-  GridTile( 7, 0x0154, 0),
-  GridTile(14, 0x2A80, 0),
-  GridTile(13, 0x5104, 0),
-  GridTile(11, 0x208A, 0),
+  GridTile( 3, 0x0012, 0, true),
+  GridTile( 6, 0x0240, 0, true),
+  GridTile(10, 0x2080, 0, true),
+  GridTile( 9, 0x1008, 0, true),
+  GridTile( 7, 0x0154, 0, true),
+  GridTile(14, 0x2A80, 0, true),
+  GridTile(13, 0x5104, 0, true),
+  GridTile(11, 0x208A, 0, true),
 
   // Single dot
   GridTile( 0, 0x0000, 0),

@@ -8,10 +8,11 @@
 
 constexpr int numPreviewTiles = 16;
 
-extern Image botImage;
+extern Image botsImage;
 extern Image buttonsImage;
 extern Image crashedBotsImage;
 extern Image livesImage;
+extern Image smallBotsImage;
 extern Image smallTilesImage;
 extern Image tilesImage;
 extern Image tilesPreviewImage;

@@ -12,6 +12,7 @@ class GridTile {
   uint8_t _index;
   uint8_t _mask;
   uint16_t _connections;
+  bool _hardCorners;
 
 public:
   // Returns true iff the tile has an entry/exit at the given side of the tile.
@@ -31,13 +32,14 @@ public:
 
   int probability() const { return _probability; }
   int index() const { return _index; }
+  bool hasHardCorners() const { return _hardCorners; }
 
   // Returns a mask that represents the tile's entries/exits. It can be used to quickly determine if
   // a tile can be placed at a certain grid location given the tiles at its neighbours. See the
   // GridScreenTile class for details.
   int mask() const { return _mask; }
 
-  GridTile(uint8_t entries, uint16_t connections, uint8_t probability);
+  GridTile(uint8_t entries, uint16_t connections, uint8_t probability, bool hardCorners = false);
 };
 
 const int numTiles = 25;

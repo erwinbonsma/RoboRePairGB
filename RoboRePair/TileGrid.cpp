@@ -53,6 +53,16 @@ bool GridScreenTile::hasOpenEnds() const {
   return (tileMask & (_mask << 1)) != tileMask;
 }
 
+void GridScreenTile::draw() {
+  ScreenTile::draw();
+
+#ifdef DEVELOPMENT
+  if (_bot != nullptr) {
+    gb.display.setColor(INDEX_DARKBLUE);
+    gb.display.drawRect(_pos.getX(), _pos.getY(), grid.tileSize(), grid.tileSize());
+  }
+#endif
+}
 
 void TileGrid::initOrigin() {
   _x0 = 80 - _width * _tileSize / 2;

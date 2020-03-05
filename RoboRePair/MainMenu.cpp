@@ -6,6 +6,7 @@
 
 #include "MainMenu.h"
 
+#include "Bot.h"
 #include "Game.h"
 #include "HelpMenu.h"
 #include "Images.h"
@@ -34,6 +35,8 @@ const uint8_t tilesTitle[] = {
 };
 
 const GridSpec titleGrid = GridSpec { .w = 12, .h = 11, .tiles = tilesTitle };
+const BotSpec titleBot1 = BotSpec { .pos = GridPos(0, 0), .dir = Direction::West, .period = 2 };
+const BotSpec titleBot2 = BotSpec { .pos = GridPos(11, 10), .dir = Direction::South, .period = 2 };
 
 void highlightButton(int x0, int y0, ColorIndex iconColor = INDEX_ORANGE) {
   gb.display.setColor(INDEX_YELLOW);
@@ -71,6 +74,7 @@ void updateMainMenu() {
   music.update();
 
   grid.update();
+  updateBots();
 
   if (!buttonsShown) {
     if (++clk < 50) {
@@ -122,6 +126,7 @@ void drawMainMenu() {
   }
 
   grid.draw();
+  drawBots();
 
   gb.display.drawImage(35, 45, titleResistor1Image);
   gb.display.drawImage(35, 58, titleResistor2Image);
@@ -147,6 +152,9 @@ void showMainMenu() {
   firstDraw = true;
 
   grid.init(titleGrid, 8);
+  destroyAllBots();
+  addBot(titleBot1);
+  addBot(titleBot2);
 
   updateFunction = updateMainMenu;
   drawFunction = drawMainMenu;

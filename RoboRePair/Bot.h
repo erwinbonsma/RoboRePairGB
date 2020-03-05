@@ -69,7 +69,9 @@ class Bot {
 
   bool moveStraightAnim();
   bool moveReverseAnim();
-  bool moveTurnAnim();
+  bool moveTurnAnim(bool isHard);
+  bool moveSmoothTurnAnim();
+  bool moveHardTurnAnim();
   void updateMoveAnimFunction();
 
   void handleMove(const GridTile* tile);

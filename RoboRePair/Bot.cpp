@@ -27,6 +27,24 @@ const Gamebuino_Meta::Sound_FX wiggle2Sfx[] = {
   {Gamebuino_Meta::Sound_FX_Wave::SQUARE,0,64,-1,0,42,2},
 };
 
+const uint8_t moveConstants[] =      {
+  // Straight
+  12, 8, 3,
+  // Reverse
+  6, 3, 6, 3,
+  // Turn
+  3, 99, 1, 3, 99
+};
+const uint8_t smallMoveConstants[] = {
+  // Straight
+  7, 5, 2,
+  // Reverse
+  4, 2, 3, 1,
+  // Turn
+  1, 4, 1, 0, 3
+};
+const uint8_t *activeMoveConstants = nullptr;
+
 GridPos Bot::forcedNextNextPos() const {
   const GridTile* tile = grid.tileAt(_nextPos);
   if (tile == nullptr) {
@@ -98,8 +116,8 @@ void Bot::releasePrevious() {
 }
 
 bool Bot::moveStraightAnim() {
-  if (_animClk < 12) {
-    if (_animClk == 8 && isBlocked()) {
+  if (_animClk < activeMoveConstants[0]) {
+    if (_animClk == activeMoveConstants[1] && isBlocked()) {
       return false;
     }
 
@@ -107,7 +125,7 @@ bool Bot::moveStraightAnim() {
     _offset.x += dirv.x;
     _offset.y += dirv.y;
 
-    if (_animClk == 3) {
+    if (_animClk == activeMoveConstants[2]) {
       releasePrevious();
     }
 
@@ -120,12 +138,13 @@ bool Bot::moveStraightAnim() {
 
 bool Bot::moveReverseAnim() {
   // Move halfway
-  if (_animClk < 6) {
+  int limit = activeMoveConstants[3];
+  if (_animClk < limit) {
     Vector2D dirv = dirVectors[(int)_dir];
     _offset.x += dirv.x;
     _offset.y += dirv.y;
 
-    if (_animClk == 3) {
+    if (_animClk == activeMoveConstants[4]) {
       releasePrevious();
     }
 
@@ -134,7 +153,8 @@ bool Bot::moveReverseAnim() {
   }
 
   // Turn
-  if (_animClk < 6+8) {
+  limit += 8;
+  if (_animClk < limit) {
     _spriteIndex = (_spriteIndex + 1) % 16;
 
     ++_animClk;
@@ -142,8 +162,8 @@ bool Bot::moveReverseAnim() {
   }
 
   // Return
-  if (_animClk < 6+8+6) {
-     if (_animClk == 6+8+3 && isBlocked()) {
+  if (_animClk < limit + activeMoveConstants[5]) {
+     if (_animClk == limit + activeMoveConstants[6] && isBlocked()) {
       return false;
     }
 
@@ -158,9 +178,10 @@ bool Bot::moveReverseAnim() {
   return true;
 }
 
-bool Bot::moveTurnAnim() {
+bool Bot::moveTurnAnim(bool isHard) {
   // Initial straight bit
-  if (_animClk < 3) {
+  int limit = activeMoveConstants[7 + isHard];
+  if (_animClk < limit) {
     Vector2D dirv = dirVectors[(int)_dir];
     _offset.x += dirv.x;
     _offset.y += dirv.y;
@@ -170,8 +191,8 @@ bool Bot::moveTurnAnim() {
   }
 
   // Move diagonally and turn
-  if (_animClk < 3+4) {
-    if (_animClk == 3+1) {
+  if (_animClk < limit + 3) {
+    if (_animClk == limit + activeMoveConstants[9]) {
       releasePrevious();
 
       if (isBlocked()) {
@@ -183,12 +204,9 @@ bool Bot::moveTurnAnim() {
     Vector2D dirv2 = dirVectors[(int)_nextDir];
     int rotDir = orientation(dirv2, dirv1);
 
-    if (_animClk < 3+3) {
+    if (!isHard) {
       _offset.x += dirv1.x + dirv2.x;
       _offset.y += dirv1.y + dirv2.y;
-    } else {
-      _offset.x += dirv2.x;
-      _offset.y += dirv2.y;
     }
     _spriteIndex = (_spriteIndex + rotDir + 16) % 16;
 
@@ -196,8 +214,17 @@ bool Bot::moveTurnAnim() {
     return false;
   }
 
+  limit += 3;
+  if (_animClk == limit) {
+    Vector2D dirv1 = dirVectors[(int)_dir];
+    Vector2D dirv2 = dirVectors[(int)_nextDir];
+    int rotDir = orientation(dirv2, dirv1);
+
+    _spriteIndex = (_spriteIndex + rotDir + 16) % 16;
+  }
+
   // Final straight bit
-  if (_animClk < 3+4+2) {
+  if (_animClk < limit + activeMoveConstants[10 + isHard]) {
     Vector2D dirv = dirVectors[(int)_nextDir];
     _offset.x += dirv.x;
     _offset.y += dirv.y;
@@ -209,13 +236,25 @@ bool Bot::moveTurnAnim() {
   return true;
 }
 
+bool Bot::moveSmoothTurnAnim() {
+  return moveTurnAnim(false);
+}
+
+bool Bot::moveHardTurnAnim() {
+  return moveTurnAnim(true);
+}
+
 void Bot::updateMoveAnimFunction() {
   if (_dir == _nextDir) {
     _moveAnimFun = &Bot::moveStraightAnim;
   } else if (_dir == opposite(_nextDir)) {
     _moveAnimFun = &Bot::moveReverseAnim;
   } else {
-    _moveAnimFun = &Bot::moveTurnAnim;
+    if (grid.tileAt(_pos)->hasHardCorners()) {
+      _moveAnimFun = &Bot::moveHardTurnAnim;
+    } else {
+      _moveAnimFun = &Bot::moveSmoothTurnAnim;
+    }
   }
 
   _animClk = 0;
@@ -436,7 +475,6 @@ void Bot::init(GridPos pos, Direction dir) {
   _nextDir = dir;
   assertTrue(grid.claimTile(pos, this) == this);
 
-  _activeImage = &botImage;
   _meetingBot = nullptr;
   _pairedWithBot = nullptr;
   _otherAnimFun = nullptr;
@@ -449,7 +487,16 @@ void Bot::init(GridPos pos, Direction dir) {
   _lastDist = 0;
 #endif
 
-  _maxOffset = 6;
+  if (grid.tileSize() == 13) {
+    _maxOffset = 6;
+    _activeImage = &botsImage;
+    activeMoveConstants = moveConstants;
+  } else {
+    _maxOffset = 4;
+    _activeImage = &smallBotsImage;
+    activeMoveConstants = smallMoveConstants;
+  }
+
   moveStep();
 }
 
