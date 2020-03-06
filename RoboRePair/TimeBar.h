@@ -6,11 +6,18 @@
 
 #include <Gamebuino-Meta.h>
 
+class TimeBarSpec;
+
 class TimeBar {
   uint16_t _ticksRemaining;
+  bool _stopped;
+
+  const TimeBarSpec* drawTimeBar();
+  void flashLights(const TimeBarSpec* spec);
 
 public:
   bool scoreTicks();
+  void stop() { _stopped = true; }
 
   void init(int seconds);
 

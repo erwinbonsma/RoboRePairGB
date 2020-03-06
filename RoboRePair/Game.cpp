@@ -366,6 +366,7 @@ void setEndGameAnimFunction(AnimFunction fun) {
   endGameAnimFun = fun;
   animClk = 0;
   disableInput();
+  timeBar.stop();
   music.stop();
 }
 
@@ -471,13 +472,13 @@ void updateGame() {
       }
     }
 #endif
+  }
 
-    if (!timeBar.update()) {
-      // Timed out!
-      gb.sound.fx(timedOutSfx);
-      stopAllBots();
-      handleDeath();
-    }
+  if (!timeBar.update()) {
+    // Timed out!
+    gb.sound.fx(timedOutSfx);
+    stopAllBots();
+    handleDeath();
   }
 
   if (drawScore != score) {
@@ -492,6 +493,7 @@ void updateGame() {
 void drawGame() {
   //gb.display.clear(INDEX_DARKGRAY);
   fastGameScreenClear();
+  clearLights();
 
   lives.draw();
   timeBar.draw();

@@ -15,16 +15,24 @@ TimeBar timeBar;
 
 const int numTimebarParts = 4;
 
+struct TimeBarSpec {
+  uint8_t len;
+  uint8_t unit;
+  ColorIndex colorMain;
+  ColorIndex colorDark;
+};
+
 // Length, Time unit, Main color, Shadow color
-const uint8_t timebarSpecs[numTimebarParts][4] = {
- { 4,  1, (uint8_t)INDEX_YELLOW,   (uint8_t)INDEX_ORANGE},
- { 8,  2, (uint8_t)INDEX_ORANGE,   (uint8_t)INDEX_BROWN},
- {16,  4, (uint8_t)INDEX_BROWN ,   (uint8_t)INDEX_DARKGRAY},
- {28, 16, (uint8_t)INDEX_DARKGRAY, (uint8_t)INDEX_DARKGRAY}
+const TimeBarSpec timebarSpecs[numTimebarParts] = {
+ TimeBarSpec {.len =  4, .unit =  1, .colorMain = INDEX_YELLOW,   .colorDark = INDEX_ORANGE},
+ TimeBarSpec {.len =  8, .unit =  2, .colorMain = INDEX_ORANGE,   .colorDark = INDEX_BROWN},
+ TimeBarSpec {.len = 16, .unit =  4, .colorMain = INDEX_BROWN,    .colorDark = INDEX_DARKGRAY},
+ TimeBarSpec {.len = 28, .unit = 16, .colorMain = INDEX_DARKGRAY, .colorDark = INDEX_DARKGRAY}
 };
 
 bool TimeBar::scoreTicks() {
-  if (_ticksRemaining >= fps) {
+  // Avoid that ticksRemaining becomes zero while scoring.(so that scoring nevers triggers TIMED OUT)
+  if (_ticksRemaining > fps) {
     incScore(1);
     _ticksRemaining -= fps;
     return true;
@@ -35,9 +43,14 @@ bool TimeBar::scoreTicks() {
 
 void TimeBar::init(int seconds) {
   _ticksRemaining = seconds * fps;
+  _stopped = false;
 }
 
 bool TimeBar::update() {
+  if (_stopped) {
+    return true;
+  }
+
   if (_ticksRemaining > 0) {
     _ticksRemaining--;
   }
@@ -45,25 +58,46 @@ bool TimeBar::update() {
   return (_ticksRemaining > 0);
 }
 
+const TimeBarSpec* TimeBar::drawTimeBar() {
+  const TimeBarSpec* spec = timebarSpecs;
+  int secs = _ticksRemaining / fps;
+  int x = 158;
+  while (secs > 0) {
+    int l = min(spec->len, max(1, secs/spec->unit));
+
+    gb.display.setColor(spec->colorMain);
+    gb.display.fillRect(x - l, 10, l, 3);
+    gb.display.setColor(spec->colorDark);
+    gb.display.drawFastHLine(x - l, 13, l);
+
+    secs -= spec->len * spec->unit;
+    if (secs <= 0) {
+      return spec;
+    }
+    x -= spec->len;
+    ++spec;
+  }
+
+  return spec;
+}
+
+void TimeBar::flashLights(const TimeBarSpec* spec) {
+  if (spec->colorMain != INDEX_DARKGRAY) {
+    uint8_t i = gb.frameCount % (spec->unit * fps);
+    if (i < 12) {
+      drawLight(0, 3 - i / 3, spec->colorMain);
+      drawLight(1, i / 3, spec->colorMain);
+    }
+  }
+}
+
 void TimeBar::draw() {
   if (_ticksRemaining == 0) {
     gb.display.drawImage(127, 9, timedOutImage);
   }  else {
-    int i = 0;
-    int secs = _ticksRemaining / fps;
-    int x = 158;
-    while (secs > 0) {
-      const uint8_t* spec = timebarSpecs[i];
-      int l = min(spec[0], max(1, secs/spec[1]));
-
-      gb.display.setColor((ColorIndex)spec[2]);
-      gb.display.fillRect(x - l, 10, l, 3);
-      gb.display.setColor((ColorIndex)spec[3]);
-      gb.display.drawFastHLine(x - l, 13, l);
-
-      secs -= spec[0] * spec[1];
-      x -= spec[0];
-      ++i;
+    const TimeBarSpec* spec = drawTimeBar();
+    if (!_stopped) {
+      flashLights(spec);
     }
   }
 }
