@@ -8,6 +8,7 @@
 
 #include "Game.h"
 #include "Images.h"
+#include "Lights.h"
 #include "Utils.h"
 
 // Globals

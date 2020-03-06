@@ -10,6 +10,7 @@
 #include "GridCursor.h"
 #include "Images.h"
 #include "Levels.h"
+#include "Lights.h"
 #include "Lives.h"
 #include "MainMenu.h"
 #include "Music.h"
@@ -37,6 +38,7 @@ void fastGameScreenClear();
 bool speedUpBotsAnim();
 bool retryAnim();
 bool endGameAnim();
+bool endGameAnimWithLights();
 bool gameOverAnim();
 bool levelDoneAnim();
 
@@ -207,6 +209,12 @@ bool endGameAnim() {
   return false;
 }
 
+bool endGameAnimWithLights() {
+  drawCelebrationLights();
+
+  return endGameAnim();
+}
+
 bool gameOverAnim() {
   ++animClk;
 
@@ -307,7 +315,7 @@ bool levelDoneAnim() {
   ++levelNum;
   if (levelNum == numLevels) {
     gridMorpher.init(&theEndGridSpec);
-    setEndGameAnimFunction(endGameAnim);
+    setEndGameAnimFunction(endGameAnimWithLights);
     return false;
   }
   startLevel();
@@ -455,6 +463,9 @@ void incScore(int amount) {
 }
 
 void updateGame() {
+  // Clear lights here so that animations can also draw lights.
+  clearLights();
+
   grid.update();
   lives.update();
   if (!updateBots()) {
@@ -511,7 +522,6 @@ void updateGame() {
 void drawGame() {
   //gb.display.clear(INDEX_DARKGRAY);
   fastGameScreenClear();
-  clearLights();
 
   lives.draw();
   timeBar.draw();

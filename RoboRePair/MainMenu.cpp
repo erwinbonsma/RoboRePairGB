@@ -11,6 +11,7 @@
 #include "HelpMenu.h"
 #include "Images.h"
 #include "Levels.h" // for GridSpec
+#include "Lights.h"
 #include "Music.h"
 #include "Utils.h"
 #include "TileGrid.h"
@@ -108,6 +109,8 @@ void updateMainMenu() {
 
 void drawMainMenu() {
   if (firstDraw) {
+    clearLights();
+
     // Only draw this fixed contents once, to reduce CPU load.
     gb.display.clear(INDEX_DARKGRAY);
 

@@ -92,23 +92,6 @@ public:
   void add(Vector2D v) { _x += (v.x << 4); _y += (v.y << 4); }
 };
 
-void drawDummyLight(int x, int y, ColorIndex color);
-void clearDummyLights();
-
-inline void drawLight(int x, int y, ColorIndex color) {
-  gb.lights.drawPixel(x, y, color);
-#ifdef DEVELOPMENT
-  drawDummyLight(x, y,  color);
-#endif
-}
-
-inline void clearLights() {
-  gb.lights.clear();
-#ifdef DEVELOPMENT
-  clearDummyLights();
-#endif
-}
-
 void drawText(int x, int y, const char* s, int sep = 1);
 int textWidth(const char* s);
 

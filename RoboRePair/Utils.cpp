@@ -27,17 +27,6 @@ void ScreenPos::lerp(ScreenPos target, int amount) {
   _y = (_y * (256 - amount) + target._y * amount) >> 8;
 }
 
-void drawDummyLight(int x, int y, ColorIndex color) {
-  gb.display.setColor(color);
-  gb.display.drawFastVLine(x * 159, y * 32, 32);
-}
-
-void clearDummyLights() {
-  gb.display.setColor(INDEX_BLACK);
-  gb.display.drawFastVLine(0, 0, 128);
-  gb.display.drawFastVLine(159, 0, 128);
-}
-
 const int8_t fontSpec[][26] = {
   // Put digits at front (as score is drawn during game play)
   {6, 6,23,3,12,29,9},    // 0
