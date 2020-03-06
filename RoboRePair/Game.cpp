@@ -43,6 +43,9 @@ bool levelDoneAnim();
 void setEndGameAnimFunction(AnimFunction fun);
 void setSpeedUpAnimFunction();
 
+void abortGame();
+void abortAttempt();
+
 void loadLevel();
 void startLevel();
 void handleLevelDone();
@@ -376,6 +379,19 @@ void setSpeedUpAnimFunction() {
   disableInput();
 }
 
+void abortGame() {
+  stopAllBots();
+  while (lives.dec()) { /* void */ }
+
+  setEndGameAnimFunction(gameOverAnim);
+}
+
+void abortAttempt() {
+  disableInput();
+  speedUpBots();
+  crashAllBots();
+}
+
 void loadLevel() {
   // Destroy bots before creating new grid, so that they can release all claimed tiles of the old grid
   destroyAllBots();
@@ -464,11 +480,13 @@ void updateGame() {
 
 #ifndef SCREEN_RECORDING
       // Ignore while recording is enabled, as both are triggered via the same button
-      if (gb.buttons.held(BUTTON_MENU, 0)) {
+      if (gb.buttons.held(BUTTON_MENU, fps)) {
+        abortGame();
+        setEndGameAnimFunction(gameOverAnim);
+      }
+      if (gb.buttons.released(BUTTON_MENU)) {
         // Suicide. Can be useful when pairing is impossible.
-        disableInput();
-        speedUpBots();
-        crashAllBots();
+        abortAttempt();
       }
     }
 #endif
