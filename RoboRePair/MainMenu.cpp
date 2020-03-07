@@ -36,8 +36,8 @@ const uint8_t tilesTitle[] = {
 };
 
 const GridSpec titleGrid = GridSpec { .w = 12, .h = 11, .tiles = tilesTitle };
-const BotSpec titleBot1 = BotSpec { .pos = GridPos(0, 0), .dir = Direction::West, .period = 2 };
-const BotSpec titleBot2 = BotSpec { .pos = GridPos(11, 10), .dir = Direction::South, .period = 2 };
+const BotSpec titleBot1 = BotSpec { .pos = GridPos(0, 0), .dir = Direction::West, .type = smallBotType };
+const BotSpec titleBot2 = BotSpec { .pos = GridPos(11, 10), .dir = Direction::South, .type = smallBotType };
 
 void highlightButton(int x0, int y0, ColorIndex iconColor = INDEX_ORANGE) {
   gb.display.setColor(INDEX_YELLOW);

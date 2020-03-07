@@ -15,7 +15,7 @@ struct GridSpec {
 struct BotSpec {
   const GridPos pos;
   const Direction dir;
-  const uint8_t period;
+  const uint8_t type;
 };
 
 struct LevelSpec {

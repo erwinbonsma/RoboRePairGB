@@ -7,10 +7,11 @@
 #include <Gamebuino-Meta.h>
 
 constexpr int numPreviewTiles = 16;
+constexpr int numBotLooks = 2;
 
-extern Image botsImage;
+extern Image botsImage[numBotLooks];
 extern Image buttonsImage;
-extern Image crashedBotsImage;
+extern Image crashingBotsImage[numBotLooks];
 extern Image livesImage;
 extern Image smallBotsImage;
 extern Image smallTilesImage;

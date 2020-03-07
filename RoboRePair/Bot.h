@@ -27,6 +27,21 @@ bool botAt(GridPos pos);
 // Function for carrying out a step in an animation. It return true when the move is done.
 typedef bool (Bot::*BotAnimFunction)();
 
+struct BotType {
+  bool    small;
+  uint8_t look;
+  uint8_t period;
+};
+
+constexpr uint8_t mediumSpeed = 20;
+constexpr uint8_t slowSpeed = 30;
+constexpr uint8_t smallFastSpeed = 2;
+
+constexpr uint8_t numBotTypes = 3;
+constexpr uint8_t normalBotType = 0;
+constexpr uint8_t slowBotType = 1;
+constexpr uint8_t smallBotType = 2;
+
 class Bot {
   // Movement on grid
   GridPos _pos, _nextPos, _prevPos;
@@ -54,6 +69,8 @@ class Bot {
   Vector2D _offset;
   int _spriteIndex;
   Image* _activeImage;
+
+  uint8_t _type;
 
   // Bot animation
   uint8_t _animClk;
@@ -91,20 +108,22 @@ class Bot {
 public:
   GridPos position() const { return _pos; }
 
-  void init(GridPos pos, Direction dir);
+  void init(GridPos pos, Direction dir, int type);
 
-  int getPeriod() { return _period; }
+  int getType() const { return _type; }
+
+  int getPeriod() const { return _period; }
   void setPeriod(int period) { _period = period; }
 
   void stop() { _moveAnimFun = nullptr; }
-  bool isMoving() { return _moveAnimFun != nullptr; }
-  bool isPairing() { return _pairedWithBot != nullptr; }
+  bool isMoving() const { return _moveAnimFun != nullptr; }
+  bool isPairing() const { return _pairedWithBot != nullptr; }
 
   void destroy();
-  bool isDestroyed() { return _destroyed; }
+  bool isDestroyed() const { return _destroyed; }
 
   void crash(); // Request bot to crash
-  bool didCrash() { return _crashed; }
+  bool didCrash() const { return _crashed; }
 
   void update();
   void draw();

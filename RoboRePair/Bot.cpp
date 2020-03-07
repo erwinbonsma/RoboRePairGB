@@ -11,6 +11,12 @@
 #include "Levels.h"
 #include "TileGrid.h"
 
+const BotType botTypes[numBotTypes] = {
+  BotType { .small = false, .look = 0, .period = mediumSpeed },
+  BotType { .small = false, .look = 1, .period = slowSpeed },
+  BotType { .small = true,  .look = 0, .period = smallFastSpeed }
+};
+
 const Gamebuino_Meta::Sound_FX crashSfx[] = {
   {Gamebuino_Meta::Sound_FX_Wave::NOISE,0,255,-10,0,128,10},
 };
@@ -333,7 +339,7 @@ bool Bot::crashAnim() {
 void Bot::handleCrash() {
   stop();
 
-  _activeImage = &crashedBotsImage;
+  _activeImage = &crashingBotsImage[botTypes[_type].look];
 
   switch (_dir) {
     case Direction::North:
@@ -470,9 +476,10 @@ void Bot::handleMeeting() {
   }
 }
 
-void Bot::init(GridPos pos, Direction dir) {
+void Bot::init(GridPos pos, Direction dir, int type) {
   _nextPos = pos;
   _nextDir = dir;
+  _type = type;
   assertTrue(grid.claimTile(pos, this) == this);
 
   _meetingBot = nullptr;
@@ -481,20 +488,22 @@ void Bot::init(GridPos pos, Direction dir) {
   _shouldCrash = false;
   _crashed = false;
   _destroyed = false;
-  _period = 12; // Default
+  _period = botTypes[_type].period;
 
 #ifdef DEVELOPMENT
   _lastDist = 0;
 #endif
 
-  if (grid.tileSize() == 13) {
-    _maxOffset = 6;
-    _activeImage = &botsImage;
-    activeMoveConstants = moveConstants;
-  } else {
+  if (botTypes[_type].small) {
+    assertTrue(botTypes[_type].look == 0);
     _maxOffset = 4;
     _activeImage = &smallBotsImage;
     activeMoveConstants = smallMoveConstants;
+  } else {
+    assertTrue(botTypes[_type].look < numBotLooks);
+    _maxOffset = 6;
+    _activeImage = &botsImage[botTypes[_type].look];
+    activeMoveConstants = moveConstants;
   }
 
   moveStep();
@@ -670,8 +679,7 @@ void addBot(const BotSpec& botSpec) {
   assertTrue(botNum < maxBots);
 
   Bot& bot = botStorage[botNum];
-  bot.init(botSpec.pos, botSpec.dir);
-  bot.setPeriod(botSpec.period);
+  bot.init(botSpec.pos, botSpec.dir, botSpec.type);
 
   *botsEnd++ = &bot;
 }
