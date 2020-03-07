@@ -42,6 +42,15 @@ bool TimeBar::scoreTicks() {
   }
 }
 
+void TimeBar::stop(bool ignoreTimeout) {
+  _stopped = true;
+  if (ignoreTimeout && _ticksRemaining == 0) {
+    // Prevent showing of "Timed out". This is used when the time runs out while all bots are already
+    // pairing
+    _ticksRemaining = 1;
+  }
+}
+
 void TimeBar::init(int seconds) {
   _ticksRemaining = seconds * fps;
   _stopped = false;

@@ -17,7 +17,7 @@ class TimeBar {
 
 public:
   bool scoreTicks();
-  void stop() { _stopped = true; }
+  void stop(bool ignoreTimeout = false);
 
   void init(int seconds);
 

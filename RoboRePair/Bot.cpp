@@ -629,6 +629,19 @@ void stopAllBots() {
   }
 }
 
+
+bool allBotsPairing() {
+  for (auto bot = bots; bot < botsEnd; ++bot) {
+    if (!(*bot)->isDestroyed()) {
+      if (!(*bot)->isPairing()) {
+        return false;
+      }
+    }
+  }
+
+  return true;
+}
+
 bool updateBots() {
   bool botsUpdated = false;
   bool botsRemaining = false;

@@ -16,6 +16,7 @@ bool speedUpBots();
 void crashAllBots();
 void destroyAllBots();
 void stopAllBots();
+bool allBotsPairing();
 
 // Returns false when no more bots are remaining (and the level should end). This is only signalled once.
 bool updateBots();
@@ -97,6 +98,7 @@ public:
 
   void stop() { _moveAnimFun = nullptr; }
   bool isMoving() { return _moveAnimFun != nullptr; }
+  bool isPairing() { return _pairedWithBot != nullptr; }
 
   void destroy();
   bool isDestroyed() { return _destroyed; }

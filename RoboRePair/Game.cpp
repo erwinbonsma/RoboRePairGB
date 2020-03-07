@@ -504,10 +504,15 @@ void updateGame() {
   }
 
   if (!timeBar.update()) {
-    // Timed out!
-    gb.sound.fx(timedOutSfx);
-    stopAllBots();
-    handleDeath();
+    if (allBotsPairing()) {
+      // Ignore
+      timeBar.stop(true);
+    } else {
+      // Timed out!
+      gb.sound.fx(timedOutSfx);
+      stopAllBots();
+      handleDeath();
+    }
   }
 
   if (drawScore != score) {
