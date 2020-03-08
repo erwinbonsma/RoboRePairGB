@@ -37,10 +37,11 @@ constexpr uint8_t mediumSpeed = 20;
 constexpr uint8_t slowSpeed = 30;
 constexpr uint8_t smallFastSpeed = 2;
 
-constexpr uint8_t numBotTypes = 3;
+constexpr uint8_t numBotTypes = 4;
 constexpr uint8_t normalBotType = 0;
-constexpr uint8_t slowBotType = 1;
-constexpr uint8_t smallBotType = 2;
+constexpr uint8_t normalPinkBotType = 1;
+constexpr uint8_t slowBotType = 2;
+constexpr uint8_t smallBotType = 3;
 
 class Bot {
   // Movement on grid

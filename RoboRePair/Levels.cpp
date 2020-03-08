@@ -96,6 +96,23 @@ const BotSpec botsFourOfAKind[] = {
   BotSpec { .pos = GridPos(0, 5), .dir = Direction::South, .type = normalBotType }
 };
 
+const uint8_t tilesTwoPair[] = {
+   6,10,10,10,14,10,10,10,12,
+   5, 0, 0, 0, 0, 0, 0, 0, 5,
+   5, 0, 0, 0, 0, 0, 0, 0, 5,
+   7, 0, 0, 0, 7, 0, 0, 0, 5,
+   5, 0, 0, 0,13, 0, 0, 0,13,
+   5, 0, 0, 0, 0, 0, 0, 0, 5,
+   5, 0, 0, 0, 0, 0, 0, 0, 5,
+   3,10,10,10,11,10,10,10, 9
+};
+const BotSpec botsTwoPair[] = {
+  BotSpec { .pos = GridPos(3, 0), .dir = Direction::West, .type = normalBotType },
+  BotSpec { .pos = GridPos(8, 3), .dir = Direction::North, .type = normalPinkBotType },
+  BotSpec { .pos = GridPos(5, 7), .dir = Direction::East, .type = normalBotType },
+  BotSpec { .pos = GridPos(0, 4), .dir = Direction::South, .type = normalPinkBotType }
+};
+
 const uint8_t tilesTest[] = {
    0, 0, 0, 0, 0, 0, 0, 0, 0,
    2,10,10,10,10,10,10,10, 8,
@@ -233,6 +250,14 @@ const LevelSpec levels[numLevels] = {
     .grid = GridSpec { .w = 9, .h = 8, .tiles = tilesFourOfAKind },
     .numBots = 4,
     .bots = botsFourOfAKind,
+  },
+  LevelSpec {
+    .name = "two pair",
+    .numTiles = 3,
+    .timeLimit = 240,
+    .grid = GridSpec { .w = 9, .h = 8, .tiles = tilesTwoPair },
+    .numBots = 4,
+    .bots = botsTwoPair,
   },
 };
 

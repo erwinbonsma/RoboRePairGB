@@ -13,6 +13,7 @@
 
 const BotType botTypes[numBotTypes] = {
   BotType { .small = false, .look = 0, .period = mediumSpeed },
+  BotType { .small = false, .look = 1, .period = mediumSpeed },
   BotType { .small = false, .look = 1, .period = slowSpeed },
   BotType { .small = true,  .look = 0, .period = smallFastSpeed }
 };
