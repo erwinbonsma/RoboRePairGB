@@ -21,6 +21,10 @@ const Gamebuino_Meta::Sound_FX crashSfx[] = {
   {Gamebuino_Meta::Sound_FX_Wave::NOISE,0,255,-10,0,128,10},
 };
 
+const Gamebuino_Meta::Sound_FX clashSfx[] = {
+  {Gamebuino_Meta::Sound_FX_Wave::NOISE,0,255,-15,0,128,10},
+};
+
 const Gamebuino_Meta::Sound_FX fallSfx[] = {
   {Gamebuino_Meta::Sound_FX_Wave::SQUARE,0,128,-1,127,212,40},
 };
@@ -498,7 +502,7 @@ void Bot::handleMeeting() {
     } else {
       _meetingBot->mutableBot()->clashed();
       clashed();
-      // TODO: SFX
+      gb.sound.fx(clashSfx);
     }
   } else {
 #ifdef DEVELOPMENT
