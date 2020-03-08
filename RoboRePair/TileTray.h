@@ -6,7 +6,7 @@
 
 #include "TileGrid.h"
 
-const int maxTraySize = 3;
+const int maxTraySize = 5;
 
 class TileTray {
   uint8_t _size;

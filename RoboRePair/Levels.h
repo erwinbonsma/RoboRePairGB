@@ -21,12 +21,12 @@ struct BotSpec {
 struct LevelSpec {
   const char* name;
   const uint8_t numTiles;
-  const uint8_t timeLimit;
+  const uint16_t timeLimit;
   const GridSpec grid;
   const uint8_t numBots;
   const BotSpec* bots;
 };
 
 const int maxBots = 4;
-const int numLevels = 10;
+const int numLevels = 11;
 extern const LevelSpec levels[numLevels];

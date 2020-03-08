@@ -113,6 +113,23 @@ const BotSpec botsTwoPair[] = {
   BotSpec { .pos = GridPos(0, 4), .dir = Direction::South, .type = normalPinkBotType }
 };
 
+const uint8_t tilesQueue[] = {
+   0, 0, 0, 0,14, 0, 0, 0, 0,
+   0, 0, 0, 0, 5, 0, 0, 0, 0,
+   0, 0, 0, 0,15, 0, 0, 0, 0,
+   0, 0, 0, 0, 5, 0, 0, 0, 0,
+   0, 0, 7,10,11,10,13, 0, 0,
+   0, 0, 0, 0, 0, 0, 0, 0, 0,
+   0, 0, 0, 0, 0, 0, 0, 0, 0,
+   0, 0, 0, 0, 0, 0, 0, 0, 0
+};
+const BotSpec botsQueue[] = {
+  BotSpec { .pos = GridPos(4, 1), .dir = Direction::South, .type = slowBotType },
+  BotSpec { .pos = GridPos(4, 2), .dir = Direction::South, .type = slowBlueBotType },
+  BotSpec { .pos = GridPos(4, 3), .dir = Direction::South, .type = slowBotType },
+  BotSpec { .pos = GridPos(4, 4), .dir = Direction::South, .type = slowBlueBotType }
+};
+
 const uint8_t tilesTest[] = {
    0, 0, 0, 0, 0, 0, 0, 0, 0,
    2,10,10,10,10,10,10,10, 8,
@@ -173,10 +190,6 @@ const BotSpec botsObstructions[] = {
   BotSpec { .pos = GridPos(0, 5), .dir = Direction::South, .type = normalBotType },
   BotSpec { .pos = GridPos(8, 2), .dir = Direction::North, .type = normalBotType },
 };
-
-// TODO:
-// - Four of a Kind: Introduces clash
-// _ Divide & Conquer: Bots start in a queue with different times intermingled
 
 const LevelSpec levels[numLevels] = {
   LevelSpec {
@@ -258,6 +271,14 @@ const LevelSpec levels[numLevels] = {
     .grid = GridSpec { .w = 9, .h = 8, .tiles = tilesTwoPair },
     .numBots = 4,
     .bots = botsTwoPair,
+  },
+  LevelSpec {
+    .name = "too hard?",
+    .numTiles = 5,
+    .timeLimit = 360,
+    .grid = GridSpec { .w = 9, .h = 8, .tiles = tilesQueue },
+    .numBots = 4,
+    .bots = botsQueue,
   },
 };
 

@@ -75,10 +75,11 @@ const int8_t fontSpec[][26] = {
   {3, 20,21,16},   // !
   {4, -2,0,0,9},   // ,
   {3, 0,0,16},     // .
-  {1, 20}          // '
+  {1, 20},         // '
+  {5, 6,6,16,12,9} // ?
 };
 // Could speed text drawing up a bit by ordering characters by usage
-const char* fontChars = "0123456789ertsabcdfghijklmnopquvwxyz -()+:!,.'";
+const char* fontChars = "0123456789ertsabcdfghijklmnopquvwxyz -()+:!,.'?";
 
 const int8_t* fontSpecForChar(char ch) {
   const char* p = fontChars;

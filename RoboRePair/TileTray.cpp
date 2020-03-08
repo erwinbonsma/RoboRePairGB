@@ -26,7 +26,7 @@ void TileTray::init(int size) {
 
   int w = (_size * tileTrayMul - tileTraySep);
   _y0 = 1;
-  _x0 = 79 - w / 2;
+  _x0 = 80 - w / 2;
 
   for (int i = _size; --i >=0; ) {
     // Reset positions

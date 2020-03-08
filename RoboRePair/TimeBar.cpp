@@ -26,10 +26,12 @@ struct TimeBarSpec {
 // Length, Time unit, Main color, Shadow color
 const TimeBarSpec timebarSpecs[numTimebarParts] = {
  TimeBarSpec {.len =  4, .unit =  1, .colorMain = INDEX_YELLOW,   .colorDark = INDEX_ORANGE},
- TimeBarSpec {.len =  8, .unit =  2, .colorMain = INDEX_ORANGE,   .colorDark = INDEX_BROWN},
- TimeBarSpec {.len = 16, .unit =  4, .colorMain = INDEX_BROWN,    .colorDark = INDEX_DARKGRAY},
- TimeBarSpec {.len = 28, .unit = 16, .colorMain = INDEX_DARKGRAY, .colorDark = INDEX_DARKGRAY}
+ TimeBarSpec {.len =  8, .unit =  2, .colorMain = INDEX_BEIGE,    .colorDark = INDEX_ORANGE},
+ TimeBarSpec {.len =  8, .unit =  4, .colorMain = INDEX_ORANGE,   .colorDark = INDEX_BROWN},
+ TimeBarSpec {.len = 24, .unit = 16, .colorMain = INDEX_BROWN,    .colorDark = INDEX_BROWN}
+
 };
+const TimeBarSpec* blinkLimitSpec = &timebarSpecs[2]; // Inclusive
 
 bool TimeBar::scoreTicks() {
   // Avoid that ticksRemaining becomes zero while scoring.(so that scoring nevers triggers TIMED OUT)
@@ -71,7 +73,7 @@ bool TimeBar::update() {
 const TimeBarSpec* TimeBar::drawTimeBar() {
   const TimeBarSpec* spec = timebarSpecs;
   int secs = _ticksRemaining / fps;
-  int x = 158;
+  int x = 159;
   while (secs > 0) {
     int l = min(spec->len, max(1, secs/spec->unit));
 
@@ -92,7 +94,7 @@ const TimeBarSpec* TimeBar::drawTimeBar() {
 }
 
 void TimeBar::flashLights(const TimeBarSpec* spec) {
-  if (spec->colorMain != INDEX_DARKGRAY) {
+  if (spec <= blinkLimitSpec) {
     uint8_t i = gb.frameCount % (spec->unit * fps);
     if (i < 12) {
       drawLight(0, 3 - i / 3, spec->colorMain);
