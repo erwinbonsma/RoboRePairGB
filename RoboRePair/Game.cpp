@@ -453,7 +453,14 @@ void handleGridComplete() {
 
 void handleBotCrashed() {
   if (endGameAnimFun == nullptr) {
-    // Act only on first crash
+    // Act only on first crash (or clash)
+    handleDeath();
+  }
+}
+
+void handleBotClashed() {
+  if (endGameAnimFun == nullptr) {
+    // Act only on first clash (or crash)
     handleDeath();
   }
 }

@@ -57,6 +57,5 @@ void loop() {
   displayCpuLoad();
   #endif
 #endif
-
 }
 

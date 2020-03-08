@@ -102,6 +102,9 @@ class Bot {
   bool pairAnim();
   void paired();
 
+  bool clashAnim();
+  void clashed();
+
   int meetingDistance();
   void handleMeeting();
 

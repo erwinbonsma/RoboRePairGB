@@ -6,6 +6,7 @@
 
 void handleGridComplete();
 void handleBotCrashed();
+void handleBotClashed();
 
 void incScore(int amount);
 

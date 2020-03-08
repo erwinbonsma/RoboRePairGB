@@ -446,6 +446,37 @@ void Bot::paired() {
   _animClk = 0;
 }
 
+bool Bot::clashAnim() {
+  ++_animClk;
+
+  // Blink rear-lights
+  if (_spriteIndex < 16) {
+    if (rand() % 8 < 3) {
+      _spriteIndex += 16;
+    }
+  } else {
+    if (rand() % 8 < 5) {
+      _spriteIndex -= 16;
+    }
+  }
+
+  if (_animClk == 18) {
+    handleBotClashed();
+  }
+
+  return false;
+}
+
+void Bot::clashed() {
+  stop();
+
+  _meetingBot = nullptr;
+
+  _otherAnimFun = &Bot::clashAnim;
+  _animClk = 0;
+  _period = 4; // Fix speed
+}
+
 int Bot::meetingDistance() {
   ScreenPos p1 = grid.screenPosOf(_pos);
   p1.add(_offset);
@@ -461,8 +492,14 @@ int Bot::meetingDistance() {
 void Bot::handleMeeting() {
   int dist = meetingDistance();
   if (dist <= 125) {
-    _meetingBot->mutableBot()->paired();
-    paired();
+    if (_meetingBot->getType() == getType()) {
+      _meetingBot->mutableBot()->paired();
+      paired();
+    } else {
+      _meetingBot->mutableBot()->clashed();
+      clashed();
+      // TODO: SFX
+    }
   } else {
 #ifdef DEVELOPMENT
     if (dist > _lastDist) {
