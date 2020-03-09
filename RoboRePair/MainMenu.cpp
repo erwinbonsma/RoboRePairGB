@@ -16,6 +16,10 @@
 #include "Utils.h"
 #include "TileGrid.h"
 
+constexpr int numButtons = 4;
+constexpr int buttonW = 14;
+constexpr int buttonH = 15;
+
 uint8_t activeButton = 1;
 uint8_t clk = 0;
 bool buttonsShown = false;
@@ -41,8 +45,8 @@ const BotSpec titleBot2 = BotSpec { .pos = GridPos(11, 10), .dir = Direction::So
 
 void highlightButton(int x0, int y0, ColorIndex iconColor = INDEX_ORANGE) {
   gb.display.setColor(INDEX_YELLOW);
-  for (int x = x0 + 15; --x >= x0; ) {
-    for (int y = y0 + 17; --y >= y0; ) {
+  for (int x = x0 + buttonW + 2; --x >= x0; ) {
+    for (int y = y0 + buttonH + 2; --y >= y0; ) {
       if (
         gb.display.getPixelIndex(x, y)==INDEX_DARKGRAY && (
           gb.display.getPixelIndex(x + 1, y) == iconColor ||
@@ -59,14 +63,14 @@ void highlightButton(int x0, int y0, ColorIndex iconColor = INDEX_ORANGE) {
 
 void drawButtons() {
   constexpr int sep = 16;
-  constexpr int x0 = 80 - (15 * 3 + sep * 2) / 2;
-  for (int i = 0; i < 3; i++) {
-    int frameIndex = i + (i == 2 && !music.isEnabled());
+  constexpr int x0 = 80 - (buttonW * numButtons + sep * (numButtons - 1)) / 2;
+  for (int i = 0; i < numButtons; i++) {
+    int frameIndex = i + (i == 3 && !music.isEnabled());
     buttonsImage.setFrame(frameIndex);
-    int x = x0 + i * (15 + sep);
+    int x = x0 + i * (buttonW + sep);
     gb.display.drawImage(x, 110, buttonsImage);
     if (i == activeButton) {
-      highlightButton(x - 1, 109, (frameIndex < 3) ? INDEX_ORANGE : INDEX_BROWN);
+      highlightButton(x - 1, 109, (frameIndex < numButtons) ? INDEX_ORANGE : INDEX_BROWN);
     }
   }
 }
@@ -85,10 +89,10 @@ void updateMainMenu() {
   }
 
   if (gb.buttons.held(BUTTON_LEFT, 0)) {
-    activeButton = (activeButton + 2) % 3;
+    activeButton = (activeButton + numButtons - 1) % numButtons;
   }
   if (gb.buttons.held(BUTTON_RIGHT, 0)) {
-    activeButton = (activeButton + 1) % 3;
+    activeButton = (activeButton + 1) % numButtons;
   }
   if (gb.buttons.held(BUTTON_A, 0)) {
     switch (activeButton) {
@@ -99,6 +103,9 @@ void updateMainMenu() {
         startGame();
         break;
       case 2:
+        // TODO
+        break;
+      case 3:
         music.toggleEnabled();
         break;
       default:
