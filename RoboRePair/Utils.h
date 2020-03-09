@@ -24,11 +24,13 @@ typedef void (*DrawFunction)();
 extern UpdateFunction updateFunction;
 extern DrawFunction drawFunction;
 
-const int fps = 25;
+constexpr int fps = 25;
 
 inline int sgn(int val) {
   return (val > 0) - (val < 0);
 }
+
+typedef uint16_t Score;
 
 struct Vector2D {
   int8_t x;

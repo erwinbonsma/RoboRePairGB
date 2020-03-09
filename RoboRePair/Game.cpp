@@ -15,16 +15,22 @@
 #include "MainMenu.h"
 #include "Music.h"
 #include "Palettes.h"
+#include "ProgressTracker.h"
 #include "TileTray.h"
 #include "Timebar.h"
 
 typedef bool (*AnimFunction)();
 
 int8_t levelNum;
-uint32_t score;
-uint32_t drawScore;
-constexpr int maxScoreDigits = 6;
-char scoreString[maxScoreDigits + 1];
+Score score;
+Score drawScore;
+
+constexpr int maxScoreDigits = 5;
+char scoreStringBuf[maxScoreDigits + 1];
+
+void updateScoreString(Score score) {
+  snprintf(scoreStringBuf, maxScoreDigits + 1, "%d", score);
+}
 
 int animClk;
 AnimFunction endGameAnimFun;
@@ -197,6 +203,9 @@ bool endGameAnim() {
       incScore(100);
     } else {
       ++animClk;
+
+      // Notify progress tracker of final score
+      progressTracker.gameDone(score);
     }
     return false;
   }
@@ -305,6 +314,9 @@ bool levelDoneAnim() {
   }
   if (animClk == (120 + grid.maxIndex() * gridScanPeriod)) {
     gridCursor.setHidden(true);
+
+    // Notify progress tracker of final score
+    progressTracker.levelDone(levelNum, score);
   }
 
   if (animClk < (150 + grid.maxIndex() * gridScanPeriod)) {
@@ -417,6 +429,7 @@ void loadLevel() {
 
   inputDisabled = false;
   music.start();
+  progressTracker.startLevel(score);
 
   gb.display.clear(INDEX_BLACK);
 
@@ -445,6 +458,7 @@ void startGame() {
 
   lives.init();
   startLevel();
+  progressTracker.startGame();
 }
 
 void handleGridComplete() {
@@ -524,7 +538,7 @@ void updateGame() {
 
   if (drawScore != score) {
     drawScore += sgn(score - drawScore);
-    snprintf(scoreString, maxScoreDigits + 1, "%lu", drawScore);
+    updateScoreString(drawScore);
   }
 
   music.update();
@@ -545,5 +559,5 @@ void drawGame() {
   gridCursor.draw();
 
   gb.display.setColor(INDEX_BROWN);
-  drawText(2, 1, scoreString, 2);
+  drawText(2, 1, scoreStringBuf, 2);
 }

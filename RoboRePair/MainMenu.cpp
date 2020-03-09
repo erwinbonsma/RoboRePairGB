@@ -8,6 +8,7 @@
 
 #include "Bot.h"
 #include "Game.h"
+#include "HallOfFame.h"
 #include "HelpMenu.h"
 #include "Images.h"
 #include "Levels.h" // for GridSpec
@@ -103,7 +104,7 @@ void updateMainMenu() {
         startGame();
         break;
       case 2:
-        // TODO
+        showHallOfFame();
         break;
       case 3:
         music.toggleEnabled();
