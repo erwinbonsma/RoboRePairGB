@@ -495,17 +495,17 @@ void updateGame() {
 
     if (!inputDisabled) {
       tileTray.update();
+    }
 
 #ifndef SCREEN_RECORDING
-      // Ignore while recording is enabled, as both are triggered via the same button
-      if (gb.buttons.held(BUTTON_MENU, fps)) {
-        abortGame();
-        setEndGameAnimFunction(gameOverAnim);
-      }
-      if (gb.buttons.released(BUTTON_MENU)) {
-        // Suicide. Can be useful when pairing is impossible.
-        abortAttempt();
-      }
+    // Ignore while recording is enabled, as both are triggered via the same button
+    if (gb.buttons.held(BUTTON_MENU, fps)) {
+      abortGame();
+      setEndGameAnimFunction(gameOverAnim);
+    }
+    if (gb.buttons.released(BUTTON_MENU)) {
+      // Suicide. Can be useful when pairing is impossible.
+      abortAttempt();
     }
 #endif
   }
