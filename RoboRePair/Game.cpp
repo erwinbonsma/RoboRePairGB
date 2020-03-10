@@ -296,7 +296,7 @@ bool levelDoneAnim() {
     if (animClk == 120) {
       if (grid.isComplete()) {
         // No imperfections. Skip this scoring step
-        animClk = 120 + grid.maxIndex() * gridScanPeriod;
+        animClk = 120 + grid.maxIndex() * gridScanPeriod - 1;
         return false;
       } else {
         gridCursor.setHidden(false);

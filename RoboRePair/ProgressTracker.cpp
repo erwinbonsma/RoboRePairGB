@@ -71,7 +71,7 @@ void ProgressTracker::startGame() {
 }
 
 void ProgressTracker::updateHiScore() {
-  uint16_t oldHiScore = hiScore();
+  Score oldHiScore = hiScore();
 
   if (_score > oldHiScore) {
     gb.save.set(SAVEINDEX_HISCORE, (int32_t)_score);
@@ -83,9 +83,9 @@ void ProgressTracker::startLevel(Score score) {
   _score = score;
 }
 
-bool ProgressTracker::levelDone(int level,Score score) {
-  uint16_t oldLevelHi = levelHiScore(level);
-  uint16_t levelScore = score - _score;
+bool ProgressTracker::levelDone(int level, Score score) {
+  Score oldLevelHi = levelHiScore(level);
+  Score levelScore = score - _score;
   bool improvedLevelHi = false;
 
   if (levelScore > oldLevelHi) {
