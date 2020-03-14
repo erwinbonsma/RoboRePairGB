@@ -104,7 +104,8 @@ const GridTile tiles[numTiles] = {
   GridTile(13, 0x5104, 0, true),
   GridTile(11, 0x208A, 0, true),
 
-  // Single dot
-  GridTile( 0, 0x0000, 0),
+  // Special
+  GridTile( 0, 0x0000, 0), // Single dot
+  GridTile( 0, 0x0000, 0), // Single dot, stretched (dash)
 };
 

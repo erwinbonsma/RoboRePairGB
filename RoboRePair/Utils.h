@@ -95,7 +95,9 @@ public:
 };
 
 void drawText(int x, int y, const char* s, int sep = 1);
+void drawTitleText(int x0, int y0, const char* s);
 int textWidth(const char* s, int sep = 1);
+int titleWidth(const char* s);
 
 void assertFailed(const char *function, const char *file, int lineNo, const char *expression);
 

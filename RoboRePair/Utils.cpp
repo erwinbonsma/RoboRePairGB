@@ -6,6 +6,8 @@
 
 #include "Utils.h"
 
+#include "Images.h"
+
 int orientation(Vector2D v1, Vector2D v2) {
   int val = v1.y * v2.x - v1.x * v2. y;
   return (val == 0) ? 0 : ((val > 0) ? 1 : -1);
@@ -67,7 +69,7 @@ const int8_t fontSpec[][26] = {
   {6, 20, 3,18,20,29, 9},
   {6, 18, 6,19,28, 9,24}, // z
   {0}, // space
-  {3, -2,0,24}, // -
+  {3, -2,0,26}, // -
   {7, 6,21,3,8,0,8,-5},  // (
   {7, -5,2,0,2,12,21,9}, // )
   {2, 0,31},       // +
@@ -80,6 +82,12 @@ const int8_t fontSpec[][26] = {
 };
 // Could speed text drawing up a bit by ordering characters by usage
 const char* fontChars = "0123456789ertsabcdfghijklmnopquvwxyz -()+:!,.'?";
+
+// Maps glyps in fontSpec which are larger or equal than 16 to frame in smallTilesImage
+const uint8_t squareGlyphToFrameIndex[16] = {
+  24,  1,  2, 16,  4,  5, 17, 20,
+   8, 19, 10, 23, 18, 22, 21, 15
+};
 
 const int8_t* fontSpecForChar(char ch) {
   const char* p = fontChars;
@@ -157,6 +165,40 @@ void drawText(int x0, int y0, const char* s, int sep) {
   }
 }
 
+void drawTitleText(int x0, int y0, const char* s) {
+  const char* p = s;
+  int x = x0;
+  while (*p) {
+    const int8_t* fontSpec = fontSpecForChar(*p);
+    int row = 0;
+    // fontSpec[0] is the number of glyphs + spacing tweaks
+    const int8_t* endP = fontSpec + *fontSpec;
+    // Draw character
+    while (++fontSpec <= endP) {
+      int v = *fontSpec;
+      if (v >= 0) {
+        if (row == 3) {
+          row = 0;
+          x += 8;
+        }
+
+        // Draw glyph
+        int y = y0 + 8 * row;
+        if (v >= 16) {
+          v = squareGlyphToFrameIndex[v - 16];
+        }
+
+        smallTilesImage.setFrame(v);
+        gb.display.drawImage(x, y, smallTilesImage);
+
+        row += 1;
+      }
+    }
+    x += 8;
+    ++p;
+  }
+}
+
 int textWidth(const char* s, int sep) {
   const char* p = s;
   int w = 0;
@@ -181,6 +223,29 @@ int textWidth(const char* s, int sep) {
   }
   if (p != s) {
     w += 1; // Also leave one pixel spacing at the end
+  }
+  return w;
+}
+
+int titleWidth(const char* s) {
+  const char* p = s;
+  int w = 0;
+  while (*p) {
+    const int8_t* fontSpec = fontSpecForChar(*p);
+    int row = 0;
+    int len = fontSpec[0];
+    for (int i = 1; i <= len; ++i) {
+      int v = fontSpec[i];
+      if (v >= 0) {
+        if (row == 3) {
+          row = 0;
+          w += 8;
+        }
+        row += 1;
+      }
+    }
+    w += 8;
+    ++p;
   }
   return w;
 }
