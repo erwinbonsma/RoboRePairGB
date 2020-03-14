@@ -272,13 +272,13 @@ const LevelSpec levels[numLevels] = {
     .numBots = 4,
     .bots = botsTwoPair,
   },
-  LevelSpec {
-    .name = "too hard?",
-    .numTiles = 5,
-    .timeLimit = 360,
-    .grid = GridSpec { .w = 9, .h = 8, .tiles = tilesQueue },
-    .numBots = 4,
-    .bots = botsQueue,
-  },
+//  LevelSpec {
+//    .name = "too hard?",
+//    .numTiles = 5,
+//    .timeLimit = 360,
+//    .grid = GridSpec { .w = 9, .h = 8, .tiles = tilesQueue },
+//    .numBots = 4,
+//    .bots = botsQueue,
+//  },
 };
 

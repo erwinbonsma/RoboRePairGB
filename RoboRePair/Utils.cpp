@@ -157,7 +157,7 @@ void drawText(int x0, int y0, const char* s, int sep) {
   }
 }
 
-int textWidth(const char* s) {
+int textWidth(const char* s, int sep) {
   const char* p = s;
   int w = 0;
   while (*p) {
@@ -176,7 +176,7 @@ int textWidth(const char* s) {
         row += 1;
       }
     }
-    w += 3;
+    w += 2 + sep;
     ++p;
   }
   if (p != s) {
