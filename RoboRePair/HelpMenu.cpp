@@ -41,8 +41,8 @@ void drawHelp() {
 
   gb.display.setColor(INDEX_YELLOW);
   drawText(0, 28, "re-unite (re-pair) the bots");
-  drawText(2, 77, "a");
-  drawText(2, 95, "b");
+  drawText(2, 77, "b");
+  drawText(2, 95, "a");
 
   helpDrawn = true;
 }
