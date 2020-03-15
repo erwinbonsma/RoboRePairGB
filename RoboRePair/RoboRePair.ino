@@ -35,6 +35,14 @@ void displayCpuLoad() {
   gb.display.print(cpuLoad);
 }
 
+void displayFreeRam() {
+  gb.display.setColor(INDEX_BLACK);
+  gb.display.fillRect(0,112,25,12);
+  gb.display.setCursor(1,113);
+  gb.display.setColor(INDEX_WHITE);
+  gb.display.print(gb.getFreeRam());
+}
+
 void setup() {
   gb.begin();
 
@@ -54,7 +62,8 @@ void loop() {
   #ifdef SCREEN_RECORDING
   ScreenRecorder::monitor(gb.display._buffer);
   #else
-  displayCpuLoad();
+  //displayCpuLoad();
+  displayFreeRam();
   #endif
 #endif
 }
