@@ -559,5 +559,8 @@ void drawGame() {
   gridCursor.draw();
 
   gb.display.setColor(INDEX_BROWN);
-  drawText(2, 1, scoreStringBuf, 2);
+  drawText(14, 1, scoreStringBuf, 2);
+  if (score >= progressTracker.hiScore()) {
+    gb.display.drawImage(2, 2, throphyImage);
+  }
 }

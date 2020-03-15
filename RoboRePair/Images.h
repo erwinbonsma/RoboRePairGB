@@ -25,3 +25,5 @@ extern Image titleICImage;
 extern Image titleImpedanceImage;
 extern Image titleResistor1Image;
 extern Image titleResistor2Image;
+
+extern Image throphyImage;
