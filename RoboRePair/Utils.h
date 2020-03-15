@@ -9,7 +9,7 @@
 
 #include <Gamebuino-Meta.h>
 
-#define DEVELOPMENT
+//#define DEVELOPMENT
 #ifdef DEVELOPMENT
 //#define SCREEN_RECORDING
 //#define SHOW_CLAIMED
