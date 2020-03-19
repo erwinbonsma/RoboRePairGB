@@ -127,7 +127,7 @@ void drawMainMenu() {
 
     gb.display.setColor(INDEX_BLACK);
     drawText(31, 2, "eriban presents");
-    drawText(46, 112, "version 1.0");
+    drawText(46, 112, "version 1.1");
 #ifdef DEVELOPMENT
     gb.display.setColor(INDEX_RED);
     drawText(120, 112, "dev");
