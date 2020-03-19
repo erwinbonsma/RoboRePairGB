@@ -6,8 +6,8 @@
 
 #include <Gamebuino-Meta.h>
 
-const char *const introTrack = "bb-track1-intro.wav";
-const char *const loopTrack = "bb-track1-loop.wav";
+const char *const introTrack = "bb-track1-intro-22k.wav";
+const char *const loopTrack = "bb-track1-loop-22k.wav";
 
 class Music {
   int8_t _track;
