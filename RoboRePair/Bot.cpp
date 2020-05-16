@@ -10,6 +10,7 @@
 #include "Images.h"
 #include "Levels.h"
 #include "TileGrid.h"
+#include "SoundFx.h"
 
 const BotType botTypes[numBotTypes] = {
   BotType { .small = false, .look = 0, .period = mediumSpeed },
@@ -17,26 +18,6 @@ const BotType botTypes[numBotTypes] = {
   BotType { .small = false, .look = 0, .period = slowSpeed },
   BotType { .small = false, .look = 1, .period = slowSpeed },
   BotType { .small = true,  .look = 0, .period = smallFastSpeed }
-};
-
-const Gamebuino_Meta::Sound_FX crashSfx[] = {
-  {Gamebuino_Meta::Sound_FX_Wave::NOISE,0,255,-10,0,128,10},
-};
-
-const Gamebuino_Meta::Sound_FX clashSfx[] = {
-  {Gamebuino_Meta::Sound_FX_Wave::NOISE,0,255,-15,0,128,10},
-};
-
-const Gamebuino_Meta::Sound_FX fallSfx[] = {
-  {Gamebuino_Meta::Sound_FX_Wave::SQUARE,0,128,-1,127,212,40},
-};
-
-const Gamebuino_Meta::Sound_FX wiggle1Sfx[] = {
-  {Gamebuino_Meta::Sound_FX_Wave::SQUARE,0,64,-1,0,56,2},
-};
-
-const Gamebuino_Meta::Sound_FX wiggle2Sfx[] = {
-  {Gamebuino_Meta::Sound_FX_Wave::SQUARE,0,64,-1,0,42,2},
 };
 
 const uint8_t moveConstants[] =      {
@@ -310,7 +291,7 @@ bool Bot::crashAnim() {
     ++_spriteIndex;
 
     if (_animClk == 0) {
-      gb.sound.fx(fallSfx);
+      gb.sound.fx(fallingSfx);
     }
     if (_animClk == 2) {
       releasePrevious();
@@ -736,4 +717,3 @@ bool botAt(GridPos pos) {
 
   return false;
 }
-

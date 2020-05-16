@@ -9,16 +9,8 @@
 #include "Bot.h"
 #include "Game.h"
 #include "Images.h"
+#include "SoundFx.h"
 #include "TileTray.h"
-
-const Gamebuino_Meta::Sound_FX noCanDoSfx[] = {
-  {Gamebuino_Meta::Sound_FX_Wave::SQUARE,0,128,0,0,450,3},
-};
-
-const Gamebuino_Meta::Sound_FX tilePlacedSfx[] = {
-  {Gamebuino_Meta::Sound_FX_Wave::SQUARE,1,133,-24,127,100,1},
-  {Gamebuino_Meta::Sound_FX_Wave::SQUARE,0,128,-48,0,71,1},
-};
 
 void GridCursor::checkAllowed() {
   const GridTile* tile = tileTray.selectedTile();
@@ -77,7 +69,7 @@ void GridCursor::update() {
       _contractionClk = 20;
       _allowed = false;
       incScore(10);
-      gb.sound.fx(tilePlacedSfx);
+      gb.sound.fx(placeTileSfx);
     } else {
       gb.sound.fx(noCanDoSfx);
    }
@@ -87,6 +79,7 @@ void GridCursor::update() {
     if (tileTray.numAvailableTiles() >= 2) {
       tileTray.switchTiles();
       checkAllowed();
+      gb.sound.fx(switchTilesSfx);
     } else {
       gb.sound.fx(noCanDoSfx);
     }
@@ -112,4 +105,3 @@ void GridCursor::draw() {
     gb.display.drawRect(_drawPos.getX(), _drawPos.getY(), 13, 13);
   }
 }
-
