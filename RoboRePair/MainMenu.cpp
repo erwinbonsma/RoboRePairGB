@@ -77,8 +77,6 @@ void drawButtons() {
 }
 
 void updateMainMenu() {
-  music.update();
-
   grid.update();
   updateBots();
 
@@ -159,7 +157,7 @@ void drawMainMenu() {
 }
 
 void showMainMenu() {
-  music.start();
+  music.ensureStarted();
   firstDraw = true;
 
   destroyAllBots();
@@ -170,4 +168,3 @@ void showMainMenu() {
   updateFunction = updateMainMenu;
   drawFunction = drawMainMenu;
 }
-

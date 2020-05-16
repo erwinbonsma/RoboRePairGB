@@ -6,34 +6,34 @@
 
 #include "Music.h"
 
+#include "Song.h"
+
 Music music;
 
 void Music::toggleEnabled() {
   if (_enabled) {
     _enabled = false;
-    if (!_stopped) {
-      gb.sound.stop(_track);
-    }
+    gb.sound.stopSong();
   } else {
     _enabled = true;
-    if (!_stopped) {
-      _track = gb.sound.play(introTrack);
-    }
+    start();
   }
 }
 
 void Music::start() {
-  if (_enabled && _stopped) {
-    _stopped = false;
-    _track = gb.sound.play(introTrack);
+  if (_enabled) {
+    gb.sound.playSong(bumbleBotsSong, true);
   }
 }
 
 void Music::stop() {
-  if (_enabled && !_stopped) {
-    _stopped = true;
-    gb.sound.stop(_track);
+  if (_enabled) {
+    gb.sound.stopSong();
   }
 }
 
-
+void Music::ensureStarted() {
+  if (_enabled && !gb.sound.isSongPlaying()) {
+    start();
+  }
+}

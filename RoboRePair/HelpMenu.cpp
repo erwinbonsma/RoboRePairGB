@@ -14,7 +14,6 @@
 bool helpDrawn;
 
 void updateHelp() {
-  music.update();
   if (gb.buttons.held(BUTTON_A, 0)) {
     showMainMenu();
   }
@@ -52,4 +51,3 @@ void showHelp() {
   drawFunction = drawHelp;
   helpDrawn = false;
 }
-

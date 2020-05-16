@@ -540,8 +540,6 @@ void updateGame() {
     drawScore += sgn(score - drawScore);
     updateScoreString(drawScore);
   }
-
-  music.update();
 }
 
 

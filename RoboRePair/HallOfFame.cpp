@@ -16,7 +16,6 @@
 bool screenDrawn;
 
 void updateHallOfFame() {
-  music.update();
   if (gb.buttons.held(BUTTON_A, 0)) {
     showMainMenu();
   }
@@ -59,4 +58,3 @@ void showHallOfFame() {
   drawFunction = drawHallOfFame;
   screenDrawn = false;
 }
-

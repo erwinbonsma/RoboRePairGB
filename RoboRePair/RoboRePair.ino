@@ -62,9 +62,8 @@ void loop() {
   #ifdef SCREEN_RECORDING
   ScreenRecorder::monitor(gb.display._buffer);
   #else
-  //displayCpuLoad();
-  displayFreeRam();
+  displayCpuLoad();
+  //displayFreeRam();
   #endif
 #endif
 }
-

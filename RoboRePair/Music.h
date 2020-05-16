@@ -6,30 +6,20 @@
 
 #include <Gamebuino-Meta.h>
 
-const char *const introTrack = "bb-track1-intro-22k.wav";
-const char *const loopTrack = "bb-track1-loop-22k.wav";
-
 class Music {
-  int8_t _track;
   bool _enabled = true;
-  bool _stopped = true;
 
 public:
   bool isEnabled() { return _enabled; }
-  bool isStopped() { return _stopped; }
 
   void toggleEnabled();
 
-  // No effect when music is disabled
+  // The below methods have mo effect when music is disabled
   void start();
   void stop();
 
-  void update() {
-    if (_enabled && !_stopped && !gb.sound.isPlaying(_track)) {
-      _track = gb.sound.play(loopTrack, true);
-    }
-  }
+  // Starts music if it was not playing already
+  void ensureStarted();
 };
 
 extern Music music;
-

@@ -2,11 +2,9 @@
 
 #define FOLDER_NAME "BumbleBotsRePair"
 
-#define SOUND_FREQ 22050
+#define SOUND_FREQ 11025
 
-// Double buffer size used for playing music, so it plays more smoothly.
-#define SOUND_BUFFERSIZE 4096
+#define SOUND_CHANNELS 0
 
-// Reduce number of channels. Only two should be needed, one for FX, another for music.
-// Note FX has a dedicated channel, so one channel suffices.
-#define SOUND_CHANNELS 1
+#define SOUND_ENABLE_MUSIC 1
+#define SOUND_MUSIC_BUFFERSIZE 1024
