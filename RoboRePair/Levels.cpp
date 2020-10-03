@@ -147,18 +147,18 @@ const BotSpec botsTest[] = {
 };
 
 const uint8_t tilesTwist[] = {
-   0, 0, 0, 0, 0,10, 0, 0, 0,
-   0, 0, 0, 0, 0, 4, 0, 0, 0,
-   0, 0, 0, 0, 0, 5, 0, 0, 0,
-   0, 0, 0, 0, 6,15, 0, 0, 0,
-   0, 0, 0, 0,15, 9, 0, 0, 0,
-   0, 0, 0, 0, 5, 0, 0, 0, 0,
-   0, 0, 0, 0, 1, 0, 0, 0, 0,
-   0, 0, 0, 0,10, 0, 0, 0, 0
+   0, 0, 0, 0,10, 0, 0, 0,
+   0, 0, 0, 0, 4, 0, 0, 0,
+   0, 0, 0, 0, 5, 0, 0, 0,
+   0, 0, 0, 6,15, 0, 0, 0,
+   0, 0, 0,15, 9, 0, 0, 0,
+   0, 0, 0, 5, 0, 0, 0, 0,
+   0, 0, 0, 1, 0, 0, 0, 0,
+   0, 0, 0,10, 0, 0, 0, 0
 };
 const BotSpec botsTwist[] = {
-  BotSpec { .pos = GridPos(5, 1), .dir = Direction::North, .type = normalBotType },
-  BotSpec { .pos = GridPos(4, 6), .dir = Direction::South, .type = normalBotType },
+  BotSpec { .pos = GridPos(4, 1), .dir = Direction::North, .type = normalBotType },
+  BotSpec { .pos = GridPos(3, 6), .dir = Direction::South, .type = normalBotType },
 };
 
 const uint8_t tilesCramped[] = {
@@ -236,7 +236,7 @@ const LevelSpec levels[numLevels] = {
     .name = "twist",
     .numTiles = 3,
     .timeLimit = 240,
-    .grid = GridSpec { .w = 9, .h = 8, .tiles = tilesTwist },
+    .grid = GridSpec { .w = 8, .h = 8, .tiles = tilesTwist },
     .numBots = 2,
     .bots = botsTwist,
   },
