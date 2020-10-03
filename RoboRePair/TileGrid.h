@@ -140,7 +140,6 @@ public:
   void placeTileAt(GridPos pos, const GridTile* tile, ScreenPos fromPos);
   const GridTile* patchTileAt(GridPos index);
 
-  bool hasOpenEnds(GridPos pos);
   bool isComplete();
 
   bool canPlaceTileAt(GridPos pos, const GridTile* tile);
