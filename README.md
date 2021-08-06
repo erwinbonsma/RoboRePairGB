@@ -4,6 +4,11 @@ Bumble Bots Re-Pair is an action game with puzzle elements.
 This version is for the [Gamebuino][] console.
 Although the game play is entirely different, it bears similarities in theming to my earlier [Bumble Bots] game.
 
+![Title screen](Screenshots/title-screen.png)
+![Help screen](Screenshots/help-screen.png)
+![Screenshot of Level "Two Pair"](Screenshots/level-two-pair.png)
+![Game over](Screenshots/game-over.png)
+
 Origin
 ------
 The game is a spin-off of the Unity game [Robo Re-Pair][] which I and two others created during the 2020 [Global Game Jam][].
